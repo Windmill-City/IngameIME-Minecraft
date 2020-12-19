@@ -41,9 +41,8 @@ object ExternalBaseIME {
     
     //region Natives
     private external fun nInitialize(handle: Long)
-    
     @Suppress("unused")
-    external fun nUninitialize()
+    private external fun nUninitialize()
     private external fun nSetState(state: Boolean)
     private external fun nSetFullScreen(fullscreen: Boolean)
     private external fun nSetHandleComposition(handle: Boolean)
@@ -51,12 +50,12 @@ object ExternalBaseIME {
     
     //region CallFrom JNI
     @Suppress("unused")
-    fun onCandidateList(candidates: Array<String>?) {
+    private fun onCandidateList(candidates: Array<String>?) {
         OverlayScreen.candidates = candidates
     }
     
     @Suppress("unused")
-    fun onComposition(str: String?, caret: Int, state: CompositionState) {
+    private fun onComposition(str: String?, caret: Int, state: CompositionState) {
         when (state) {
             CompositionState.Commit -> {
                 str!!.onEach { ch ->
@@ -72,18 +71,18 @@ object ExternalBaseIME {
     }
     
     @Suppress("unused")
-    fun onGetCompExt(): IntArray {
+    private fun onGetCompExt(): IntArray {
         return OverlayScreen.compositionExt
     }
     
     @Suppress("unused")
-    fun onAlphaMode(isAlphaMode: Boolean) {
+    private fun onAlphaMode(isAlphaMode: Boolean) {
         AlphaMode = isAlphaMode
         OverlayScreen.showAlphaMode = true
     }
     //endregion
     
-    enum class CompositionState {
+    private enum class CompositionState {
         Start,
         Update,
         End,
