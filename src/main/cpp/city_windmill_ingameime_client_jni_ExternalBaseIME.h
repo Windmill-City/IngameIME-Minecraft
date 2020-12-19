@@ -9,42 +9,42 @@ extern "C" {
 #endif
 /*
  * Class:     city_windmill_ingameime_client_jni_ExternalBaseIME
- * Method:    Initialize
+ * Method:    nInitialize
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_city_windmill_ingameime_client_jni_ExternalBaseIME_Initialize
+JNIEXPORT void JNICALL Java_city_windmill_ingameime_client_jni_ExternalBaseIME_nInitialize
   (JNIEnv *, jobject, jlong);
 
 /*
  * Class:     city_windmill_ingameime_client_jni_ExternalBaseIME
- * Method:    Uninitialize
+ * Method:    nUninitialize
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_city_windmill_ingameime_client_jni_ExternalBaseIME_Uninitialize
+JNIEXPORT void JNICALL Java_city_windmill_ingameime_client_jni_ExternalBaseIME_nUninitialize
   (JNIEnv *, jobject);
 
 /*
  * Class:     city_windmill_ingameime_client_jni_ExternalBaseIME
- * Method:    SetState
+ * Method:    nSetState
  * Signature: (Z)V
  */
-JNIEXPORT void JNICALL Java_city_windmill_ingameime_client_jni_ExternalBaseIME_SetState
+JNIEXPORT void JNICALL Java_city_windmill_ingameime_client_jni_ExternalBaseIME_nSetState
   (JNIEnv *, jobject, jboolean);
 
 /*
  * Class:     city_windmill_ingameime_client_jni_ExternalBaseIME
- * Method:    SetFullScreen
+ * Method:    nSetFullScreen
  * Signature: (Z)V
  */
-JNIEXPORT void JNICALL Java_city_windmill_ingameime_client_jni_ExternalBaseIME_SetFullScreen
+JNIEXPORT void JNICALL Java_city_windmill_ingameime_client_jni_ExternalBaseIME_nSetFullScreen
   (JNIEnv *, jobject, jboolean);
 
 /*
  * Class:     city_windmill_ingameime_client_jni_ExternalBaseIME
- * Method:    SetHandleComposition
+ * Method:    nSetHandleComposition
  * Signature: (Z)V
  */
-JNIEXPORT void JNICALL Java_city_windmill_ingameime_client_jni_ExternalBaseIME_SetHandleComposition
+JNIEXPORT void JNICALL Java_city_windmill_ingameime_client_jni_ExternalBaseIME_nSetHandleComposition
   (JNIEnv *, jobject, jboolean);
 
 #ifdef __cplusplus

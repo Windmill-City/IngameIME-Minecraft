@@ -16,6 +16,7 @@
       "city.windmill.ingameime.client.IngameIMEClient"
     ]
   },
+  "accessWidener": "ingameime.accessWidener",
   "mixins": [
     "IngameIME.mixins.json"
   ],

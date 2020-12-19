@@ -1,0 +1,3 @@
+accessWidener   v1  named
+accessible field net/minecraft/client/options/KeyBinding boundKey Lnet/minecraft/client/util/InputUtil$Key;
+accessible method net/minecraft/client/Keyboard onChar (JII)V
