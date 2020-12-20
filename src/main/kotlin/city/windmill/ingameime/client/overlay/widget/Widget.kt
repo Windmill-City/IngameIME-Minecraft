@@ -1,6 +1,5 @@
 package city.windmill.ingameime.client.overlay.widget
 
-import me.shedaniel.math.Color
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.Drawable
 import net.minecraft.client.gui.DrawableHelper
@@ -9,8 +8,8 @@ import net.minecraft.client.util.math.MatrixStack
 abstract class Widget(val textRenderer: TextRenderer) : Drawable {
     var offsetX = 0
     var offsetY = 0
-    var textColor = Color.ofRGB(0x00, 0x00, 0x00).color
-    var backgroundColor = Color.ofRGB(0xFF, 0xFF, 0xFF).color
+    var textColor = 0x00_00_00_00
+    var backgroundColor = 0xEB_EB_EB_EB.toInt()
     open val active get() = false
     open val width get() = padding.first * 2
     open val height get() = padding.second * 2
