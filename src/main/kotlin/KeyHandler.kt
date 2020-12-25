@@ -1,4 +1,5 @@
 import kotlinx.coroutines.*
+import net.minecraft.client.MinecraftClient
 import net.minecraft.client.options.KeyBinding
 import net.minecraft.client.util.InputUtil
 import org.apache.logging.log4j.LogManager
@@ -113,8 +114,10 @@ object KeyHandler : IKeyEventListener, IKeyActionListener {
                         delayDoubleClick = WeakReference(GlobalScope.launch {
                             delay(500)
                             hotKeyState = PENDING_CLICK
-                            LOGGER.debug("${HotKeyAction.CLICKED}")
-                            IMEHandler.onAction(HotKeyAction.CLICKED)
+                            MinecraftClient.getInstance().execute {
+                                LOGGER.debug("${HotKeyAction.CLICKED}")
+                                IMEHandler.onAction(HotKeyAction.CLICKED)
+                            }
                         })
                         PENDING_DOUBLE_CLICK
                     }
