@@ -1,16 +1,14 @@
-package city.windmill.ingameime.client.overlay
+package city.windmill.ingameime.client.gui
 
+import city.windmill.ingameime.client.gui.widget.AlphaModeWidget
+import city.windmill.ingameime.client.gui.widget.CandidateListWidget
+import city.windmill.ingameime.client.gui.widget.CompositionWidget
+import city.windmill.ingameime.client.gui.widget.Widget
 import city.windmill.ingameime.client.jni.ExternalBaseIME
-import city.windmill.ingameime.client.overlay.widget.AlphaModeWidget
-import city.windmill.ingameime.client.overlay.widget.CandidateListWidget
-import city.windmill.ingameime.client.overlay.widget.CompositionWidget
-import city.windmill.ingameime.client.overlay.widget.Widget
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.Drawable
 import net.minecraft.client.util.math.MatrixStack
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 object OverlayScreen : Drawable {
     private val alphaModeWidget = AlphaModeWidget(MinecraftClient.getInstance().textRenderer)
     private val compositionWidget = CompositionWidget(MinecraftClient.getInstance().textRenderer)
@@ -22,17 +20,22 @@ object OverlayScreen : Drawable {
         get() = alphaModeWidget.active
         set(value) {
             alphaModeWidget.active = value
+            alphaModeWidget.adjustPos()
         }
+    
     var candidates
         get() = candidateListWidget.candidates
         set(value) {
             candidateListWidget.candidates = value
+            candidateListWidget.adjustPos()
         }
     
     var composition
         get() = compositionWidget.args
         set(value) {
             compositionWidget.args = value
+            compositionWidget.adjustPos()
+            candidateListWidget.adjustPos()
         }
     
     val compositionExt
@@ -45,9 +48,6 @@ object OverlayScreen : Drawable {
     
     override fun render(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
         if (ExternalBaseIME.State) {
-            compositionWidget.adjustPos()
-            alphaModeWidget.adjustPos()
-            candidateListWidget.adjustPos()
             compositionWidget.render(matrices, mouseX, mouseY, delta)
             alphaModeWidget.render(matrices, mouseX, mouseY, delta)
             candidateListWidget.render(matrices, mouseX, mouseY, delta)
@@ -56,21 +56,23 @@ object OverlayScreen : Drawable {
     
     private fun Widget.adjustPos() {
         if (!active) return
-        moveTo(caretPos.first, caretPos.second)
-        val window = MinecraftClient.getInstance().window
-        val maxX = window.scaledWidth - width
-        val maxY = window.scaledHeight - height
-        if (offsetX > maxX) offsetX = maxX
-        if (offsetY > maxY) offsetY = maxY
+        with(MinecraftClient.getInstance().window) {
+            moveTo(
+                caretPos.first.coerceAtMost(scaledWidth - this@adjustPos.width),
+                caretPos.second.coerceAtMost(scaledWidth - this@adjustPos.height)
+            )
+        }
     }
     
     private fun CandidateListWidget.adjustPos() {
         if (!active) return
-        moveTo(caretPos.first, caretPos.second + compositionWidget.height)
-        val window = MinecraftClient.getInstance().window
-        val maxX = (window.scaledWidth - width).coerceAtLeast(0)
-        val maxY = (window.scaledHeight - height).coerceAtLeast(0)
-        if (offsetX > maxX) offsetX = maxX
-        if (offsetY > maxY) offsetY = (compositionWidget.offsetY - height).coerceAtMost(maxY)
+        with(MinecraftClient.getInstance().window) {
+            moveTo(caretPos.first.coerceAtMost((scaledWidth - this@adjustPos.width).coerceAtLeast(0)),
+                (caretPos.second + compositionWidget.height).let {
+                    if (it > scaledWidth - this@adjustPos.height)
+                        caretPos.second - height //place the candidate above the composition
+                    else it
+                })
+        }
     }
 }

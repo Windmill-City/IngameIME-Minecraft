@@ -1,4 +1,4 @@
-package city.windmill.ingameime.client.overlay.widget
+package city.windmill.ingameime.client.gui.widget
 
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawableHelper
@@ -36,9 +36,9 @@ class CompositionWidget(textRenderer: TextRenderer) : Widget(textRenderer) {
             if ((System.currentTimeMillis() % 1000) > 500) {
                 DrawableHelper.fill(
                     matrices,
-                    offsetX + 1,//1 pixel width
+                    offsetX + 1, //1 pixel width
                     offsetY,
-                    offsetX + 2,//with 2 pixel margin
+                    offsetX + 2, //with 2 pixel margin
                     offsetY + textRenderer.fontHeight,
                     textColor
                 )

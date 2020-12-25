@@ -1,4 +1,4 @@
-package city.windmill.ingameime.client.overlay.widget
+package city.windmill.ingameime.client.gui.widget
 
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.Drawable
@@ -32,7 +32,7 @@ abstract class Widget(val textRenderer: TextRenderer) : Drawable {
         )
     }
     
-    fun moveTo(x: Int, y:Int) {
+    fun moveTo(x: Int, y: Int) {
         offsetX = x
         offsetY = y
     }

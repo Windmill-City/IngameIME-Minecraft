@@ -1,4 +1,4 @@
-package city.windmill.ingameime.client.overlay.widget
+package city.windmill.ingameime.client.gui.widget
 
 import city.windmill.ingameime.client.jni.ExternalBaseIME
 import kotlinx.coroutines.GlobalScope
@@ -8,27 +8,25 @@ import kotlinx.coroutines.launch
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.util.math.MatrixStack
-import kotlin.time.ExperimentalTime
-import kotlin.time.seconds
+import java.lang.ref.WeakReference
 
-@ExperimentalTime
 class AlphaModeWidget(textRenderer: TextRenderer) : Widget(textRenderer) {
     private val text get() = I18n.translate(if (ExternalBaseIME.AlphaMode) "alpha.ingameime.mode" else "native.ingameime.mode")
-    private var job: Job? = null
+    private var hideDelay: WeakReference<Job>? = null
     
     override var active = false
         set(value) {
-            job?.cancel()
+            hideDelay?.get()?.cancel()
             if (value) {
-                job = GlobalScope.launch {
-                    delay(3.seconds)
+                hideDelay = WeakReference(GlobalScope.launch {
+                    delay(3 * 1000)
                     field = false
-                }
+                })
             }
             field = value
         }
     override val width
-        get() = with(super.width + textRenderer.getWidth(text)){
+        get() = with(super.width + textRenderer.getWidth(text)) {
             if (this < height) height else this
         }
     override val height

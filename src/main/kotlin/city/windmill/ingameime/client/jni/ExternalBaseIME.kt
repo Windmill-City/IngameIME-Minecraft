@@ -1,21 +1,16 @@
 package city.windmill.ingameime.client.jni
 
-import city.windmill.ingameime.client.overlay.OverlayScreen
+import city.windmill.ingameime.client.gui.OverlayScreen
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.Identifier
+import org.apache.logging.log4j.LogManager
 import org.lwjgl.glfw.GLFWNativeWin32.glfwGetWin32Window
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 object ExternalBaseIME {
-    init {
-        val resourceNative = Identifier("ingameime", "natives/jni.dll")
-        NativeLoader.load(MinecraftClient.getInstance().resourceManager.getResource(resourceNative))
-        nInitialize(glfwGetWin32Window(MinecraftClient.getInstance().window.handle))
-    }
-    
+    private val LOGGER = LogManager.getFormatterLogger("IngameIME|ExternalBaseIME")!!
     var State: Boolean = false
         set(value) {
+            LOGGER.debug("State $field -> $value")
             field = value
             nSetState(field)
             OverlayScreen.showAlphaMode = field
@@ -23,6 +18,7 @@ object ExternalBaseIME {
     
     var FullScreen: Boolean = false
         set(value) {
+            LOGGER.debug("FullScreen $field -> $value")
             field = value
             nSetFullScreen(field)
             if (State) {
@@ -33,14 +29,27 @@ object ExternalBaseIME {
     
     var HandleComposition: Boolean = false
         set(value) {
+            LOGGER.debug("HandleComposition $field -> $value")
             field = value
             nSetHandleComposition(field)
         }
     
     var AlphaMode: Boolean = false
+        private set(value) {
+            LOGGER.debug("AlphaMode $field -> $value")
+            field = value
+        }
+    
+    init {
+        val resourceNative = Identifier("ingameime", "natives/jni.dll")
+        NativeLoader.load(MinecraftClient.getInstance().resourceManager.getResource(resourceNative))
+        LOGGER.debug("Initialing window")
+        nInitialize(glfwGetWin32Window(MinecraftClient.getInstance().window.handle))
+    }
     
     //region Natives
     private external fun nInitialize(handle: Long)
+    
     @Suppress("unused")
     private external fun nUninitialize()
     private external fun nSetState(state: Boolean)
@@ -58,12 +67,15 @@ object ExternalBaseIME {
     private fun onComposition(str: String?, caret: Int, state: CompositionState) {
         when (state) {
             CompositionState.Commit -> {
+                IMEHandler.onCommit()
                 str!!.onEach { ch ->
                     MinecraftClient.getInstance().keyboard
                         .onChar(MinecraftClient.getInstance().window.handle, ch.toInt(), 0)
                 }
             }
-            CompositionState.Start, CompositionState.End, CompositionState.Update -> {
+            CompositionState.Start,
+            CompositionState.End,
+            CompositionState.Update -> {
                 OverlayScreen.composition = if (str.isNullOrEmpty()) null else str to caret
             }
         }

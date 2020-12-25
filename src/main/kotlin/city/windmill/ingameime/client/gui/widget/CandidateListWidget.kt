@@ -1,4 +1,4 @@
-package city.windmill.ingameime.client.overlay.widget
+package city.windmill.ingameime.client.gui.widget
 
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.util.math.MatrixStack
