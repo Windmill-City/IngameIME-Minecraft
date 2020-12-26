@@ -12,9 +12,9 @@ object NativeLoader {
      * Loads library from minecraft Resource
      */
     fun load(lib: Resource) {
-        LOGGER.debug("Try load native from ${lib.id}")
+        LOGGER.trace("Try load native from ${lib.id}")
         val tempFile = Files.createTempFile("IngameIME-Native", null).apply {
-            LOGGER.debug("Copying Native to $this")
+            LOGGER.trace("Copying Native to $this")
             Files.copy(lib.inputStream, this, StandardCopyOption.REPLACE_EXISTING)
         }
         System.load(tempFile.toAbsolutePath().toString())

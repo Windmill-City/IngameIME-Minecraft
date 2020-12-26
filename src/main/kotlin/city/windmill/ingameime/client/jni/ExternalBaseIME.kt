@@ -15,7 +15,7 @@ object ExternalBaseIME {
     private val LOGGER = LogManager.getFormatterLogger("IngameIME|ExternalBaseIME")!!
     var State: Boolean = false
         set(value) {
-            LOGGER.debug("State $field -> $value")
+            LOGGER.trace("State $field -> $value")
             field = value
             nSetState(field)
             OverlayScreen.showAlphaMode = field
@@ -23,7 +23,7 @@ object ExternalBaseIME {
     
     var FullScreen: Boolean = false
         set(value) {
-            LOGGER.debug("FullScreen $field -> $value")
+            LOGGER.trace("FullScreen $field -> $value")
             field = value
             nSetFullScreen(field)
             if (State) {
@@ -34,21 +34,21 @@ object ExternalBaseIME {
     
     var HandleComposition: Boolean = false
         set(value) {
-            LOGGER.debug("HandleComposition $field -> $value")
+            LOGGER.trace("HandleComposition $field -> $value")
             field = value
             nSetHandleComposition(field)
         }
     
     var AlphaMode: Boolean = false
         private set(value) {
-            LOGGER.debug("AlphaMode $field -> $value")
+            LOGGER.trace("AlphaMode $field -> $value")
             field = value
         }
     
     init {
         val resourceNative = Identifier("ingameime", "natives/jni.dll")
         NativeLoader.load(MinecraftClient.getInstance().resourceManager.getResource(resourceNative))
-        LOGGER.debug("Initialing window")
+        LOGGER.trace("Initialing window")
         nInitialize(glfwGetWin32Window(MinecraftClient.getInstance().window.handle))
         HandleComposition = true
     }

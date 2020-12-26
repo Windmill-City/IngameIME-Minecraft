@@ -42,7 +42,7 @@ object IMEHandler {
                 }
             }
             
-            override fun onTextFieldState(state: ScreenHandler.ScreenState.EditState): IMEState {
+            override fun onEditState(state: ScreenHandler.ScreenState.EditState): IMEState {
                 return when (state) {
                     ScreenHandler.ScreenState.EditState.NULL_EDIT -> {
                         ExternalBaseIME.State = false
@@ -89,14 +89,13 @@ object IMEHandler {
                 }
             }
             
-            override fun onTextFieldState(state: ScreenHandler.ScreenState.EditState): IMEState {
+            override fun onEditState(state: ScreenHandler.ScreenState.EditState): IMEState {
                 return when (state) {
                     ScreenHandler.ScreenState.EditState.NULL_EDIT -> {
                         ExternalBaseIME.State = false
                         DISABLED
                     }
                     ScreenHandler.ScreenState.EditState.EDIT_OPEN -> {
-                        ExternalBaseIME.State = true
                         ENABLED
                     }
                 }
@@ -135,14 +134,13 @@ object IMEHandler {
                 }
             }
             
-            override fun onTextFieldState(state: ScreenHandler.ScreenState.EditState): IMEState {
+            override fun onEditState(state: ScreenHandler.ScreenState.EditState): IMEState {
                 return when (state) {
                     ScreenHandler.ScreenState.EditState.NULL_EDIT -> {
                         ExternalBaseIME.State = false
                         DISABLED
                     }
                     ScreenHandler.ScreenState.EditState.EDIT_OPEN -> {
-                        ExternalBaseIME.State = true
                         ENABLED
                     }
                 }
@@ -153,7 +151,7 @@ object IMEHandler {
             IEditStateListener {
             private var imeState = DISABLED
                 set(value) {
-                    LOGGER.debug("IMEState $field -> $value")
+                    LOGGER.trace("IMEState $field -> $value")
                     field = value
                 }
             
@@ -170,13 +168,13 @@ object IMEHandler {
             }
             
             override fun onEditState(state: ScreenHandler.ScreenState.EditState) {
-                imeState = imeState.onTextFieldState(state)
+                imeState = imeState.onEditState(state)
             }
         }
         
         abstract fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction): IMEState
         abstract fun onCommit(): IMEState
         abstract fun onScreenState(state: ScreenHandler.ScreenState): IMEState
-        abstract fun onTextFieldState(state: ScreenHandler.ScreenState.EditState): IMEState
+        abstract fun onEditState(state: ScreenHandler.ScreenState.EditState): IMEState
     }
 }

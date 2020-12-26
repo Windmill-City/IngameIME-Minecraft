@@ -49,7 +49,7 @@ object ScreenHandler {
         companion object {
             private var screenState = NULL_SCREEN
                 set(value) {
-                    LOGGER.info("ScreenState $field -> $value")
+                    LOGGER.trace("ScreenState $field -> $value")
                     field = value
                     IMEHandler.IMEState.onScreenState(field)
                     EditState.onScreenState(field)
@@ -57,7 +57,7 @@ object ScreenHandler {
             private var currentScreen: Screen? = null
             
             fun onScreenChange(oldScreen: Screen?, newScreen: Screen?) {
-                LOGGER.info("$oldScreen -> $newScreen")
+                LOGGER.trace("$oldScreen -> $newScreen")
                 screenState = screenState.onScreenChange(oldScreen, newScreen)
             }
         }
@@ -101,7 +101,7 @@ object ScreenHandler {
             companion object : IScreenStateListener {
                 private var editState = NULL_EDIT
                     set(value) {
-                        LOGGER.info("EditState $editState -> $value")
+                        LOGGER.trace("EditState $editState -> $value")
                         field = value
                         IMEHandler.IMEState.onEditState(field)
                     }
@@ -109,12 +109,12 @@ object ScreenHandler {
                 private var currentEdit: Any? = null
                 
                 fun onEditOpen(edit: Any, caretPos: Pair<Int, Int>) {
-                    if (edit != currentEdit && edit == currentScreen?.focused)
+                    if (edit != currentEdit)
                         editState = editState.onEditOpen(edit, caretPos)
                 }
                 
                 fun onEditCaret(edit: Any, caretPos: Pair<Int, Int>) {
-                    if (edit == currentEdit)
+                    if (edit == currentEdit && OverlayScreen.caretPos != caretPos)
                         editState = editState.onEditCaret(edit, caretPos)
                 }
                 

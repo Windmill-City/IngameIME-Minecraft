@@ -37,7 +37,7 @@ object KeyHandler {
                         longPressCounter++
                         if (longPressCounter % 4 == 0) {
                             MinecraftClient.getInstance().execute {
-                                LOGGER.debug("Key long pressed for ${longPressCounter / 2} seconds")
+                                LOGGER.trace("Key long pressed for ${longPressCounter / 2} seconds")
                                 //Long Press event every 2 seconds
                                 onAction(KeyAction.KEY_LONG_PRESS)
                             }
@@ -49,7 +49,7 @@ object KeyHandler {
                 delayLongPress = WeakReference(GlobalScope.launch {
                     delay(500)
                     keyState = COUNTING_LONG_PRESS
-                    LOGGER.debug("Long press repeat start")
+                    LOGGER.trace("Long press repeat start")
                     longPressRepeat.start()
                 })
                 return PENDING_KEY_UP
@@ -70,7 +70,7 @@ object KeyHandler {
             override fun onKeyUp(keyCode: Int, scanCode: Int, modifier: Int): KeyState {
                 delayLongPress.get()?.cancel()
                 longPressRepeat.get()?.cancel() //may have started
-                LOGGER.debug("${KeyAction.KEY_CLICKED}")
+                LOGGER.trace("${KeyAction.KEY_CLICKED}")
                 onAction(KeyAction.KEY_CLICKED)
                 return PENDING_KEY_DOWN
             }
@@ -92,7 +92,7 @@ object KeyHandler {
             var keyState = PENDING_KEY_DOWN
                 set(value) {
                     if (field == value && value == COUNTING_LONG_PRESS) return
-                    LOGGER.debug("KeyState $field -> $value")
+                    LOGGER.trace("KeyState $field -> $value")
                     field = value
                 }
             lateinit var delayLongPress: WeakReference<Job>
@@ -137,14 +137,14 @@ object KeyHandler {
                             delay(300)
                             combinationKeyState = PENDING_CLICK
                             MinecraftClient.getInstance().execute {
-                                LOGGER.debug("${CombinationKeyAction.CLICKED}")
+                                LOGGER.trace("${CombinationKeyAction.CLICKED}")
                                 IMEHandler.IMEState.onAction(CombinationKeyAction.CLICKED)
                             }
                         })
                         PENDING_DOUBLE_CLICK
                     }
                     KeyState.KeyAction.KEY_LONG_PRESS -> {
-                        LOGGER.debug("${CombinationKeyAction.LONG_PRESS}")
+                        LOGGER.trace("${CombinationKeyAction.LONG_PRESS}")
                         IMEHandler.IMEState.onAction(CombinationKeyAction.LONG_PRESS)
                         PENDING_CLICK
                     }
@@ -156,11 +156,11 @@ object KeyHandler {
                 when (action) {
                     KeyState.KeyAction.KEY_CLICKED -> {
                         delayDoubleClick.get()?.cancel()
-                        LOGGER.debug("${CombinationKeyAction.DOUBLE_CLICKED}")
+                        LOGGER.trace("${CombinationKeyAction.DOUBLE_CLICKED}")
                         IMEHandler.IMEState.onAction(CombinationKeyAction.DOUBLE_CLICKED)
                     }
                     KeyState.KeyAction.KEY_LONG_PRESS -> {
-                        LOGGER.debug("${CombinationKeyAction.LONG_PRESS}")
+                        LOGGER.trace("${CombinationKeyAction.LONG_PRESS}")
                         IMEHandler.IMEState.onAction(CombinationKeyAction.LONG_PRESS)
                     }
                 }
@@ -171,7 +171,7 @@ object KeyHandler {
         companion object : KeyState.IKeyActionListener {
             var combinationKeyState = PENDING_CLICK
                 set(value) {
-                    LOGGER.debug("HotKeyState $field -> $value")
+                    LOGGER.trace("CombinationKeyState $field -> $value")
                     field = value
                 }
             lateinit var delayDoubleClick: WeakReference<Job>

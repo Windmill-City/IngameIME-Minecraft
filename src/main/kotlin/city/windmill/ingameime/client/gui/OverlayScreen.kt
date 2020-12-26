@@ -20,6 +20,7 @@ object OverlayScreen : Drawable {
         set(value) {
             field = value
             compositionWidget.adjustPos()
+            alphaModeWidget.adjustPosByComposition()
         }
     
     var showAlphaMode

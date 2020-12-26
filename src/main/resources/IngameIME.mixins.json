@@ -4,8 +4,11 @@
   "package": "city.windmill.ingameime.client.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MixinBookEditScreen",
+    "MixinSignEditScreen"
   ],
   "client": [
+    "MixinEditScreen",
     "MixinMinecraftClient",
     "MixinTextFieldWidget"
   ],
