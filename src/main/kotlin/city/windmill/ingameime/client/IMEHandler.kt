@@ -2,18 +2,11 @@ package city.windmill.ingameime.client
 
 import city.windmill.ingameime.client.KeyHandler.CombinationKeyState.CombinationKeyAction.*
 import city.windmill.ingameime.client.jni.ExternalBaseIME
+import city.windmill.ingameime.client.jni.ICommitListener
 import org.apache.logging.log4j.LogManager
 
 object IMEHandler {
     private val LOGGER = LogManager.getFormatterLogger("IngameIME|IMEHandler")!!
-    
-    interface ICombinationKeyActionListener {
-        fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction)
-    }
-    
-    interface ICommitListener {
-        fun onCommit()
-    }
     
     enum class IMEState {
         DISABLED {
@@ -33,6 +26,33 @@ object IMEHandler {
             
             override fun onCommit(): IMEState {
                 return this //do nothing
+            }
+            
+            override fun onScreenState(state: ScreenHandler.ScreenState): IMEState {
+                return when (state) {
+                    ScreenHandler.ScreenState.NULL_SCREEN,
+                    ScreenHandler.ScreenState.SCREEN_OPEN -> {
+                        ExternalBaseIME.State = false
+                        DISABLED
+                    }
+                    ScreenHandler.ScreenState.SCREEN_DUMMY_TEXT_FIELD -> {
+                        ExternalBaseIME.State = true
+                        ENABLED
+                    }
+                }
+            }
+            
+            override fun onTextFieldState(state: ScreenHandler.TextFieldState): IMEState {
+                return when (state) {
+                    ScreenHandler.TextFieldState.NULL_TEXTFIELD -> {
+                        ExternalBaseIME.State = false
+                        DISABLED
+                    }
+                    ScreenHandler.TextFieldState.TEXTFIELD_OPEN -> {
+                        ExternalBaseIME.State = true
+                        ENABLED
+                    }
+                }
             }
         },
         TEMPORARY {
@@ -54,6 +74,33 @@ object IMEHandler {
                 ExternalBaseIME.State = false
                 return DISABLED
             }
+            
+            override fun onScreenState(state: ScreenHandler.ScreenState): IMEState {
+                return when (state) {
+                    ScreenHandler.ScreenState.NULL_SCREEN,
+                    ScreenHandler.ScreenState.SCREEN_OPEN -> {
+                        ExternalBaseIME.State = false
+                        DISABLED
+                    }
+                    ScreenHandler.ScreenState.SCREEN_DUMMY_TEXT_FIELD -> {
+                        ExternalBaseIME.State = true
+                        ENABLED
+                    }
+                }
+            }
+            
+            override fun onTextFieldState(state: ScreenHandler.TextFieldState): IMEState {
+                return when (state) {
+                    ScreenHandler.TextFieldState.NULL_TEXTFIELD -> {
+                        ExternalBaseIME.State = false
+                        DISABLED
+                    }
+                    ScreenHandler.TextFieldState.TEXTFIELD_OPEN -> {
+                        ExternalBaseIME.State = true
+                        ENABLED
+                    }
+                }
+            }
         },
         ENABLED {
             override fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction): IMEState {
@@ -64,7 +111,7 @@ object IMEHandler {
                     }
                     DOUBLE_CLICKED -> {
                         ExternalBaseIME.State = true
-                        this
+                        ENABLED
                     }
                     LONG_PRESS -> this
                 }
@@ -73,9 +120,37 @@ object IMEHandler {
             override fun onCommit(): IMEState {
                 return this //do nothing
             }
+            
+            override fun onScreenState(state: ScreenHandler.ScreenState): IMEState {
+                return when (state) {
+                    ScreenHandler.ScreenState.NULL_SCREEN,
+                    ScreenHandler.ScreenState.SCREEN_OPEN -> {
+                        ExternalBaseIME.State = false
+                        DISABLED
+                    }
+                    ScreenHandler.ScreenState.SCREEN_DUMMY_TEXT_FIELD -> {
+                        ExternalBaseIME.State = true
+                        ENABLED
+                    }
+                }
+            }
+            
+            override fun onTextFieldState(state: ScreenHandler.TextFieldState): IMEState {
+                return when (state) {
+                    ScreenHandler.TextFieldState.NULL_TEXTFIELD -> {
+                        ExternalBaseIME.State = false
+                        DISABLED
+                    }
+                    ScreenHandler.TextFieldState.TEXTFIELD_OPEN -> {
+                        ExternalBaseIME.State = true
+                        ENABLED
+                    }
+                }
+            }
         };
         
-        companion object : ICombinationKeyActionListener, ICommitListener {
+        companion object : ICombinationKeyActionListener, ICommitListener, IScreenStateListener,
+            ITextFieldStateListener {
             private var imeState = DISABLED
                 set(value) {
                     LOGGER.debug("IMEState $field -> $value")
@@ -89,9 +164,19 @@ object IMEHandler {
             override fun onCommit() {
                 imeState = imeState.onCommit()
             }
+            
+            override fun onScreenState(state: ScreenHandler.ScreenState) {
+                imeState = imeState.onScreenState(state)
+            }
+            
+            override fun onTextFieldState(state: ScreenHandler.TextFieldState) {
+                imeState = imeState.onTextFieldState(state)
+            }
         }
         
         abstract fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction): IMEState
         abstract fun onCommit(): IMEState
+        abstract fun onScreenState(state: ScreenHandler.ScreenState): IMEState
+        abstract fun onTextFieldState(state: ScreenHandler.TextFieldState): IMEState
     }
 }

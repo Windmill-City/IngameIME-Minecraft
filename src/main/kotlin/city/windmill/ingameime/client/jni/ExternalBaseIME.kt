@@ -7,6 +7,10 @@ import net.minecraft.util.Identifier
 import org.apache.logging.log4j.LogManager
 import org.lwjgl.glfw.GLFWNativeWin32.glfwGetWin32Window
 
+interface ICommitListener {
+    fun onCommit()
+}
+
 object ExternalBaseIME {
     private val LOGGER = LogManager.getFormatterLogger("IngameIME|ExternalBaseIME")!!
     var State: Boolean = false

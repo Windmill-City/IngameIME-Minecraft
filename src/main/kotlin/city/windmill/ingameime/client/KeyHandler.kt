@@ -14,6 +14,10 @@ interface IKeyEventListener {
     fun onKeyUp(keyCode: Int, scanCode: Int, modifier: Int): Boolean
 }
 
+interface ICombinationKeyActionListener {
+    fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction)
+}
+
 object KeyHandler {
     val hotKey: KeyBinding = KeyBinding(
         "key.ingameime.hotkey",
