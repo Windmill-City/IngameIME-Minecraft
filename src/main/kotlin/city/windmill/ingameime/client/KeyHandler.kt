@@ -1,4 +1,6 @@
-import KeyHandler.CombinationKeyState.Companion.onAction
+package city.windmill.ingameime.client
+
+import city.windmill.ingameime.client.KeyHandler.CombinationKeyState.Companion.onAction
 import kotlinx.coroutines.*
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.options.KeyBinding
@@ -39,7 +41,7 @@ object KeyHandler {
                         delay(500)
                     }
                 }
-                KeyState.longPressRepeat = WeakReference(longPressRepeat)
+                Companion.longPressRepeat = WeakReference(longPressRepeat)
                 delayLongPress = WeakReference(GlobalScope.launch {
                     delay(500)
                     keyState = COUNTING_LONG_PRESS

@@ -1,4 +1,6 @@
-import KeyHandler.CombinationKeyState.CombinationKeyAction.*
+package city.windmill.ingameime.client
+
+import city.windmill.ingameime.client.KeyHandler.CombinationKeyState.CombinationKeyAction.*
 import city.windmill.ingameime.client.jni.ExternalBaseIME
 import org.apache.logging.log4j.LogManager
 
