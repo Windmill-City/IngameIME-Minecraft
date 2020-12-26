@@ -30,9 +30,11 @@ object KeyHandler {
                     while (keyState == COUNTING_LONG_PRESS) {
                         longPressCounter++
                         if (longPressCounter % 4 == 0) {
-                            LOGGER.debug("Key long pressed for ${longPressCounter / 2} seconds")
-                            //Long Press event every 2 seconds
-                            onAction(KeyAction.KEY_LONG_PRESS)
+                            MinecraftClient.getInstance().execute {
+                                LOGGER.debug("Key long pressed for ${longPressCounter / 2} seconds")
+                                //Long Press event every 2 seconds
+                                onAction(KeyAction.KEY_LONG_PRESS)
+                            }
                         }
                         delay(500)
                     }
