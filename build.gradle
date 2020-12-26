@@ -14,6 +14,8 @@ group = project.maven_group
 
 repositories {
     maven { url "https://dl.bintray.com/shedaniel/shedaniel-mods" }
+    maven { url 'https://jitpack.io' }
+    jcenter()
 }
 
 loom {
@@ -32,6 +34,9 @@ dependencies {
     //Cloth Api
     modApi("me.shedaniel.cloth.api:cloth-client-events-v0:${cloth_client_events_v0_version}")
     include("me.shedaniel.cloth.api:cloth-client-events-v0:${cloth_client_events_v0_version}")
+    //Stain
+    modImplementation "io.github.ladysnake:Satin:${satin_version}"
+    include "io.github.ladysnake:Satin:${satin_version}"
 }
 
 processResources {

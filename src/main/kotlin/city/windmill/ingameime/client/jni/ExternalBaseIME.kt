@@ -1,5 +1,6 @@
 package city.windmill.ingameime.client.jni
 
+import city.windmill.ingameime.client.IMEHandler
 import city.windmill.ingameime.client.gui.OverlayScreen
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.Identifier
@@ -45,6 +46,7 @@ object ExternalBaseIME {
         NativeLoader.load(MinecraftClient.getInstance().resourceManager.getResource(resourceNative))
         LOGGER.debug("Initialing window")
         nInitialize(glfwGetWin32Window(MinecraftClient.getInstance().window.handle))
+        HandleComposition = true
     }
     
     //region Natives

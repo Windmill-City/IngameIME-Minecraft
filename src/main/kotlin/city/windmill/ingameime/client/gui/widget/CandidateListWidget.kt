@@ -1,6 +1,7 @@
 package city.windmill.ingameime.client.gui.widget
 
 import net.minecraft.client.font.TextRenderer
+import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.util.math.MatrixStack
 
 class CandidateListWidget(textRenderer: TextRenderer) : Widget(textRenderer) {
@@ -51,11 +52,23 @@ class CandidateListWidget(textRenderer: TextRenderer) : Widget(textRenderer) {
         @Suppress("NAME_SHADOWING")
         override fun draw(matrices: MatrixStack?, offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int, delta: Float) {
             var offsetX = offsetX + padding.first
-            //index
-            val deltaX = (indexWidth - textRenderer.getWidth(index.toString())) / 2 //center index
-            textRenderer.draw(matrices, index.toString(), (offsetX + deltaX).toFloat(), offsetY.toFloat(), textColor)
+            drawCenteredString(matrices, textRenderer, index.toString(), offsetX + indexWidth / 2, offsetY, textColor)
             offsetX += indexWidth
             textRenderer.draw(matrices, text, offsetX.toFloat(), offsetY.toFloat(), textColor)
+        }
+    
+        private fun drawCenteredString(
+            matrices: MatrixStack?,
+            textRenderer: TextRenderer,
+            text: String?,
+            centerX: Int,
+            y: Int,
+            color: Int
+        ) {
+            textRenderer.draw(
+                matrices, text,
+                (centerX - textRenderer.getWidth(text) / 2).toFloat(), y.toFloat(), color
+            )
         }
         
     }
