@@ -1,3 +1,4 @@
+import KeyHandler.CombinationKeyState.Companion.onAction
 import kotlinx.coroutines.*
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.options.KeyBinding
@@ -7,15 +8,11 @@ import org.lwjgl.glfw.GLFW
 import java.lang.ref.WeakReference
 
 interface IKeyEventListener {
-    fun onKeyDown(keyCode: Int, scanCode: Int, modifier: Int): KeyHandler.KeyState
-    fun onKeyUp(keyCode: Int, scanCode: Int, modifier: Int): KeyHandler.KeyState
+    fun onKeyDown(keyCode: Int, scanCode: Int, modifier: Int): Boolean
+    fun onKeyUp(keyCode: Int, scanCode: Int, modifier: Int): Boolean
 }
 
-interface IKeyActionListener {
-    fun onAction(action: KeyHandler.KeyState.KeyAction): KeyHandler.HotKeyState
-}
-
-object KeyHandler : IKeyEventListener, IKeyActionListener {
+object KeyHandler {
     val hotKey: KeyBinding = KeyBinding(
         "key.ingameime.hotkey",
         InputUtil.Type.KEYSYM,
@@ -25,19 +22,7 @@ object KeyHandler : IKeyEventListener, IKeyActionListener {
     
     private val LOGGER = LogManager.getFormatterLogger("IngameIME|KeyHandler")!!
     
-    var keyState = KeyState.PENDING_KEY_DOWN
-        set(value) {
-            if (field == value && value == KeyState.COUNTING_LONG_PRESS) return
-            LOGGER.debug("KeyState $field -> $value")
-            field = value
-        }
-    var hotKeyState = HotKeyState.PENDING_CLICK
-        set(value) {
-            LOGGER.debug("HotKeyState $field -> $value")
-            field = value
-        }
-    
-    enum class KeyState : IKeyEventListener {
+    enum class KeyState {
         PENDING_KEY_DOWN {
             override fun onKeyDown(keyCode: Int, scanCode: Int, modifier: Int): KeyState {
                 val longPressRepeat = GlobalScope.launch(start = CoroutineStart.LAZY) {
@@ -95,83 +80,105 @@ object KeyHandler : IKeyEventListener, IKeyActionListener {
             }
         };
         
-        companion object {
+        companion object : IKeyEventListener {
+            var keyState = PENDING_KEY_DOWN
+                set(value) {
+                    if (field == value && value == COUNTING_LONG_PRESS) return
+                    LOGGER.debug("KeyState $field -> $value")
+                    field = value
+                }
             lateinit var delayLongPress: WeakReference<Job>
             lateinit var longPressRepeat: WeakReference<Job>
+            
+            override fun onKeyDown(keyCode: Int, scanCode: Int, modifier: Int): Boolean {
+                if (keyCode == hotKey.boundKey.code) {
+                    keyState = keyState.onKeyDown(keyCode, scanCode, modifier)
+                    return true
+                }
+                return false
+            }
+            
+            override fun onKeyUp(keyCode: Int, scanCode: Int, modifier: Int): Boolean {
+                if (keyCode == hotKey.boundKey.code) {
+                    keyState = keyState.onKeyUp(keyCode, scanCode, modifier)
+                    return true
+                }
+                return false
+            }
         }
+        
+        abstract fun onKeyDown(keyCode: Int, scanCode: Int, modifier: Int): KeyState
+        abstract fun onKeyUp(keyCode: Int, scanCode: Int, modifier: Int): KeyState
         
         enum class KeyAction {
             KEY_CLICKED,
             KEY_LONG_PRESS;
         }
+        
+        interface IKeyActionListener {
+            fun onAction(action: KeyAction)
+        }
     }
     
-    enum class HotKeyState : IKeyActionListener {
+    enum class CombinationKeyState {
         PENDING_CLICK {
-            override fun onAction(action: KeyState.KeyAction): HotKeyState {
+            override fun onAction(action: KeyState.KeyAction): CombinationKeyState {
                 return when (action) {
                     KeyState.KeyAction.KEY_CLICKED -> {
                         delayDoubleClick = WeakReference(GlobalScope.launch {
-                            delay(500)
-                            hotKeyState = PENDING_CLICK
+                            delay(300)
+                            combinationKeyState = PENDING_CLICK
                             MinecraftClient.getInstance().execute {
-                                LOGGER.debug("${HotKeyAction.CLICKED}")
-                                IMEHandler.onAction(HotKeyAction.CLICKED)
+                                LOGGER.debug("${CombinationKeyAction.CLICKED}")
+                                IMEHandler.IMEState.onAction(CombinationKeyAction.CLICKED)
                             }
                         })
                         PENDING_DOUBLE_CLICK
                     }
                     KeyState.KeyAction.KEY_LONG_PRESS -> {
-                        LOGGER.debug("${HotKeyAction.LONG_PRESS}")
-                        IMEHandler.onAction(HotKeyAction.LONG_PRESS)
+                        LOGGER.debug("${CombinationKeyAction.LONG_PRESS}")
+                        IMEHandler.IMEState.onAction(CombinationKeyAction.LONG_PRESS)
                         PENDING_CLICK
                     }
                 }
             }
         },
         PENDING_DOUBLE_CLICK {
-            override fun onAction(action: KeyState.KeyAction): HotKeyState {
-                return when (action) {
+            override fun onAction(action: KeyState.KeyAction): CombinationKeyState {
+                when (action) {
                     KeyState.KeyAction.KEY_CLICKED -> {
                         delayDoubleClick.get()?.cancel()
-                        LOGGER.debug("${HotKeyAction.DOUBLE_CLICKED}")
-                        IMEHandler.onAction(HotKeyAction.DOUBLE_CLICKED)
-                        PENDING_CLICK
+                        LOGGER.debug("${CombinationKeyAction.DOUBLE_CLICKED}")
+                        IMEHandler.IMEState.onAction(CombinationKeyAction.DOUBLE_CLICKED)
                     }
                     KeyState.KeyAction.KEY_LONG_PRESS -> {
-                        LOGGER.debug("${HotKeyAction.LONG_PRESS}")
-                        IMEHandler.onAction(HotKeyAction.LONG_PRESS)
-                        PENDING_CLICK
+                        LOGGER.debug("${CombinationKeyAction.LONG_PRESS}")
+                        IMEHandler.IMEState.onAction(CombinationKeyAction.LONG_PRESS)
                     }
                 }
+                return PENDING_CLICK
             }
         };
         
-        companion object {
+        companion object : KeyState.IKeyActionListener {
+            var combinationKeyState = PENDING_CLICK
+                set(value) {
+                    LOGGER.debug("HotKeyState $field -> $value")
+                    field = value
+                }
             lateinit var delayDoubleClick: WeakReference<Job>
+            
+            override fun onAction(action: KeyState.KeyAction) {
+                combinationKeyState = combinationKeyState.onAction(action)
+            }
         }
         
-        enum class HotKeyAction {
+        abstract fun onAction(action: KeyState.KeyAction): CombinationKeyState
+        
+        enum class CombinationKeyAction {
             CLICKED,
             DOUBLE_CLICKED,
             LONG_PRESS;
         }
-    }
-    
-    override fun onKeyDown(keyCode: Int, scanCode: Int, modifier: Int): KeyState {
-        if (keyCode == hotKey.boundKey.code)
-            keyState = keyState.onKeyDown(keyCode, scanCode, modifier)
-        return keyState
-    }
-    
-    override fun onKeyUp(keyCode: Int, scanCode: Int, modifier: Int): KeyState {
-        if (keyCode == hotKey.boundKey.code)
-            keyState = keyState.onKeyUp(keyCode, scanCode, modifier)
-        return keyState
-    }
-    
-    override fun onAction(action: KeyState.KeyAction): HotKeyState {
-        hotKeyState = hotKeyState.onAction(action)
-        return hotKeyState
     }
 }

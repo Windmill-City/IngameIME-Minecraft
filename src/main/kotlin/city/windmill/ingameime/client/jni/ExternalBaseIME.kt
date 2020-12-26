@@ -67,7 +67,7 @@ object ExternalBaseIME {
     private fun onComposition(str: String?, caret: Int, state: CompositionState) {
         when (state) {
             CompositionState.Commit -> {
-                IMEHandler.onCommit()
+                IMEHandler.IMEState.onCommit()
                 str!!.onEach { ch ->
                     MinecraftClient.getInstance().keyboard
                         .onChar(MinecraftClient.getInstance().window.handle, ch.toInt(), 0)
