@@ -35,20 +35,20 @@ object IMEHandler {
                         ExternalBaseIME.State = false
                         DISABLED
                     }
-                    ScreenHandler.ScreenState.SCREEN_DUMMY_TEXT_FIELD -> {
+                    ScreenHandler.ScreenState.SCREEN_DUMMY_EDIT -> {
                         ExternalBaseIME.State = true
                         ENABLED
                     }
                 }
             }
             
-            override fun onTextFieldState(state: ScreenHandler.TextFieldState): IMEState {
+            override fun onTextFieldState(state: ScreenHandler.ScreenState.EditState): IMEState {
                 return when (state) {
-                    ScreenHandler.TextFieldState.NULL_TEXTFIELD -> {
+                    ScreenHandler.ScreenState.EditState.NULL_EDIT -> {
                         ExternalBaseIME.State = false
                         DISABLED
                     }
-                    ScreenHandler.TextFieldState.TEXTFIELD_OPEN -> {
+                    ScreenHandler.ScreenState.EditState.EDIT_OPEN -> {
                         ExternalBaseIME.State = true
                         ENABLED
                     }
@@ -82,20 +82,20 @@ object IMEHandler {
                         ExternalBaseIME.State = false
                         DISABLED
                     }
-                    ScreenHandler.ScreenState.SCREEN_DUMMY_TEXT_FIELD -> {
+                    ScreenHandler.ScreenState.SCREEN_DUMMY_EDIT -> {
                         ExternalBaseIME.State = true
                         ENABLED
                     }
                 }
             }
             
-            override fun onTextFieldState(state: ScreenHandler.TextFieldState): IMEState {
+            override fun onTextFieldState(state: ScreenHandler.ScreenState.EditState): IMEState {
                 return when (state) {
-                    ScreenHandler.TextFieldState.NULL_TEXTFIELD -> {
+                    ScreenHandler.ScreenState.EditState.NULL_EDIT -> {
                         ExternalBaseIME.State = false
                         DISABLED
                     }
-                    ScreenHandler.TextFieldState.TEXTFIELD_OPEN -> {
+                    ScreenHandler.ScreenState.EditState.EDIT_OPEN -> {
                         ExternalBaseIME.State = true
                         ENABLED
                     }
@@ -128,20 +128,20 @@ object IMEHandler {
                         ExternalBaseIME.State = false
                         DISABLED
                     }
-                    ScreenHandler.ScreenState.SCREEN_DUMMY_TEXT_FIELD -> {
+                    ScreenHandler.ScreenState.SCREEN_DUMMY_EDIT -> {
                         ExternalBaseIME.State = true
                         ENABLED
                     }
                 }
             }
             
-            override fun onTextFieldState(state: ScreenHandler.TextFieldState): IMEState {
+            override fun onTextFieldState(state: ScreenHandler.ScreenState.EditState): IMEState {
                 return when (state) {
-                    ScreenHandler.TextFieldState.NULL_TEXTFIELD -> {
+                    ScreenHandler.ScreenState.EditState.NULL_EDIT -> {
                         ExternalBaseIME.State = false
                         DISABLED
                     }
-                    ScreenHandler.TextFieldState.TEXTFIELD_OPEN -> {
+                    ScreenHandler.ScreenState.EditState.EDIT_OPEN -> {
                         ExternalBaseIME.State = true
                         ENABLED
                     }
@@ -150,7 +150,7 @@ object IMEHandler {
         };
         
         companion object : ICombinationKeyActionListener, ICommitListener, IScreenStateListener,
-            ITextFieldStateListener {
+            IEditStateListener {
             private var imeState = DISABLED
                 set(value) {
                     LOGGER.debug("IMEState $field -> $value")
@@ -169,7 +169,7 @@ object IMEHandler {
                 imeState = imeState.onScreenState(state)
             }
             
-            override fun onTextFieldState(state: ScreenHandler.TextFieldState) {
+            override fun onEditState(state: ScreenHandler.ScreenState.EditState) {
                 imeState = imeState.onTextFieldState(state)
             }
         }
@@ -177,6 +177,6 @@ object IMEHandler {
         abstract fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction): IMEState
         abstract fun onCommit(): IMEState
         abstract fun onScreenState(state: ScreenHandler.ScreenState): IMEState
-        abstract fun onTextFieldState(state: ScreenHandler.TextFieldState): IMEState
+        abstract fun onTextFieldState(state: ScreenHandler.ScreenState.EditState): IMEState
     }
 }

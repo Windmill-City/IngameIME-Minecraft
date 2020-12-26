@@ -7,7 +7,9 @@ import city.windmill.ingameime.client.gui.widget.Widget
 import city.windmill.ingameime.client.jni.ExternalBaseIME
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.Drawable
+import net.minecraft.client.render.*
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.util.math.Matrix4f
 
 object OverlayScreen : Drawable {
     private val alphaModeWidget = AlphaModeWidget(MinecraftClient.getInstance().textRenderer)
@@ -15,19 +17,23 @@ object OverlayScreen : Drawable {
     private val candidateListWidget = CandidateListWidget(MinecraftClient.getInstance().textRenderer)
     
     var caretPos: Pair<Int, Int> = 0 to 0
+        set(value) {
+            field = value
+            compositionWidget.adjustPos()
+        }
     
     var showAlphaMode
         get() = alphaModeWidget.active
         set(value) {
             alphaModeWidget.active = value
-            alphaModeWidget.adjustPos()
+            alphaModeWidget.adjustPosByComposition()
         }
     
     var candidates
         get() = candidateListWidget.candidates
         set(value) {
             candidateListWidget.candidates = value
-            candidateListWidget.adjustPos()
+            candidateListWidget.adjustPosByComposition()
         }
     
     var composition
@@ -35,7 +41,7 @@ object OverlayScreen : Drawable {
         set(value) {
             compositionWidget.args = value
             compositionWidget.adjustPos()
-            candidateListWidget.adjustPos()
+            candidateListWidget.adjustPosByComposition()
         }
     
     val compositionExt
@@ -46,33 +52,38 @@ object OverlayScreen : Drawable {
             }
         }
     
-    override fun render(matrices: MatrixStack?, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
         if (ExternalBaseIME.State) {
+            matrices.push()
+            matrices.translate(0.0, 0.0, 500.0)
             compositionWidget.render(matrices, mouseX, mouseY, delta)
             alphaModeWidget.render(matrices, mouseX, mouseY, delta)
             candidateListWidget.render(matrices, mouseX, mouseY, delta)
+            matrices.pop()
         }
     }
     
-    private fun Widget.adjustPos() {
-        if (!active) return
+    private fun CompositionWidget.adjustPos() {
         with(MinecraftClient.getInstance().window) {
             moveTo(
                 caretPos.first.coerceAtMost(scaledWidth - this@adjustPos.width),
-                caretPos.second.coerceAtMost(scaledWidth - this@adjustPos.height)
+                (caretPos.second - padding.second).coerceAtMost(scaledHeight - this@adjustPos.height + padding.second)
             )
         }
     }
     
-    private fun CandidateListWidget.adjustPos() {
+    private fun Widget.adjustPosByComposition() {
         if (!active) return
         with(MinecraftClient.getInstance().window) {
-            moveTo(caretPos.first.coerceAtMost((scaledWidth - this@adjustPos.width).coerceAtLeast(0)),
-                (caretPos.second + compositionWidget.height).let {
-                    if (it > scaledWidth - this@adjustPos.height)
-                        caretPos.second - height //place the candidate above the composition
-                    else it
-                })
+            with(compositionWidget) {
+                this@adjustPosByComposition.moveTo(
+                    offsetX.coerceAtMost((scaledWidth - this@adjustPosByComposition.width).coerceAtLeast(0)),
+                    (offsetY + height).let {
+                        if (it > scaledHeight - this@adjustPosByComposition.height)
+                            offsetY - this@adjustPosByComposition.height //place it above the composition
+                        else it
+                    })
+            }
         }
     }
 }

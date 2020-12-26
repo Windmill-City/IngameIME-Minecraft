@@ -8,8 +8,8 @@ interface IScreenStateListener {
     fun onScreenState(state: ScreenHandler.ScreenState)
 }
 
-interface ITextFieldStateListener {
-    fun onTextFieldState(state: ScreenHandler.TextFieldState)
+interface IEditStateListener {
+    fun onEditState(state: ScreenHandler.ScreenState.EditState)
 }
 
 object ScreenHandler {
@@ -31,15 +31,17 @@ object ScreenHandler {
                     currentScreen = newScreen
                     return this
                 }
+                OverlayScreen.caretPos = 0 to 0
                 return NULL_SCREEN
             }
         },
-        SCREEN_DUMMY_TEXT_FIELD {
+        SCREEN_DUMMY_EDIT {
             override fun onScreenChange(oldScreen: Screen?, newScreen: Screen?): ScreenState {
                 newScreen?.let {
                     currentScreen = newScreen
                     return this
                 }
+                OverlayScreen.caretPos = 0 to 0
                 return NULL_SCREEN
             }
         };
@@ -50,6 +52,7 @@ object ScreenHandler {
                     LOGGER.info("ScreenState $field -> $value")
                     field = value
                     IMEHandler.IMEState.onScreenState(field)
+                    EditState.onScreenState(field)
                 }
             private var currentScreen: Screen? = null
             
@@ -61,86 +64,82 @@ object ScreenHandler {
         
         abstract fun onScreenChange(oldScreen: Screen?, newScreen: Screen?): ScreenState
         
-    }
-    
-    enum class TextFieldState {
-        NULL_TEXTFIELD {
-            override fun onTextFieldOpen(textField: Any, caretPos: Pair<Int, Int>): TextFieldState {
-                currentTextField = textField
-                OverlayScreen.caretPos = caretPos
-                return TEXTFIELD_OPEN
-            }
-            
-            override fun onTextFieldCaret(textField: Any, xPos: Int): TextFieldState {
-                return this //do nothing
-            }
-            
-            override fun onTextFieldClose(textField: Any): TextFieldState {
-                return this //do nothing
-            }
-        },
-        TEXTFIELD_OPEN {
-            override fun onTextFieldOpen(textField: Any, caretPos: Pair<Int, Int>): TextFieldState {
-                currentTextField = textField
-                OverlayScreen.caretPos = caretPos
-                return this
-            }
-            
-            override fun onTextFieldCaret(textField: Any, xPos: Int): TextFieldState {
-                if (textField == currentTextField) {
-                    OverlayScreen.caretPos = xPos to OverlayScreen.caretPos.second
+        enum class EditState {
+            NULL_EDIT {
+                override fun onEditOpen(edit: Any, caretPos: Pair<Int, Int>): EditState {
+                    currentEdit = edit
+                    OverlayScreen.caretPos = caretPos
+                    return EDIT_OPEN
                 }
-                return this
-            }
-            
-            override fun onTextFieldClose(textField: Any): TextFieldState {
-                if (textField == currentTextField) {
-                    currentTextField = null
-                    return NULL_TEXTFIELD
+                
+                override fun onEditCaret(edit: Any, caretPos: Pair<Int, Int>): EditState {
+                    return this //do nothing
                 }
-                return this
-            }
-        };
-        
-        companion object : IScreenStateListener {
-            private var textFieldState = NULL_TEXTFIELD
-                set(value) {
-                    LOGGER.info("TextFieldState $textFieldState -> $value")
-                    field = value
-                    IMEHandler.IMEState.onTextFieldState(field)
+                
+                override fun onEditClose(edit: Any): EditState {
+                    return this //do nothing
                 }
+            },
+            EDIT_OPEN {
+                override fun onEditOpen(edit: Any, caretPos: Pair<Int, Int>): EditState {
+                    currentEdit = edit
+                    OverlayScreen.caretPos = caretPos
+                    return EDIT_OPEN
+                }
+                
+                override fun onEditCaret(edit: Any, caretPos: Pair<Int, Int>): EditState {
+                    OverlayScreen.caretPos = caretPos
+                    return EDIT_OPEN
+                }
+                
+                override fun onEditClose(edit: Any): EditState {
+                    currentEdit = null
+                    return NULL_EDIT
+                }
+            };
             
-            private var currentTextField: Any? = null
-            
-            fun onTextFieldOpen(textField: Any, caretPos: Pair<Int, Int>) {
-                if (textField != currentTextField)
-                    textFieldState = textFieldState.onTextFieldOpen(textField, caretPos)
-            }
-            
-            fun onTextFieldCaret(textField: Any, xPos: Int) {
-                textFieldState = textFieldState.onTextFieldCaret(textField, xPos)
-            }
-            
-            fun onTextFieldClose(textField: Any) {
-                textFieldState = textFieldState.onTextFieldClose(textField)
-            }
-            
-            override fun onScreenState(state: ScreenState) {
-                when (state) {
-                    ScreenState.NULL_SCREEN -> {
-                        currentTextField = null
-                        textFieldState = NULL_TEXTFIELD
+            companion object : IScreenStateListener {
+                private var editState = NULL_EDIT
+                    set(value) {
+                        LOGGER.info("EditState $editState -> $value")
+                        field = value
+                        IMEHandler.IMEState.onEditState(field)
                     }
-                    ScreenState.SCREEN_OPEN,
-                    ScreenState.SCREEN_DUMMY_TEXT_FIELD -> {
-                        //do nothing
+                
+                private var currentEdit: Any? = null
+                
+                fun onEditOpen(edit: Any, caretPos: Pair<Int, Int>) {
+                    if (edit != currentEdit && edit == currentScreen?.focused)
+                        editState = editState.onEditOpen(edit, caretPos)
+                }
+                
+                fun onEditCaret(edit: Any, caretPos: Pair<Int, Int>) {
+                    if (edit == currentEdit)
+                        editState = editState.onEditCaret(edit, caretPos)
+                }
+                
+                fun onEditClose(edit: Any) {
+                    if (edit == currentEdit)
+                        editState = editState.onEditClose(edit)
+                }
+                
+                override fun onScreenState(state: ScreenState) {
+                    when (state) {
+                        NULL_SCREEN -> {
+                            currentEdit = null
+                            editState = NULL_EDIT
+                        }
+                        SCREEN_OPEN,
+                        SCREEN_DUMMY_EDIT -> {
+                            //do nothing
+                        }
                     }
                 }
             }
+            
+            abstract fun onEditOpen(edit: Any, caretPos: Pair<Int, Int>): EditState
+            abstract fun onEditCaret(edit: Any, caretPos: Pair<Int, Int>): EditState
+            abstract fun onEditClose(edit: Any): EditState
         }
-        
-        abstract fun onTextFieldOpen(textField: Any, caretPos: Pair<Int, Int>): TextFieldState
-        abstract fun onTextFieldCaret(textField: Any, xPos: Int): TextFieldState
-        abstract fun onTextFieldClose(textField: Any): TextFieldState
     }
 }

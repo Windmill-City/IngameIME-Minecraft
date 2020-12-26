@@ -1,17 +1,22 @@
 package city.windmill.ingameime.client
 
-import city.windmill.ingameime.client.ScreenEvents.TEXT_FIELD_SEL_CHANGED
+import city.windmill.ingameime.client.ScreenEvents.EDIT_CARET
+import city.windmill.ingameime.client.ScreenEvents.EDIT_CLOSE
+import city.windmill.ingameime.client.ScreenEvents.EDIT_OPEN
+import city.windmill.ingameime.client.ScreenEvents.SCREEN_CHANGED
 import city.windmill.ingameime.client.gui.OverlayScreen
 import city.windmill.ingameime.client.jni.ExternalBaseIME
 import ladysnake.satin.api.event.ResolutionChangeCallback
-import me.shedaniel.cloth.api.client.events.v0.*
+import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks
+import me.shedaniel.cloth.api.client.events.v0.ScreenKeyPressedCallback
+import me.shedaniel.cloth.api.client.events.v0.ScreenKeyReleasedCallback
+import me.shedaniel.cloth.api.client.events.v0.ScreenRenderCallback
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gui.widget.TextFieldWidget
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Util
 
@@ -35,36 +40,20 @@ class IngameIMEClient : ClientModInitializer {
                     else
                         ActionResult.PASS
                 })
-                ClothClientHooks.SCREEN_INIT_POST.register(ScreenInitCallback.Post { _, screen, _ ->
-                    screen.focused?.let {
-                        if (it is TextFieldWidget)
-                            TEXT_FIELD_SEL_CHANGED.invoker().onSelectionChanged(it, true)
-                    }
-                })
                 ResolutionChangeCallback.EVENT.register(ResolutionChangeCallback { _, _ ->
                     ExternalBaseIME.FullScreen = MinecraftClient.getInstance().window.isFullscreen
                 })
-                ScreenEvents.SCREEN_CHANGED.register(ScreenEvents.ScreenChanged { oldScreen, newScreen ->
+                SCREEN_CHANGED.register(ScreenEvents.ScreenChanged { oldScreen, newScreen ->
                     ScreenHandler.ScreenState.onScreenChange(oldScreen, newScreen)
                 })
-                TEXT_FIELD_SEL_CHANGED.register(ScreenEvents.TextFieldSelectionChanged { textfield, selected ->
-                    when (textfield) {
-                        is TextFieldWidget -> {
-                            if (selected)
-                                ScreenHandler.TextFieldState.onTextFieldOpen(
-                                    textfield,
-                                    textfield.x to textfield.y + (textfield.height - 8) / 2
-                                )
-                            else
-                                ScreenHandler.TextFieldState.onTextFieldClose(textfield)
-                        }
-                        else -> {
-                            if (selected)
-                                ScreenHandler.TextFieldState.onTextFieldOpen(textfield, 0 to 0)
-                            else
-                                ScreenHandler.TextFieldState.onTextFieldClose(textfield)
-                        }
-                    }
+                EDIT_OPEN.register(ScreenEvents.EditOpen { edit, caretPos ->
+                    ScreenHandler.ScreenState.EditState.onEditOpen(edit, caretPos)
+                })
+                EDIT_CARET.register(ScreenEvents.EditCaret { edit, caretPos ->
+                    ScreenHandler.ScreenState.EditState.onEditCaret(edit, caretPos)
+                })
+                EDIT_CLOSE.register(ScreenEvents.EditClose { edit ->
+                    ScreenHandler.ScreenState.EditState.onEditClose(edit)
                 })
                 ExternalBaseIME.FullScreen = MinecraftClient.getInstance().window.isFullscreen
             })

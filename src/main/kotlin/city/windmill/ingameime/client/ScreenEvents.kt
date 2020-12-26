@@ -1,7 +1,9 @@
 package city.windmill.ingameime.client
 
+import city.windmill.ingameime.client.ScreenEvents.EditCaret
+import city.windmill.ingameime.client.ScreenEvents.EditClose
+import city.windmill.ingameime.client.ScreenEvents.EditOpen
 import city.windmill.ingameime.client.ScreenEvents.ScreenChanged
-import city.windmill.ingameime.client.ScreenEvents.TextFieldSelectionChanged
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.event.Event
@@ -19,11 +21,29 @@ object ScreenEvents {
             }
         }
     
-    val TEXT_FIELD_SEL_CHANGED =
-        EventFactory.createArrayBacked(TextFieldSelectionChanged::class.java) { callbacks ->
-            TextFieldSelectionChanged { textfield, selected ->
+    val EDIT_OPEN: Event<EditOpen> =
+        EventFactory.createArrayBacked(EditOpen::class.java) { callbacks ->
+            EditOpen { edit, caretPos ->
                 for (callback in callbacks) {
-                    callback.onSelectionChanged(textfield, selected)
+                    callback.onEditOpen(edit, caretPos)
+                }
+            }
+        }
+    
+    val EDIT_CARET: Event<EditCaret> =
+        EventFactory.createArrayBacked(EditCaret::class.java) { callbacks ->
+            EditCaret { edit, caretPos ->
+                for (callback in callbacks) {
+                    callback.onEditCaret(edit, caretPos)
+                }
+            }
+        }
+    
+    val EDIT_CLOSE: Event<EditClose> =
+        EventFactory.createArrayBacked(EditClose::class.java) { callbacks ->
+            EditClose { edit ->
+                for (callback in callbacks) {
+                    callback.onEditClose(edit)
                 }
             }
         }
@@ -32,7 +52,15 @@ object ScreenEvents {
         fun onScreenChanged(oldScreen: Screen?, newScreen: Screen?)
     }
     
-    fun interface TextFieldSelectionChanged {
-        fun onSelectionChanged(textfield: Any, selected: Boolean)
+    fun interface EditOpen {
+        fun onEditOpen(edit: Any, caretPos: Pair<Int, Int>)
+    }
+    
+    fun interface EditCaret {
+        fun onEditCaret(edit: Any, caretPos: Pair<Int, Int>)
+    }
+    
+    fun interface EditClose {
+        fun onEditClose(edit: Any)
     }
 }
