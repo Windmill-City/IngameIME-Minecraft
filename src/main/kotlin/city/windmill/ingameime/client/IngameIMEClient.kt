@@ -21,12 +21,16 @@ class IngameIMEClient : ClientModInitializer {
                 OverlayScreen.render(matrixStack, mouseX, mouseY, delta)
             })
             ClothClientHooks.SCREEN_KEY_PRESSED.register(ScreenKeyPressedCallback { _, _, keyCode, scanCode, modifier ->
-                KeyHandler.onKeyDown(keyCode, scanCode, modifier)
-                ActionResult.PASS
+                if (KeyHandler.KeyState.onKeyDown(keyCode, scanCode, modifier))
+                    ActionResult.CONSUME
+                else
+                    ActionResult.PASS
             })
             ClothClientHooks.SCREEN_KEY_RELEASED.register(ScreenKeyReleasedCallback { _, _, keyCode, scanCode, modifier ->
-                KeyHandler.onKeyUp(keyCode, scanCode, modifier)
-                ActionResult.PASS
+                if (KeyHandler.KeyState.onKeyUp(keyCode, scanCode, modifier))
+                    ActionResult.CONSUME
+                else
+                    ActionResult.PASS
             })
             KeyBindingHelper.registerKeyBinding(KeyHandler.hotKey)
         }

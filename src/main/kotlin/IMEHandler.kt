@@ -1,26 +1,21 @@
-import KeyHandler.HotKeyState.HotKeyAction.*
+import KeyHandler.CombinationKeyState.CombinationKeyAction.*
 import city.windmill.ingameime.client.jni.ExternalBaseIME
 import org.apache.logging.log4j.LogManager
 
-interface IHotKeyActionListener {
-    fun onAction(action: KeyHandler.HotKeyState.HotKeyAction): IMEHandler.IMEState
-}
-
-interface IIMECommitListener {
-    fun onCommit(): IMEHandler.IMEState
-}
-
-object IMEHandler : IHotKeyActionListener, IIMECommitListener {
+object IMEHandler {
     private val LOGGER = LogManager.getFormatterLogger("IngameIME|IMEHandler")!!
-    private var imeState = IMEState.DISABLED
-        set(value) {
-            LOGGER.info("IMEState $field -> $value")
-            field = value
-        }
     
-    enum class IMEState : IHotKeyActionListener, IIMECommitListener {
+    interface ICombinationKeyActionListener {
+        fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction)
+    }
+    
+    interface ICommitListener {
+        fun onCommit()
+    }
+    
+    enum class IMEState {
         DISABLED {
-            override fun onAction(action: KeyHandler.HotKeyState.HotKeyAction): IMEState {
+            override fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction): IMEState {
                 return when (action) {
                     CLICKED -> {
                         ExternalBaseIME.State = true
@@ -39,7 +34,7 @@ object IMEHandler : IHotKeyActionListener, IIMECommitListener {
             }
         },
         TEMPORARY {
-            override fun onAction(action: KeyHandler.HotKeyState.HotKeyAction): IMEState {
+            override fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction): IMEState {
                 return when (action) {
                     CLICKED -> {
                         ExternalBaseIME.State = false
@@ -59,7 +54,7 @@ object IMEHandler : IHotKeyActionListener, IIMECommitListener {
             }
         },
         ENABLED {
-            override fun onAction(action: KeyHandler.HotKeyState.HotKeyAction): IMEState {
+            override fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction): IMEState {
                 return when (action) {
                     CLICKED -> {
                         ExternalBaseIME.State = false
@@ -77,15 +72,24 @@ object IMEHandler : IHotKeyActionListener, IIMECommitListener {
                 return this //do nothing
             }
         };
-    }
-    
-    override fun onAction(action: KeyHandler.HotKeyState.HotKeyAction): IMEState {
-        imeState = imeState.onAction(action)
-        return imeState
-    }
-    
-    override fun onCommit(): IMEState {
-        imeState = imeState.onCommit()
-        return imeState
+        
+        companion object : ICombinationKeyActionListener, ICommitListener {
+            private var imeState = DISABLED
+                set(value) {
+                    LOGGER.debug("IMEState $field -> $value")
+                    field = value
+                }
+            
+            override fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction) {
+                imeState = imeState.onAction(action)
+            }
+            
+            override fun onCommit() {
+                imeState = imeState.onCommit()
+            }
+        }
+        
+        abstract fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction): IMEState
+        abstract fun onCommit(): IMEState
     }
 }
