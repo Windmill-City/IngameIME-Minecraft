@@ -13,11 +13,9 @@ object IMEHandler {
             override fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction): IMEState {
                 return when (action) {
                     CLICKED -> {
-                        ExternalBaseIME.State = true
                         TEMPORARY
                     }
                     DOUBLE_CLICKED -> {
-                        ExternalBaseIME.State = true
                         ENABLED
                     }
                     LONG_PRESS -> this
@@ -32,11 +30,9 @@ object IMEHandler {
                 return when (state) {
                     ScreenHandler.ScreenState.NULL_SCREEN,
                     ScreenHandler.ScreenState.SCREEN_OPEN -> {
-                        ExternalBaseIME.State = false
                         DISABLED
                     }
                     ScreenHandler.ScreenState.SCREEN_DUMMY_EDIT -> {
-                        ExternalBaseIME.State = true
                         ENABLED
                     }
                 }
@@ -45,11 +41,9 @@ object IMEHandler {
             override fun onEditState(state: ScreenHandler.ScreenState.EditState): IMEState {
                 return when (state) {
                     ScreenHandler.ScreenState.EditState.NULL_EDIT -> {
-                        ExternalBaseIME.State = false
                         DISABLED
                     }
                     ScreenHandler.ScreenState.EditState.EDIT_OPEN -> {
-                        ExternalBaseIME.State = true
                         ENABLED
                     }
                 }
@@ -59,11 +53,9 @@ object IMEHandler {
             override fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction): IMEState {
                 return when (action) {
                     CLICKED -> {
-                        ExternalBaseIME.State = false
                         DISABLED
                     }
                     DOUBLE_CLICKED -> {
-                        ExternalBaseIME.State = true
                         ENABLED
                     }
                     LONG_PRESS -> this
@@ -79,11 +71,9 @@ object IMEHandler {
                 return when (state) {
                     ScreenHandler.ScreenState.NULL_SCREEN,
                     ScreenHandler.ScreenState.SCREEN_OPEN -> {
-                        ExternalBaseIME.State = false
                         DISABLED
                     }
                     ScreenHandler.ScreenState.SCREEN_DUMMY_EDIT -> {
-                        ExternalBaseIME.State = true
                         ENABLED
                     }
                 }
@@ -92,7 +82,6 @@ object IMEHandler {
             override fun onEditState(state: ScreenHandler.ScreenState.EditState): IMEState {
                 return when (state) {
                     ScreenHandler.ScreenState.EditState.NULL_EDIT -> {
-                        ExternalBaseIME.State = false
                         DISABLED
                     }
                     ScreenHandler.ScreenState.EditState.EDIT_OPEN -> {
@@ -105,11 +94,9 @@ object IMEHandler {
             override fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction): IMEState {
                 return when (action) {
                     CLICKED -> {
-                        ExternalBaseIME.State = false
                         DISABLED
                     }
                     DOUBLE_CLICKED -> {
-                        ExternalBaseIME.State = true
                         ENABLED
                     }
                     LONG_PRESS -> this
@@ -124,11 +111,9 @@ object IMEHandler {
                 return when (state) {
                     ScreenHandler.ScreenState.NULL_SCREEN,
                     ScreenHandler.ScreenState.SCREEN_OPEN -> {
-                        ExternalBaseIME.State = false
                         DISABLED
                     }
                     ScreenHandler.ScreenState.SCREEN_DUMMY_EDIT -> {
-                        ExternalBaseIME.State = true
                         ENABLED
                     }
                 }
@@ -137,7 +122,6 @@ object IMEHandler {
             override fun onEditState(state: ScreenHandler.ScreenState.EditState): IMEState {
                 return when (state) {
                     ScreenHandler.ScreenState.EditState.NULL_EDIT -> {
-                        ExternalBaseIME.State = false
                         DISABLED
                     }
                     ScreenHandler.ScreenState.EditState.EDIT_OPEN -> {
@@ -151,8 +135,14 @@ object IMEHandler {
             IEditStateListener {
             private var imeState = DISABLED
                 set(value) {
+                    if (field == value) return
                     LOGGER.trace("IMEState $field -> $value")
                     field = value
+                    when (field) {
+                        DISABLED -> ExternalBaseIME.State = false
+                        TEMPORARY,
+                        ENABLED -> ExternalBaseIME.State = true
+                    }
                 }
             
             override fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction) {

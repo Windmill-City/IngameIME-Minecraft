@@ -74,6 +74,7 @@ object ExternalBaseIME {
         when (state) {
             CompositionState.Commit -> {
                 IMEHandler.IMEState.onCommit()
+                OverlayScreen.composition = null
                 str!!.onEach { ch ->
                     MinecraftClient.getInstance().keyboard
                         .onChar(MinecraftClient.getInstance().window.handle, ch.toInt(), 0)

@@ -9,7 +9,6 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.Drawable
 import net.minecraft.client.render.*
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.Matrix4f
 
 object OverlayScreen : Drawable {
     private val alphaModeWidget = AlphaModeWidget(MinecraftClient.getInstance().textRenderer)
@@ -18,6 +17,7 @@ object OverlayScreen : Drawable {
     
     var caretPos: Pair<Int, Int> = 0 to 0
         set(value) {
+            if (field == value) return
             field = value
             compositionWidget.adjustPos()
             alphaModeWidget.adjustPosByComposition()

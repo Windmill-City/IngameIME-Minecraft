@@ -82,6 +82,7 @@ object ScreenHandler {
             },
             EDIT_OPEN {
                 override fun onEditOpen(edit: Any, caretPos: Pair<Int, Int>): EditState {
+                    editState = NULL_EDIT//Edit change, close old edit
                     currentEdit = edit
                     OverlayScreen.caretPos = caretPos
                     return EDIT_OPEN
@@ -101,6 +102,7 @@ object ScreenHandler {
             companion object : IScreenStateListener {
                 private var editState = NULL_EDIT
                     set(value) {
+                        if (field == value) return
                         LOGGER.trace("EditState $editState -> $value")
                         field = value
                         IMEHandler.IMEState.onEditState(field)
@@ -114,7 +116,7 @@ object ScreenHandler {
                 }
                 
                 fun onEditCaret(edit: Any, caretPos: Pair<Int, Int>) {
-                    if (edit == currentEdit && OverlayScreen.caretPos != caretPos)
+                    if (edit == currentEdit)
                         editState = editState.onEditCaret(edit, caretPos)
                 }
                 

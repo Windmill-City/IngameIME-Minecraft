@@ -1,10 +1,8 @@
 package city.windmill.ingameime.client.mixin;
 
 import city.windmill.ingameime.client.ScreenEvents;
-import city.windmill.ingameime.client.ScreenHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;

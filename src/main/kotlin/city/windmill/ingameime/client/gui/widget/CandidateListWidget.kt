@@ -1,7 +1,6 @@
 package city.windmill.ingameime.client.gui.widget
 
 import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.util.math.MatrixStack
 
 class CandidateListWidget(textRenderer: TextRenderer) : Widget(textRenderer) {
@@ -56,7 +55,7 @@ class CandidateListWidget(textRenderer: TextRenderer) : Widget(textRenderer) {
             offsetX += indexWidth
             textRenderer.draw(matrices, text, offsetX.toFloat(), offsetY.toFloat(), textColor)
         }
-    
+        
         private fun drawCenteredString(
             matrices: MatrixStack?,
             textRenderer: TextRenderer,

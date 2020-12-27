@@ -9,11 +9,6 @@ import org.apache.logging.log4j.LogManager
 import org.lwjgl.glfw.GLFW
 import java.lang.ref.WeakReference
 
-interface IKeyEventListener {
-    fun onKeyDown(keyCode: Int, scanCode: Int, modifier: Int): Boolean
-    fun onKeyUp(keyCode: Int, scanCode: Int, modifier: Int): Boolean
-}
-
 interface ICombinationKeyActionListener {
     fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction)
 }
@@ -88,17 +83,16 @@ object KeyHandler {
             }
         };
         
-        companion object : IKeyEventListener {
+        companion object {
             var keyState = PENDING_KEY_DOWN
                 set(value) {
-                    if (field == value && value == COUNTING_LONG_PRESS) return
                     LOGGER.trace("KeyState $field -> $value")
                     field = value
                 }
             lateinit var delayLongPress: WeakReference<Job>
             lateinit var longPressRepeat: WeakReference<Job>
             
-            override fun onKeyDown(keyCode: Int, scanCode: Int, modifier: Int): Boolean {
+            fun onKeyDown(keyCode: Int, scanCode: Int, modifier: Int): Boolean {
                 if (keyCode == hotKey.boundKey.code) {
                     keyState = keyState.onKeyDown(keyCode, scanCode, modifier)
                     return true
@@ -106,7 +100,7 @@ object KeyHandler {
                 return false
             }
             
-            override fun onKeyUp(keyCode: Int, scanCode: Int, modifier: Int): Boolean {
+            fun onKeyUp(keyCode: Int, scanCode: Int, modifier: Int): Boolean {
                 if (keyCode == hotKey.boundKey.code) {
                     keyState = keyState.onKeyUp(keyCode, scanCode, modifier)
                     return true
