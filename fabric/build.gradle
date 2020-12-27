@@ -1,0 +1,49 @@
+plugins {
+    id "fabric-loom"
+    id "com.github.johnrengelman.shadow" version "5.0.0"
+}
+
+repositories {
+    maven { url "https://dl.bintray.com/shedaniel/shedaniel-mods" }
+    maven { url 'https://jitpack.io' }
+}
+
+loom {
+    accessWidener = file("src/main/resources/ingameime.accessWidener")
+}
+
+configurations {
+    shadow
+}
+
+dependencies {
+    //to change the versions see the gradle.properties file
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings minecraft.officialMojangMappings()
+    modCompile("net.fabricmc:fabric-loader:${project.loader_version}")
+    modCompile("net.fabricmc.fabric-api:fabric-api:${project.api_version}")
+
+    //Kotlin
+    modImplementation("net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}")
+    //Cloth Api
+    modImplementation("me.shedaniel.cloth.api:cloth-client-events-v0:${cloth_client_events_v0_version}")
+    //Stain
+    modImplementation("io.github.ladysnake:Satin:${satin_version}")
+    //Common
+    compile(project(":common"))
+    shadow(project(":common"))
+}
+
+processResources {
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+    inputs.property "version", project.version
+}
+
+shadowJar {
+    relocate "city.windmill.ingameime.client", "city.windmill.ingameime.client"
+
+    configurations = [project.configurations.shadow]
+    classifier "shadow"
+}

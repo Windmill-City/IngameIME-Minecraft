@@ -8,3 +8,5 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+rootProject.name = "IngameIME"
+include("common","fabric","forge")
