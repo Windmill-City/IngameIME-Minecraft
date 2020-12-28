@@ -82,7 +82,7 @@ object ScreenHandler {
             },
             EDIT_OPEN {
                 override fun onEditOpen(edit: Any, caretPos: Pair<Int, Int>): EditState {
-                    editState = NULL_EDIT//Edit change, close old edit
+                    editState = NULL_EDIT //Edit change, close old edit
                     currentEdit = edit
                     OverlayScreen.caretPos = caretPos
                     return EDIT_OPEN

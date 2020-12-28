@@ -1,11 +1,13 @@
-package city.windmill.ingameime.client
+package city.windmill.ingameime.fabric
 
-import city.windmill.ingameime.client.ScreenEvents.EDIT_CARET
-import city.windmill.ingameime.client.ScreenEvents.EDIT_CLOSE
-import city.windmill.ingameime.client.ScreenEvents.EDIT_OPEN
-import city.windmill.ingameime.client.ScreenEvents.SCREEN_CHANGED
+import city.windmill.ingameime.client.KeyHandler
+import city.windmill.ingameime.client.ScreenHandler
 import city.windmill.ingameime.client.gui.OverlayScreen
 import city.windmill.ingameime.client.jni.ExternalBaseIME
+import city.windmill.ingameime.fabric.ScreenEvents.EDIT_CARET
+import city.windmill.ingameime.fabric.ScreenEvents.EDIT_CLOSE
+import city.windmill.ingameime.fabric.ScreenEvents.EDIT_OPEN
+import city.windmill.ingameime.fabric.ScreenEvents.SCREEN_CHANGED
 import ladysnake.satin.api.event.ResolutionChangeCallback
 import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks
 import me.shedaniel.cloth.api.client.events.v0.ScreenKeyPressedCallback
@@ -19,11 +21,14 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.minecraft.Util
 import net.minecraft.client.Minecraft
 import net.minecraft.world.InteractionResult
+import org.apache.logging.log4j.LogManager
 
 @Environment(EnvType.CLIENT)
 class IngameIMEClient : ClientModInitializer {
+    val LOGGER = LogManager.getFormatterLogger("IngameIME")
     override fun onInitializeClient() {
         if (Util.getPlatform() == Util.OS.WINDOWS) {
+            LOGGER.info("it is Windows OS! Loading mod")
             ClientLifecycleEvents.CLIENT_STARTED.register(ClientLifecycleEvents.ClientStarted {
                 ClothClientHooks.SCREEN_LATE_RENDER.register(ScreenRenderCallback.Post { matrixStack, _, _, mouseX, mouseY, delta ->
                     OverlayScreen.render(matrixStack, mouseX, mouseY, delta)
@@ -59,5 +64,6 @@ class IngameIMEClient : ClientModInitializer {
             })
             KeyBindingHelper.registerKeyBinding(KeyHandler.toogleKey)
         }
+        LOGGER.info("This mod cant work in ${Util.getPlatform()}")
     }
 }

@@ -1,5 +1,9 @@
-package city.windmill.ingameime.client
+package city.windmill.ingameime.fabric
 
+import city.windmill.ingameime.fabric.ScreenEvents.EditCaret
+import city.windmill.ingameime.fabric.ScreenEvents.EditClose
+import city.windmill.ingameime.fabric.ScreenEvents.EditOpen
+import city.windmill.ingameime.fabric.ScreenEvents.ScreenChanged
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.event.Event

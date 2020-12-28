@@ -10,6 +10,7 @@ class CompositionWidget(font: Font) : Widget(font) {
     private val caretWidth = 3
     
     override val active get() = args != null
+    
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     override val width
         get() = super.width + font.width(args?.first) + caretWidth

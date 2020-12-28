@@ -1,16 +1,15 @@
 {
   "required": false,
   "minVersion": "0.8",
-  "package": "city.windmill.ingameime.fabric.mixin",
+  "package": "city.windmill.ingameime.forge.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
   ],
   "client": [
-    "MixinBookEditScreen",
-    "MixinEditBox",
+    "MixinEditBookScreen",
     "MixinEditScreen",
+    "MixinEditSignScreen",
     "MixinMinecraft",
-    "MixinSignEditScreen",
     "MixinTextFieldWidget"
   ],
   "injectors": {

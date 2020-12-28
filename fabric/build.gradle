@@ -6,7 +6,6 @@ plugins {
 repositories {
     maven { url "https://dl.bintray.com/shedaniel/shedaniel-mods" }
     maven { url 'https://jitpack.io' }
-    mavenCentral()
 }
 
 loom {

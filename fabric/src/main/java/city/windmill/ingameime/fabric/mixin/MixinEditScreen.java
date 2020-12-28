@@ -1,6 +1,6 @@
-package city.windmill.ingameime.client.mixin;
+package city.windmill.ingameime.fabric.mixin;
 
-import city.windmill.ingameime.client.ScreenEvents;
+import city.windmill.ingameime.fabric.ScreenEvents;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 import kotlin.Pair;
@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Surrogate;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -51,7 +50,7 @@ abstract class MixinSignEditScreen extends Screen {
     }
 
     @Inject(method = "render",
-            at ={
+            at = {
                     @At(value = "INVOKE",
                             target = "Lnet/minecraft/client/gui/Font;drawInBatch(Ljava/lang/String;FFIZLcom/mojang/math/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;ZIIZ)I",
                             ordinal = 1),

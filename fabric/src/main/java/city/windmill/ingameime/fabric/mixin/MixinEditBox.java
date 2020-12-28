@@ -1,12 +1,10 @@
-package city.windmill.ingameime.client.mixin;
+package city.windmill.ingameime.fabric.mixin;
 
-import city.windmill.ingameime.client.ScreenEvents;
+import city.windmill.ingameime.fabric.ScreenEvents;
 import com.mojang.blaze3d.vertex.PoseStack;
 import kotlin.Pair;
 import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.gui.ContainerScreenOverlay;
 import me.shedaniel.rei.gui.widget.TextFieldWidget;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -41,7 +39,7 @@ abstract class MixinEditBox extends AbstractWidget {
             target = "net/minecraft/util/Mth.floor(D)I",
             shift = At.Shift.BEFORE,
             ordinal = 0))
-    private void onFocused(double double_1, double double_2, int int_1, CallbackInfoReturnable<Boolean> cir){
+    private void onFocused(double double_1, double double_2, int int_1, CallbackInfoReturnable<Boolean> cir) {
         int caretX = bordered ? x + 4 : x;
         int caretY = bordered ? y + (height - 8) / 2 : y;
         ScreenEvents.INSTANCE.getEDIT_OPEN().invoker().onEditOpen(this, new Pair<>(caretX, caretY));
