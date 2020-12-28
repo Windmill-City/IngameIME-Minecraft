@@ -6,6 +6,7 @@ plugins {
 repositories {
     maven { url "https://dl.bintray.com/shedaniel/shedaniel-mods" }
     maven { url 'https://jitpack.io' }
+    mavenCentral()
 }
 
 loom {
@@ -17,12 +18,13 @@ configurations {
 }
 
 dependencies {
-    //to change the versions see the gradle.properties file
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings minecraft.officialMojangMappings()
-    modCompile("net.fabricmc:fabric-loader:${project.loader_version}")
-    modCompile("net.fabricmc.fabric-api:fabric-api:${project.api_version}")
-
+    minecraft("com.mojang:minecraft:${rootProject.architect.minecraft}")
+    mappings(minecraft.officialMojangMappings())
+    modCompile("net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}")
+    modCompile("net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}")
+    modCompile("me.shedaniel:RoughlyEnoughItems:${project.roughlyenoughitems}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
     //Kotlin
     modImplementation("net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}")
     //Cloth Api
@@ -30,8 +32,12 @@ dependencies {
     //Stain
     modImplementation("io.github.ladysnake:Satin:${satin_version}")
     //Common
-    compile(project(":common"))
-    shadow(project(":common"))
+    compile(project(":common")) {
+        transitive = false
+    }
+    shadow(project(":common")) {
+        transitive = false
+    }
 }
 
 processResources {
@@ -42,8 +48,11 @@ processResources {
 }
 
 shadowJar {
-    relocate "city.windmill.ingameime.client", "city.windmill.ingameime.client"
-
     configurations = [project.configurations.shadow]
     classifier "shadow"
+}
+
+remapJar {
+    dependsOn(shadowJar)
+    input.set(shadowJar.archivePath)
 }

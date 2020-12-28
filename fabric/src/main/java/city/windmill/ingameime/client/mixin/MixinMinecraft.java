@@ -10,12 +10,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Minecraft.class)
-public class MixinMinecraftClient {
+class MixinMinecraft {
     @Shadow
-    public Screen screen;
+    private Screen screen;
 
     @Inject(method = "setScreen", at = @At("HEAD"))
-    public void onScreenChange(Screen screenIn, CallbackInfo info) {
+    private void onScreenChange(Screen screenIn, CallbackInfo info) {
         ScreenEvents.INSTANCE.getSCREEN_CHANGED().invoker().onScreenChanged(screen, screenIn);
     }
 }

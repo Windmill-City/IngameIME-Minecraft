@@ -7,9 +7,15 @@ loom {
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+    minecraft "com.mojang:minecraft:${rootProject.architect.minecraft}"
     mappings minecraft.officialMojangMappings()
-    modCompile("net.fabricmc:fabric-loader:${project.loader_version}")
+    // We depend on fabric loader here to use the fabric @Environment annotations
+    // Do NOT use other classes from fabric loader
+    modCompile "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     //Kotlin
-    modCompileOnly("net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}")
+    modCompileOnly("net.fabricmc:fabric-language-kotlin:${rootProject.fabric_kotlin_version}")
+}
+
+architect {
+    common()
 }
