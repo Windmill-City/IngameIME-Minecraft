@@ -17,16 +17,18 @@ import thedarkcolour.kotlinforforge.forge.MOD_BUS
 
 @Mod("ingameime")
 object IngameIMEClient {
-    val LOGGER = LogManager.getLogger()
+    private val LOGGER = LogManager.getLogger()
     val INGAMEIME_BUS = MOD_BUS
     
     init {
         if (Util.getPlatform() == Util.OS.WINDOWS) {
             LOGGER.info("it is Windows OS! Loading mod")
-            INGAMEIME_BUS.addListener(IngameIMEClient::onClientSetup)
-            INGAMEIME_BUS.addListener(IngameIMEClient::enqueueIMC)
+            with(INGAMEIME_BUS) {
+                addListener(::onClientSetup)
+                addListener(::enqueueIMC)
+            }
         }
-        LOGGER.info("This mod cant work in ${Util.getPlatform()}")
+        LOGGER.warn("This mod cant work in ${Util.getPlatform()}")
     }
     
     private fun onClientSetup(event: FMLClientSetupEvent) {
@@ -34,29 +36,33 @@ object IngameIMEClient {
     }
     
     private fun enqueueIMC(event: InterModEnqueueEvent) {
-        FORGE_BUS.addListener<GuiScreenEvent.DrawScreenEvent.Post> {
-            OverlayScreen.render(it.matrixStack, it.mouseX, it.mouseY, it.renderPartialTicks)
+        with(FORGE_BUS) {
+            addListener<GuiScreenEvent.DrawScreenEvent.Post> {
+                OverlayScreen.render(it.matrixStack, it.mouseX, it.mouseY, it.renderPartialTicks)
+            }
+            addListener<GuiScreenEvent.KeyboardKeyPressedEvent.Pre> {
+                it.isCanceled = KeyHandler.KeyState.onKeyDown(it.keyCode, it.scanCode, it.modifiers)
+            }
+            addListener<GuiScreenEvent.KeyboardKeyReleasedEvent.Pre> {
+                it.isCanceled = KeyHandler.KeyState.onKeyUp(it.keyCode, it.scanCode, it.modifiers)
+            }
         }
-        FORGE_BUS.addListener<GuiScreenEvent.KeyboardKeyPressedEvent.Pre> {
-            it.isCanceled = KeyHandler.KeyState.onKeyDown(it.keyCode, it.scanCode, it.modifiers)
-        }
-        FORGE_BUS.addListener<GuiScreenEvent.KeyboardKeyReleasedEvent.Pre> {
-            it.isCanceled = KeyHandler.KeyState.onKeyUp(it.keyCode, it.scanCode, it.modifiers)
-        }
-        INGAMEIME_BUS.addListener<ScreenEvents.WindowSizeChanged> {
-            ExternalBaseIME.FullScreen = Minecraft.getInstance().window.isFullscreen
-        }
-        INGAMEIME_BUS.addListener<ScreenEvents.ScreenChanged> {
-            ScreenHandler.ScreenState.onScreenChange(it.oldScreen, it.newScreen)
-        }
-        INGAMEIME_BUS.addListener<ScreenEvents.EditOpen> {
-            ScreenHandler.ScreenState.EditState.onEditOpen(it.edit, it.caretPos)
-        }
-        INGAMEIME_BUS.addListener<ScreenEvents.EditCaret> {
-            ScreenHandler.ScreenState.EditState.onEditCaret(it.edit, it.caretPos)
-        }
-        INGAMEIME_BUS.addListener<ScreenEvents.EditClose> {
-            ScreenHandler.ScreenState.EditState.onEditClose(it.edit)
+        with(INGAMEIME_BUS) {
+            addListener<ScreenEvents.WindowSizeChanged> {
+                ExternalBaseIME.FullScreen = Minecraft.getInstance().window.isFullscreen
+            }
+            addListener<ScreenEvents.ScreenChanged> {
+                ScreenHandler.ScreenState.onScreenChange(it.oldScreen, it.newScreen)
+            }
+            addListener<ScreenEvents.EditOpen> {
+                ScreenHandler.ScreenState.EditState.onEditOpen(it.edit, it.caretPos)
+            }
+            addListener<ScreenEvents.EditCaret> {
+                ScreenHandler.ScreenState.EditState.onEditCaret(it.edit, it.caretPos)
+            }
+            addListener<ScreenEvents.EditClose> {
+                ScreenHandler.ScreenState.EditState.onEditClose(it.edit)
+            }
         }
     }
 }

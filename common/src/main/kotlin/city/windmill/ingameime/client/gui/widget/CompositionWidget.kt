@@ -21,10 +21,9 @@ class CompositionWidget(font: Font) : Widget(font) {
     
     @Suppress("NAME_SHADOWING")
     override fun draw(poseStack: PoseStack, offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int, delta: Float) {
-        val args = args
         args?.let {
-            val text = args.first
-            val caret = args.second
+            val text = it.first
+            val caret = it.second
             
             super.draw(poseStack, offsetX, offsetY, mouseX, mouseY, delta)
             

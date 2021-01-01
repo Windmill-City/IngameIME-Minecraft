@@ -19,7 +19,6 @@ class CandidateListWidget(font: Font) : Widget(font) {
     
     @Suppress("NAME_SHADOWING")
     override fun draw(poseStack: PoseStack, offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int, delta: Float) {
-        val candidates = candidates
         candidates?.let {
             super.draw(poseStack, offsetX, offsetY, mouseX, mouseY, delta)
             

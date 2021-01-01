@@ -1,8 +1,6 @@
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
-        jcenter()
-        mavenCentral()
     }
     dependencies {
         classpath(group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true) {
@@ -13,6 +11,7 @@ buildscript {
 
 plugins {
     id "com.github.johnrengelman.shadow" version "5.0.0"
+    id "eclipse"
 }
 
 apply plugin: 'net.minecraftforge.gradle'
@@ -79,7 +78,7 @@ repositories {
 dependencies {
     minecraft("net.minecraftforge:forge:${rootProject.architect.minecraft}-${rootProject.forge_version}")
     implementation 'thedarkcolour:kotlinforforge:1.7.0'
-    compile(project(path: ":common", configuration: "mcpGenerateMod")) {
+    compileOnly(project(path: ":common", configuration: "mcpGenerateMod")) {
         transitive = false
     }
     shadow(project(path: ":common", configuration: "mcp")) {
@@ -87,13 +86,9 @@ dependencies {
     }
 }
 
-shadowJar {
-    exclude "fabric.mod.json"
+jar.finalizedBy(shadowJar)
 
+shadowJar {
     configurations = [project.configurations.shadow]
     classifier null
-}
-
-reobf {
-    shadowJar {}
 }

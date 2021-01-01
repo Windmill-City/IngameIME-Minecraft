@@ -28,6 +28,7 @@ object ScreenHandler {
         SCREEN_OPEN {
             override fun onScreenChange(oldScreen: Screen?, newScreen: Screen?): ScreenState {
                 newScreen?.let {
+                    screenState = NULL_SCREEN //ScreenChange close old one
                     currentScreen = newScreen
                     return this
                 }
@@ -38,6 +39,7 @@ object ScreenHandler {
         SCREEN_DUMMY_EDIT {
             override fun onScreenChange(oldScreen: Screen?, newScreen: Screen?): ScreenState {
                 newScreen?.let {
+                    screenState = NULL_SCREEN //ScreenChange close old one
                     currentScreen = newScreen
                     return this
                 }
@@ -82,20 +84,26 @@ object ScreenHandler {
             },
             EDIT_OPEN {
                 override fun onEditOpen(edit: Any, caretPos: Pair<Int, Int>): EditState {
-                    editState = NULL_EDIT //Edit change, close old edit
-                    currentEdit = edit
-                    OverlayScreen.caretPos = caretPos
+                    if (edit != currentEdit) {
+                        editState = NULL_EDIT //Edit change, close old edit
+                        currentEdit = edit
+                        OverlayScreen.caretPos = caretPos
+                    }
                     return EDIT_OPEN
                 }
                 
                 override fun onEditCaret(edit: Any, caretPos: Pair<Int, Int>): EditState {
-                    OverlayScreen.caretPos = caretPos
+                    if (edit == currentEdit)
+                        OverlayScreen.caretPos = caretPos
                     return EDIT_OPEN
                 }
                 
                 override fun onEditClose(edit: Any): EditState {
-                    currentEdit = null
-                    return NULL_EDIT
+                    if (edit == currentEdit) {
+                        currentEdit = null
+                        return NULL_EDIT
+                    }
+                    return EDIT_OPEN
                 }
             };
             
@@ -111,18 +119,15 @@ object ScreenHandler {
                 private var currentEdit: Any? = null
                 
                 fun onEditOpen(edit: Any, caretPos: Pair<Int, Int>) {
-                    if (edit != currentEdit)
-                        editState = editState.onEditOpen(edit, caretPos)
+                    editState = editState.onEditOpen(edit, caretPos)
                 }
                 
                 fun onEditCaret(edit: Any, caretPos: Pair<Int, Int>) {
-                    if (edit == currentEdit)
-                        editState = editState.onEditCaret(edit, caretPos)
+                    editState = editState.onEditCaret(edit, caretPos)
                 }
                 
                 fun onEditClose(edit: Any) {
-                    if (edit == currentEdit)
-                        editState = editState.onEditClose(edit)
+                    editState = editState.onEditClose(edit)
                 }
                 
                 override fun onScreenState(state: ScreenState) {

@@ -48,22 +48,18 @@ class IngameIMEClient : ClientModInitializer {
                 ResolutionChangeCallback.EVENT.register(ResolutionChangeCallback { _, _ ->
                     ExternalBaseIME.FullScreen = Minecraft.getInstance().window.isFullscreen
                 })
-                SCREEN_CHANGED.register(ScreenEvents.ScreenChanged { oldScreen, newScreen ->
-                    ScreenHandler.ScreenState.onScreenChange(oldScreen, newScreen)
-                })
-                EDIT_OPEN.register(ScreenEvents.EditOpen { edit, caretPos ->
-                    ScreenHandler.ScreenState.EditState.onEditOpen(edit, caretPos)
-                })
-                EDIT_CARET.register(ScreenEvents.EditCaret { edit, caretPos ->
-                    ScreenHandler.ScreenState.EditState.onEditCaret(edit, caretPos)
-                })
-                EDIT_CLOSE.register(ScreenEvents.EditClose { edit ->
-                    ScreenHandler.ScreenState.EditState.onEditClose(edit)
-                })
+                with(ScreenHandler.ScreenState) {
+                    SCREEN_CHANGED.register(ScreenEvents.ScreenChanged(::onScreenChange))
+                }
+                with(ScreenHandler.ScreenState.EditState) {
+                    EDIT_OPEN.register(ScreenEvents.EditOpen(::onEditOpen))
+                    EDIT_CARET.register(ScreenEvents.EditCaret(::onEditCaret))
+                    EDIT_CLOSE.register(ScreenEvents.EditClose(::onEditClose))
+                }
                 ExternalBaseIME.FullScreen = Minecraft.getInstance().window.isFullscreen
             })
             KeyBindingHelper.registerKeyBinding(KeyHandler.toogleKey)
         }
-        LOGGER.info("This mod cant work in ${Util.getPlatform()}")
+        LOGGER.warn("This mod cant work in ${Util.getPlatform()}")
     }
 }

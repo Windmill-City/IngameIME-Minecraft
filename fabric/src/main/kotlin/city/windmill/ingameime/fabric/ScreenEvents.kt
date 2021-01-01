@@ -13,39 +13,23 @@ import net.minecraft.client.gui.screens.Screen
 @Environment(EnvType.CLIENT)
 object ScreenEvents {
     val SCREEN_CHANGED: Event<ScreenChanged> =
-        EventFactory.createArrayBacked(ScreenChanged::class.java) { callbacks: Array<ScreenChanged> ->
-            ScreenChanged { oldScreen, newScreen ->
-                for (callback in callbacks) {
-                    callback.onScreenChanged(oldScreen, newScreen)
-                }
-            }
+        EventFactory.createArrayBacked(ScreenChanged::class.java) { callbacks ->
+            ScreenChanged { oldScreen, newScreen -> callbacks.forEach { it.onScreenChanged(oldScreen, newScreen) } }
         }
     
     val EDIT_OPEN: Event<EditOpen> =
         EventFactory.createArrayBacked(EditOpen::class.java) { callbacks ->
-            EditOpen { edit, caretPos ->
-                for (callback in callbacks) {
-                    callback.onEditOpen(edit, caretPos)
-                }
-            }
+            EditOpen { edit, caretPos -> callbacks.forEach { it.onEditOpen(edit, caretPos) } }
         }
     
     val EDIT_CARET: Event<EditCaret> =
         EventFactory.createArrayBacked(EditCaret::class.java) { callbacks ->
-            EditCaret { edit, caretPos ->
-                for (callback in callbacks) {
-                    callback.onEditCaret(edit, caretPos)
-                }
-            }
+            EditCaret { edit, caretPos -> callbacks.forEach { it.onEditCaret(edit, caretPos) } }
         }
     
     val EDIT_CLOSE: Event<EditClose> =
         EventFactory.createArrayBacked(EditClose::class.java) { callbacks ->
-            EditClose { edit ->
-                for (callback in callbacks) {
-                    callback.onEditClose(edit)
-                }
-            }
+            EditClose { edit -> callbacks.forEach { it.onEditClose(edit) } }
         }
     
     fun interface ScreenChanged {
