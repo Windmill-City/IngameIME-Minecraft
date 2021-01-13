@@ -26,7 +26,7 @@ class MixinMinecraft {
     }
 
     @Inject(method = "resizeDisplay", at = @At("RETURN"))
-    private void onScreenSizeChanged(CallbackInfo info){
+    private void onScreenSizeChanged(CallbackInfo info) {
         IngameIMEClient.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.WindowSizeChanged(window.getWidth(), window.getHeight()));
     }
 }
