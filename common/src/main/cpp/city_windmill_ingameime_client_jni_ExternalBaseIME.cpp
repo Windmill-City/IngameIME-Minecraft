@@ -37,20 +37,15 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved)
 	Java_city_windmill_ingameime_client_jni_ExternalBaseIME_nUninitialize(NULL, NULL);
 }
 
-void CALLBACK onCandidateList(byte* candStr, DWORD* candStrLen, size_t size) {
+void CALLBACK onCandidateList(std::wstring* candStr, size_t size) {
 	jobjectArray cand = NULL;
 	if (candStr) {
 		jclass clString = env->FindClass("java/lang/String");
 		cand = env->NewObjectArray(size, clString, NULL);
 		for (size_t i = 0; i < size; i++)
 		{
-			auto len = candStrLen[i];
-			auto strLen = len / sizeof(WCHAR);
-			auto endChar = *(WCHAR*)(candStr + len - sizeof(WCHAR));
-			if (endChar == L'\0') strLen--;
-			auto str = env->NewString((jchar*)candStr, strLen);
+			auto str = env->NewString((jchar*)candStr[i].c_str(), candStr[i].size());
 			env->SetObjectArrayElement(cand, i, str);
-			candStr += len;
 		}
 	}
 	env->CallVoidMethod(O_BaseIME, M_onCandidateList, cand);

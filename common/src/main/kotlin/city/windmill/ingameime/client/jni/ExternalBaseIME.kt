@@ -46,7 +46,8 @@ object ExternalBaseIME {
         }
     
     init {
-        val resourceNative = ResourceLocation("ingameime", "natives/jni.dll")
+        val x86 = if (Minecraft.getInstance().is64Bit) "" else "-x86"
+        val resourceNative = ResourceLocation("ingameime", "natives/jni$x86.dll")
         NativeLoader.load(Minecraft.getInstance().resourceManager.getResource(resourceNative))
         LOGGER.trace("Initialing window")
         nInitialize(glfwGetWin32Window(Minecraft.getInstance().window.window))
