@@ -32,13 +32,6 @@ object ExternalBaseIME {
             }
         }
     
-    var HandleComposition: Boolean = false
-        set(value) {
-            LOGGER.trace("HandleComposition $field -> $value")
-            field = value
-            nSetHandleComposition(field)
-        }
-    
     var AlphaMode: Boolean = false
         private set(value) {
             LOGGER.trace("AlphaMode $field -> $value")
@@ -51,7 +44,6 @@ object ExternalBaseIME {
         NativeLoader.load(Minecraft.getInstance().resourceManager.getResource(resourceNative))
         LOGGER.trace("Initialing window")
         nInitialize(glfwGetWin32Window(Minecraft.getInstance().window.window))
-        HandleComposition = true
     }
     
     //region Natives
@@ -61,7 +53,6 @@ object ExternalBaseIME {
     private external fun nUninitialize()
     private external fun nSetState(state: Boolean)
     private external fun nSetFullScreen(fullscreen: Boolean)
-    private external fun nSetHandleComposition(handle: Boolean)
     //endregion
     
     //region CallFrom JNI

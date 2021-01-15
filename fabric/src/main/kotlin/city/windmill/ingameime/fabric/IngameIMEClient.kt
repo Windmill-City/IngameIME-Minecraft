@@ -59,7 +59,7 @@ class IngameIMEClient : ClientModInitializer {
                 ExternalBaseIME.FullScreen = Minecraft.getInstance().window.isFullscreen
             })
             KeyBindingHelper.registerKeyBinding(KeyHandler.toogleKey)
-        }
-        LOGGER.warn("This mod cant work in ${Util.getPlatform()}")
+        } else
+            LOGGER.warn("This mod cant work in ${Util.getPlatform()}")
     }
 }

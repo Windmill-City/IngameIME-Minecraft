@@ -39,14 +39,6 @@ JNIEXPORT void JNICALL Java_city_windmill_ingameime_client_jni_ExternalBaseIME_n
 JNIEXPORT void JNICALL Java_city_windmill_ingameime_client_jni_ExternalBaseIME_nSetFullScreen
   (JNIEnv *, jobject, jboolean);
 
-/*
- * Class:     city_windmill_ingameime_client_jni_ExternalBaseIME
- * Method:    nSetHandleComposition
- * Signature: (Z)V
- */
-JNIEXPORT void JNICALL Java_city_windmill_ingameime_client_jni_ExternalBaseIME_nSetHandleComposition
-  (JNIEnv *, jobject, jboolean);
-
 #ifdef __cplusplus
 }
 #endif
