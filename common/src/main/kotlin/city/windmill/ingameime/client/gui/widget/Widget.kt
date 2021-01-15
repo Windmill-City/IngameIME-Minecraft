@@ -8,7 +8,7 @@ import net.minecraft.client.gui.GuiComponent
 abstract class Widget(val font: Font) : net.minecraft.client.gui.components.Widget {
     var offsetX = 0
     var offsetY = 0
-    var textColor = 0x00_00_00_00
+    var textColor = 0xFF_00_00_00.toInt()
     var backgroundColor = 0xEB_EB_EB_EB.toInt()
     open val active get() = false
     open val width get() = padding.first * 2
