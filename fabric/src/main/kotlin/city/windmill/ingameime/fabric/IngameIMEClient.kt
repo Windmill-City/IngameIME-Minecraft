@@ -32,7 +32,7 @@ object IngameIMEClient : ClientModInitializer {
             LOGGER.info("it is Windows OS! Loading mod...")
             ClientLifecycleEvents.CLIENT_STARTED.register(ClientLifecycleEvents.ClientStarted {
                 ClothClientHooks.SCREEN_LATE_RENDER.register(ScreenRenderCallback.Post { matrixStack, _, _, mouseX, mouseY, delta ->
-                    OverlayScreen.render(matrixStack, mouseX, mouseY, delta)
+                    OverlayScreen.render(mouseX, mouseY, delta)
                 })
                 ClothClientHooks.SCREEN_KEY_PRESSED.register(ScreenKeyPressedCallback { _, _, keyCode, scanCode, modifier ->
                     if (KeyHandler.KeyState.onKeyDown(keyCode, scanCode, modifier))

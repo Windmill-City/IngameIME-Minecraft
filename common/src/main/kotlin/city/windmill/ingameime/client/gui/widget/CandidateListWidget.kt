@@ -18,9 +18,9 @@ class CandidateListWidget(font: Font) : Widget(font) {
         get() = 1 to 3
     
     @Suppress("NAME_SHADOWING")
-    override fun draw(poseStack: PoseStack, offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun draw(offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int, delta: Float) {
         candidates?.let {
-            super.draw(poseStack, offsetX, offsetY, mouseX, mouseY, delta)
+            super.draw(offsetX, offsetY, mouseX, mouseY, delta)
             
             var offsetX = offsetX + padding.first
             val offsetY = offsetY + padding.second
@@ -28,7 +28,7 @@ class CandidateListWidget(font: Font) : Widget(font) {
             for (str in it) {
                 drawItem.index = index
                 drawItem.text = str
-                drawItem.draw(poseStack, offsetX, offsetY, mouseX, mouseY, delta)
+                drawItem.draw(offsetX, offsetY, mouseX, mouseY, delta)
                 offsetX += drawItem.width
                 index++
             }
@@ -50,16 +50,15 @@ class CandidateListWidget(font: Font) : Widget(font) {
             get() = 2 to 3
         
         @Suppress("NAME_SHADOWING", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-        override fun draw(poseStack: PoseStack, offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int, delta: Float) {
+        override fun draw(offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int, delta: Float) {
             var offsetX = offsetX + padding.first
-            drawCenteredString(poseStack, font, index.toString(), offsetX + indexWidth / 2, offsetY, textColor)
+            drawCenteredString(font, index.toString(), offsetX + indexWidth / 2, offsetY, textColor)
             offsetX += indexWidth
-            font.draw(poseStack, text, offsetX.toFloat(), offsetY.toFloat(), textColor)
+            font.draw(text, offsetX.toFloat(), offsetY.toFloat(), textColor)
         }
         
         @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
         private fun drawCenteredString(
-            poseStack: PoseStack,
             font: Font,
             text: String?,
             centerX: Int,
@@ -67,7 +66,7 @@ class CandidateListWidget(font: Font) : Widget(font) {
             color: Int
         ) {
             font.draw(
-                poseStack, text,
+                text,
                 (centerX - font.width(text) / 2).toFloat(), y.toFloat(), color
             )
         }

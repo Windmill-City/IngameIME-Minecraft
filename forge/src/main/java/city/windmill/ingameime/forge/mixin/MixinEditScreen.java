@@ -34,14 +34,10 @@ class MixinEditScreen {
 
 @Mixin(BookEditScreen.class)
 abstract class MixinBookEditScreen {
-    @Shadow
-    protected abstract BookEditScreen.Pos2i convertLocalToScreen(BookEditScreen.Pos2i position);
-
-    @Inject(method = "renderCursor",
-            at = @At("HEAD"))
-    private void onCaret_Book(PoseStack matrices, BookEditScreen.Pos2i pos2i, boolean bl, CallbackInfo ci) {
-        pos2i = convertLocalToScreen(pos2i);
-        IngameIMEClient.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditCaret(this, new Pair<>(pos2i.x, pos2i.y)));
+    @Inject(method = "convertLocalToScreen",
+            at = @At("TAIL"))
+    private void onCaret_Book(BookEditScreen.Pos2i pos2i, CallbackInfo ci) {
+        //IngameIMEClient.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditCaret(this, new Pair<>(pos2i.x, pos2i.y)));
     }
 }
 
@@ -55,20 +51,20 @@ abstract class MixinEditSignScreen extends Screen {
     @Inject(method = "render",
             at = {
                     @At(value = "INVOKE",
-                            target = "Lnet/minecraft/client/gui/Font;drawInBatch(Ljava/lang/String;FFIZLcom/mojang/math/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;ZIIZ)I",
+                            target = "Lnet/minecraft/client/gui/Font;drawInBatch(Ljava/lang/String;FFIZLcom/mojang/math/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;ZII)I",
                             ordinal = 1),
                     @At(value = "INVOKE",
-                            target = "net/minecraft/client/gui/screens/inventory/SignEditScreen.fill(Lcom/mojang/blaze3d/vertex/PoseStack;IIIII)V",
+                            target = "Lnet/minecraft/client/gui/GuiComponent;fill(Lcom/mojang/math/Matrix4f;IIIII)V",
                             ordinal = 0)},
-            locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void onCaret_Sign(PoseStack arg, int i, int j, float f, CallbackInfo ci, float g, BlockState lv, boolean bl, boolean bl2, float h, MultiBufferSource.BufferSource lv2, float k, int l, int m, int n, int o, Matrix4f lv5, int p, String string, float q, int r, int s) {
+            locals = LocalCapture.PRINT)
+    private void onCaret_Sign(int i, int j, float f, CallbackInfo ci, float g, BlockState lv, boolean bl, boolean bl2, float h, MultiBufferSource.BufferSource lv2, float k, int l, int m, int n, int o, Matrix4f lv5, int p, String string, float q, int r, int s) {
         //s(23)->x,o(17)->y
-        IngameIMEClient.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditCaret(this, new Pair<>((int) lv5.m03 + s, (int) lv5.m13 + o)));
+        //IngameIMEClient.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditCaret(this, new Pair<>((int) lv5.m03 + s, (int) lv5.m13 + o)));
     }
 
     @Surrogate
-    private void onCaret_Sign(PoseStack arg, int i, int j, float f, CallbackInfo ci, float g, BlockState lv, boolean bl, boolean bl2, float h, MultiBufferSource.BufferSource lv2, float k, int l, int m, int n, int o, Matrix4f lv5, int t, String string2, int u, int v) {
+    private void onCaret_Sign(int i, int j, float f, CallbackInfo ci, float g, BlockState lv, boolean bl, boolean bl2, float h, MultiBufferSource.BufferSource lv2, float k, int l, int m, int n, int o, Matrix4f lv5, int t, String string2, int u, int v) {
         //v(22)->x,o(17)->y
-        IngameIMEClient.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditCaret(this, new Pair<>((int) lv5.m03 + v, (int) lv5.m13 + o)));
+        //IngameIMEClient.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditCaret(this, new Pair<>((int) lv5.m03 + v, (int) lv5.m13 + o)));
     }
 }

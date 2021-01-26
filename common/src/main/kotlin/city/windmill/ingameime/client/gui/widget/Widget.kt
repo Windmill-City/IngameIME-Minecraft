@@ -15,15 +15,14 @@ abstract class Widget(val font: Font) : net.minecraft.client.gui.components.Widg
     open val height get() = padding.second * 2
     open val padding = 0 to 0
     
-    override fun render(poseStack: PoseStack, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(mouseX: Int, mouseY: Int, delta: Float) {
         if (active)
-            draw(poseStack, offsetX, offsetY, mouseX, mouseY, delta)
+            draw(offsetX, offsetY, mouseX, mouseY, delta)
     }
     
-    open fun draw(poseStack: PoseStack, offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int, delta: Float) {
+    open fun draw(offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int, delta: Float) {
         //Background
         GuiComponent.fill(
-            poseStack,
             offsetX,
             offsetY,
             offsetX + width,

@@ -58,7 +58,7 @@ object IngameIMEClient {
     private fun enqueueIMC(event: InterModEnqueueEvent) {
         with(FORGE_BUS) {
             addListener<GuiScreenEvent.DrawScreenEvent.Post> {
-                OverlayScreen.render(it.matrixStack, it.mouseX, it.mouseY, it.renderPartialTicks)
+                OverlayScreen.render(it.mouseX, it.mouseY, it.renderPartialTicks)
             }
             addListener<GuiScreenEvent.KeyboardKeyPressedEvent.Pre> {
                 it.isCanceled = KeyHandler.KeyState.onKeyDown(it.keyCode, it.scanCode, it.modifiers)

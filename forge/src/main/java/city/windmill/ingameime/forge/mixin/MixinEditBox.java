@@ -20,8 +20,8 @@ abstract class MixinEditBox extends AbstractWidget {
     @Shadow
     private boolean bordered;
 
-    private MixinEditBox(int i, int j, int k, int l, Component component) {
-        super(i, j, k, l, component);
+    public MixinEditBox(int xIn, int yIn, String msg) {
+        super(xIn, yIn, msg);
     }
 
     @Inject(method = {"setFocus", "onFocusedChanged"}, at = @At("HEAD"))
@@ -47,7 +47,7 @@ abstract class MixinEditBox extends AbstractWidget {
     @Inject(method = "renderButton",
             at = @At(value = "INVOKE", target = "java/lang/String.isEmpty()Z", ordinal = 1),
             locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void onCaret(PoseStack poseStack, int arg1, int arg2, float arg3, CallbackInfo ci, int l, int m, int n, String string, boolean bl, boolean bl2, int o, int p, int q, boolean bl3, int r) {
+    private void onCaret(int arg1, int arg2, float arg3, CallbackInfo ci, int l, int m, int n, String string, boolean bl, boolean bl2, int o, int p, int q, boolean bl3, int r) {
         IngameIMEClient.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditCaret(this, new Pair<>(r, p)));
     }
 }
