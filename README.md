@@ -7,6 +7,12 @@ Enable IME in FullScreen Minecraft
 Window Mode
 ![icon](https://github.com/Windmill-City/IngameIME-Minecraft/raw/master/Docs/FullScreenInput.gif)
 FullScreen Mode
+# Toggle Key
+|Action|Desc|
+|------|------------|
+|Click|Temporary input state, close when committed|
+|Double Click|Always-on input state|
+|Click(When in input state)|Close IME|
 ## Dependencies
 ### Forge
 - https://www.curseforge.com/minecraft/mc-mods/kotlin-for-forge
