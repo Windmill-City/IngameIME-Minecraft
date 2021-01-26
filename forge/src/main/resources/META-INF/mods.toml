@@ -8,7 +8,7 @@ displayName = "IngameIME"
 # A URL to query for updates for this mod. See the JSON update specification <here>
 #updateJSONURL="http://myurl.me/" #optional
 displayURL="https://github.com/Windmill-City/IngameIME-Minecraft"
-logoFile = "../icon.png"
+logoFile = "icon.png"
 authors = "Windmill_City"
 description = '''
 Enable IME in FullScreen Minecraft
