@@ -88,7 +88,7 @@ curseforge {
     project(closureOf<CurseProject> {
         id = "440032"
         releaseType = "release"
-        changelog = "first release"
+        changelog = "fix candidatelist not change"
         addGameVersion("1.16-Snapshot")
         addGameVersion("1.16")
         addGameVersion("1.16.1")
