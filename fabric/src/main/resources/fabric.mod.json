@@ -28,10 +28,10 @@
   ],
   "depends": {
     "minecraft": ">=1.15",
-    "fabricloader": ">=0.10.0",
+    "fabricloader": ">=0.1",
     "fabric-key-binding-api-v1": ">=1.0.1",
     "fabric-language-kotlin": ">=1.4.0",
-    "cloth-client-events-v0": ">=1.1.0",
+    "cloth-client-events-v0": ">=1.2.0",
     "satin": ">=1.5.1"
   }
 }

@@ -89,7 +89,9 @@ curseforge {
         id = "440032"
         releaseType = "release"
         changelog = "fix candidatelist not change"
-        addGameVersion("1.16-Snapshot")
+        mainArtifact(tasks["remapJar"])
+        addArtifact(tasks["jar"])
+        addGameVersion("Java 8")
         addGameVersion("1.16")
         addGameVersion("1.16.1")
         addGameVersion("1.16.2")
