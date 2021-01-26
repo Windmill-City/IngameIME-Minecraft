@@ -8,11 +8,9 @@ Window Mode
 ![icon](https://github.com/Windmill-City/IngameIME-Minecraft/raw/master/Docs/FullScreenInput.gif)
 FullScreen Mode
 # Toggle Key
-|Action|Desc|
-|------|------------|
-|Click|Temporary input state, close when committed|
-|Double Click|Always-on input state|
-|Click(When in input state)|Close IME|
+- Click Switch between **Temporary Input State** and **Close State**
+- Double Click Always-on Input State
+- **Temporary Input State** move to **Close State** when committed
 ## Dependencies
 ### Forge
 - https://www.curseforge.com/minecraft/mc-mods/kotlin-for-forge
