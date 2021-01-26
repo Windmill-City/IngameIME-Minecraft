@@ -1,6 +1,6 @@
 package city.windmill.ingameime.forge
 
-import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.gui.screens.Screen
 import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.api.distmarker.OnlyIn
 import net.minecraftforge.eventbus.api.Event

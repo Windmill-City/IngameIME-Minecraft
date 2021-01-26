@@ -24,11 +24,12 @@ import net.minecraft.world.InteractionResult
 import org.apache.logging.log4j.LogManager
 
 @Environment(EnvType.CLIENT)
-class IngameIMEClient : ClientModInitializer {
-    val LOGGER = LogManager.getFormatterLogger("IngameIME")
+object IngameIMEClient : ClientModInitializer {
+    @Suppress("MemberVisibilityCanBePrivate", "PropertyName")
+    val LOGGER = LogManager.getFormatterLogger("IngameIME")!!
     override fun onInitializeClient() {
         if (Util.getPlatform() == Util.OS.WINDOWS) {
-            LOGGER.info("it is Windows OS! Loading mod")
+            LOGGER.info("it is Windows OS! Loading mod...")
             ClientLifecycleEvents.CLIENT_STARTED.register(ClientLifecycleEvents.ClientStarted {
                 ClothClientHooks.SCREEN_LATE_RENDER.register(ScreenRenderCallback.Post { matrixStack, _, _, mouseX, mouseY, delta ->
                     OverlayScreen.render(matrixStack, mouseX, mouseY, delta)
@@ -60,6 +61,6 @@ class IngameIMEClient : ClientModInitializer {
             })
             KeyBindingHelper.registerKeyBinding(KeyHandler.toogleKey)
         } else
-            LOGGER.warn("This mod cant work in ${Util.getPlatform()}")
+            LOGGER.warn("This mod cant work in ${Util.getPlatform()} !")
     }
 }

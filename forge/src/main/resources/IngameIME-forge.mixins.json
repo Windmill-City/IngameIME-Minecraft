@@ -6,11 +6,11 @@
   "mixins": [
   ],
   "client": [
-    "MixinEditBookScreen",
     "MixinEditScreen",
     "MixinEditSignScreen",
+    "MixinBookEditScreen",
     "MixinMinecraft",
-    "MixinTextFieldWidget"
+    "MixinEditBox"
   ],
   "injectors": {
     "defaultRequire": 1

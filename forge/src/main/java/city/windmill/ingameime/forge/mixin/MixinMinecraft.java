@@ -1,10 +1,10 @@
 package city.windmill.ingameime.forge.mixin;
 
-import city.windmill.ingameime.forge.IngameIMEClient;
 import city.windmill.ingameime.forge.ScreenEvents;
-import net.minecraft.client.MainWindow;
+import city.windmill.ingameime.forge.IngameIMEClient;
+import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,7 +18,7 @@ class MixinMinecraft {
     public Screen screen;
     @Final
     @Shadow
-    private MainWindow window;
+    private Window window;
 
     @Inject(method = "setScreen", at = @At("HEAD"))
     private void onScreenChange(Screen screenIn, CallbackInfo info) {
