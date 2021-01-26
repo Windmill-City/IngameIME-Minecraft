@@ -91,6 +91,7 @@ curseforge {
         changelog = "fix candidatelist not change"
         mainArtifact(tasks["remapJar"])
         addArtifact(tasks["jar"])
+        addGameVersion("Forge")
         addGameVersion("Java 8")
         addGameVersion("1.16")
         addGameVersion("1.16.1")
