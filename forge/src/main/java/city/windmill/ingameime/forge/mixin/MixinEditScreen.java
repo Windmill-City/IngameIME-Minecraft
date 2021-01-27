@@ -11,9 +11,11 @@ import net.minecraft.client.gui.screens.inventory.SignEditScreen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
+import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Surrogate;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -46,6 +48,7 @@ abstract class MixinEditSignScreen extends Screen {
         super(p_i51108_1_);
     }
 
+    @Debug(print = true, export = true)
     @Inject(method = "render",
             at = {
                     @At(value = "INVOKE",
@@ -56,8 +59,14 @@ abstract class MixinEditSignScreen extends Screen {
                             ordinal = 0)
             },
             locals = LocalCapture.CAPTURE_FAILSOFT)
+    private void onCaret_Sign(int i, int j, float f, CallbackInfo ci, PoseStack poseStack, float g, BlockState blockState, boolean bl, boolean bl2, float h, MultiBufferSource.BufferSource bufferSource, float k, int l, String[] strings, Matrix4f matrix4f, int n, int o, int p, int q, int v, String string2, float var23, int w, int x) {
+        //x(25)->x,q(20)->y
+        IngameIMEClient.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditCaret(this, new Pair<>((int) matrix4f.m03 + x, (int) matrix4f.m13 + q)));
+    }
+
+    @Surrogate
     private void onCaret_Sign(int i, int j, float f, CallbackInfo ci, PoseStack poseStack, float g, BlockState blockState, boolean bl, boolean bl2, float h, MultiBufferSource.BufferSource bufferSource, float k, int l, String[] strings, Matrix4f matrix4f, int n, int o, int p, int q, int v, String string2, int w, int x) {
-        //x(25/24)->x,q(20)->y
+        //x(24)->x,q(20)->y
         IngameIMEClient.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditCaret(this, new Pair<>((int) matrix4f.m03 + x, (int) matrix4f.m13 + q)));
     }
 }
