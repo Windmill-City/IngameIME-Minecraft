@@ -8,11 +8,11 @@ import city.windmill.ingameime.fabric.ScreenEvents.EDIT_CARET
 import city.windmill.ingameime.fabric.ScreenEvents.EDIT_CLOSE
 import city.windmill.ingameime.fabric.ScreenEvents.EDIT_OPEN
 import city.windmill.ingameime.fabric.ScreenEvents.SCREEN_CHANGED
-import ladysnake.satin.api.event.ResolutionChangeCallback
-import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks
-import me.shedaniel.cloth.api.client.events.v0.ScreenKeyPressedCallback
-import me.shedaniel.cloth.api.client.events.v0.ScreenKeyReleasedCallback
-import me.shedaniel.cloth.api.client.events.v0.ScreenRenderCallback
+import city.windmill.ingameime.fabric.ScreenEvents.SCREEN_SIZE_CHANGED
+import me.shedaniel.cloth.callbacks.client.ScreenKeyPressedCallback
+import me.shedaniel.cloth.callbacks.client.ScreenKeyReleasedCallback
+import me.shedaniel.cloth.callbacks.client.ScreenRenderCallback
+import me.shedaniel.cloth.hooks.ClothClientHooks
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
@@ -31,22 +31,22 @@ object IngameIMEClient : ClientModInitializer {
         if (Util.getPlatform() == Util.OS.WINDOWS) {
             LOGGER.info("it is Windows OS! Loading mod...")
             ClientLifecycleEvents.CLIENT_STARTED.register(ClientLifecycleEvents.ClientStarted {
-                ClothClientHooks.SCREEN_LATE_RENDER.register(ScreenRenderCallback.Post { matrixStack, _, _, mouseX, mouseY, delta ->
+                ClothClientHooks.SCREEN_RENDER_POST.register(ScreenRenderCallback.Post { _, _, mouseX, mouseY, delta ->
                     OverlayScreen.render(mouseX, mouseY, delta)
                 })
-                ClothClientHooks.SCREEN_KEY_PRESSED.register(ScreenKeyPressedCallback { _, _, keyCode, scanCode, modifier ->
-                    if (KeyHandler.KeyState.onKeyDown(keyCode, scanCode, modifier))
+                ClothClientHooks.SCREEN_KEY_PRESSED.register(ScreenKeyPressedCallback { _, _, keyCode, scanCode, modifiers ->
+                    if(KeyHandler.KeyState.onKeyDown(keyCode, scanCode, modifiers))
                         InteractionResult.CONSUME
                     else
                         InteractionResult.PASS
                 })
-                ClothClientHooks.SCREEN_KEY_RELEASED.register(ScreenKeyReleasedCallback { _, _, keyCode, scanCode, modifier ->
-                    if (KeyHandler.KeyState.onKeyUp(keyCode, scanCode, modifier))
+                ClothClientHooks.SCREEN_KEY_RELEASED.register(ScreenKeyReleasedCallback { _, _, keyCode, scanCode, modifiers ->
+                    if(KeyHandler.KeyState.onKeyUp(keyCode, scanCode, modifiers))
                         InteractionResult.CONSUME
                     else
                         InteractionResult.PASS
                 })
-                ResolutionChangeCallback.EVENT.register(ResolutionChangeCallback { _, _ ->
+                SCREEN_SIZE_CHANGED.register(ScreenEvents.ScreenSizeChanged { _, _ ->
                     ExternalBaseIME.FullScreen = Minecraft.getInstance().window.isFullscreen
                 })
                 with(ScreenHandler.ScreenState) {

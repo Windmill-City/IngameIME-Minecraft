@@ -5,10 +5,10 @@ import city.windmill.ingameime.client.gui.widget.CandidateListWidget
 import city.windmill.ingameime.client.gui.widget.CompositionWidget
 import city.windmill.ingameime.client.gui.widget.Widget
 import city.windmill.ingameime.client.jni.ExternalBaseIME
+import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.PoseStack
-import com.mojang.math.Transformation
-import com.mojang.math.Vector3f
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.GuiComponent
 import kotlin.ranges.*
 
 object OverlayScreen : net.minecraft.client.gui.components.Widget {
@@ -56,10 +56,15 @@ object OverlayScreen : net.minecraft.client.gui.components.Widget {
     
     override fun render(mouseX: Int, mouseY: Int, delta: Float) {
         if (ExternalBaseIME.State) {
-            Transformation.identity().matrix.translate(Vector3f(0.0f, 0.0f, 500.0f))
-            compositionWidget.render(mouseX, mouseY, delta)
-            alphaModeWidget.render(mouseX, mouseY, delta)
-            candidateListWidget.render(mouseX, mouseY, delta)
+            RenderSystem.enableDepthTest()
+            RenderSystem.enableRescaleNormal()
+            val poseStack = PoseStack()
+            poseStack.translate(0.0, 0.0, 400.0)
+            compositionWidget.render(poseStack, mouseX, mouseY, delta)
+            alphaModeWidget.render(poseStack, mouseX, mouseY, delta)
+            candidateListWidget.render(poseStack, mouseX, mouseY, delta)
+            RenderSystem.disableDepthTest()
+            RenderSystem.disableRescaleNormal()
         }
     }
     

@@ -16,6 +16,10 @@ object ScreenEvents {
         EventFactory.createArrayBacked(ScreenChanged::class.java) { callbacks ->
             ScreenChanged { oldScreen, newScreen -> callbacks.forEach { it.onScreenChanged(oldScreen, newScreen) } }
         }
+    val SCREEN_SIZE_CHANGED: Event<ScreenSizeChanged> =
+        EventFactory.createArrayBacked(ScreenSizeChanged::class.java) { callbacks ->
+            ScreenSizeChanged { width, height -> callbacks.forEach { it.onScreenSizeChanged(width, height) } }
+        }
     
     val EDIT_OPEN: Event<EditOpen> =
         EventFactory.createArrayBacked(EditOpen::class.java) { callbacks ->
@@ -34,6 +38,10 @@ object ScreenEvents {
     
     fun interface ScreenChanged {
         fun onScreenChanged(oldScreen: Screen?, newScreen: Screen?)
+    }
+    
+    fun interface ScreenSizeChanged {
+        fun onScreenSizeChanged(width: Int, height: Int)
     }
     
     fun interface EditOpen {

@@ -50,19 +50,20 @@ abstract class MixinSignEditScreen extends Screen {
             at = {
                     @At(value = "INVOKE",
                             target = "Lnet/minecraft/client/gui/Font;drawInBatch(Ljava/lang/String;FFIZLcom/mojang/math/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;ZII)I",
-                            ordinal = 1),
-                    @At(value = "INVOKE",
-                            target = "Lnet/minecraft/client/gui/GuiComponent;fill(Lcom/mojang/math/Matrix4f;IIIII)V",
-                            ordinal = 0)},
+                            ordinal = 1)
+//                    @At(value = "INVOKE",
+//                            target = "Lnet/minecraft/client/gui/GuiComponent;fill(Lcom/mojang/math/Matrix4f;IIIII)V",
+//                            ordinal = 0)
+                            },
             locals = LocalCapture.PRINT)
     private void onCaret_Sign(CallbackInfo ci) {
-        //s(23)->x,o(17)->y
-        //ScreenEvents.INSTANCE.getEDIT_CARET().invoker().onEditCaret(this, new Pair<>((int) lv5.m03 + s, (int) lv5.m13 + o));
+        //u(25)->x,q(20)->y
+        //ScreenEvents.INSTANCE.getEDIT_CARET().invoker().onEditCaret(this, new Pair<>((int) matrix4f.m03 + u, (int) matrix4f.m13 + q));
     }
 
 //    @Surrogate
-//    private void onCaret_Sign(CallbackInfo ci) {
-//        //v(22)->x,o(17)->y
-//        //ScreenEvents.INSTANCE.getEDIT_CARET().invoker().onEditCaret(this, new Pair<>((int) lv5.m03 + v, (int) lv5.m13 + o));
+//    private void onCaret_Sign(int i, int j, float f, CallbackInfo ci, PoseStack poseStack, float g, BlockState blockState, boolean bl, boolean bl2, float h, MultiBufferSource.BufferSource bufferSource, float k, int l, String strings[], Matrix4f matrix4f, int n, int o, int p, int q, int r, String string, int t, int u) {
+//        //u(25)->x,q(20)->y
+//        ScreenEvents.INSTANCE.getEDIT_CARET().invoker().onEditCaret(this, new Pair<>((int) matrix4f.m03 + u, (int) matrix4f.m13 + q));
 //    }
 }

@@ -88,17 +88,14 @@ curseforge {
     project(closureOf<CurseProject> {
         id = "440032"
         releaseType = "release"
-        changelog = "fix candidatelist not change"
+        changelog = "support 1.15"
         mainArtifact(tasks["remapJar"])
         addArtifact(tasks["jar"])
         addGameVersion("Forge")
         addGameVersion("Java 8")
-        addGameVersion("1.16")
-        addGameVersion("1.16.1")
-        addGameVersion("1.16.2")
-        addGameVersion("1.16.3")
-        addGameVersion("1.16.4")
-        addGameVersion("1.16.5")
+        addGameVersion("1.15")
+        addGameVersion("1.15.1")
+        addGameVersion("1.15.2")
         relations(closureOf<CurseRelation> {
             requiredDependency("kotlin-for-forge")
         })

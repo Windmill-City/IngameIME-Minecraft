@@ -2,7 +2,6 @@ package city.windmill.ingameime.client.gui.widget
 
 import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.client.gui.Font
-import net.minecraft.client.gui.GuiComponent
 
 class CompositionWidget(font: Font) : Widget(font) {
     var args: Pair<String, Int>? = null
@@ -20,22 +19,23 @@ class CompositionWidget(font: Font) : Widget(font) {
         get() = 1 to 1
     
     @Suppress("NAME_SHADOWING")
-    override fun draw(offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun draw(poseStack: PoseStack, offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int, delta: Float) {
         args?.let {
             val text = it.first
             val caret = it.second
             
-            super.draw(offsetX, offsetY, mouseX, mouseY, delta)
+            super.draw(poseStack, offsetX, offsetY, mouseX, mouseY, delta)
             
             val part1 = text.substring(0, caret)
             val part2 = text.substring(caret)
             
             var offsetX = offsetX + padding.first
             val offsetY = offsetY + padding.second
-            offsetX = font.draw(part1, offsetX.toFloat(), offsetY.toFloat(), textColor)
+            offsetX = font.draw(poseStack, part1, offsetX.toFloat(), offsetY.toFloat(), textColor)
             //Caret-blink 0.5s
             if ((System.currentTimeMillis() % 1000) > 500) {
-                GuiComponent.fill(
+                fill(
+                    poseStack,
                     offsetX + 1, //1 pixel width
                     offsetY,
                     offsetX + 2, //with 2 pixel margin
@@ -44,7 +44,7 @@ class CompositionWidget(font: Font) : Widget(font) {
                 )
             }
             offsetX += caretWidth
-            font.draw(part2, offsetX.toFloat(), offsetY.toFloat(), textColor)
+            font.draw(poseStack, part2, offsetX.toFloat(), offsetY.toFloat(), textColor)
         }
     }
 }

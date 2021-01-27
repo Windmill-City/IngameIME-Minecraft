@@ -31,7 +31,7 @@ val maven_group: String by rootProject
 //Fabric
 val fabric_api_version: String by project
 val fabric_loader_version: String by project
-val cloth_client_events_v0_version: String by project
+val cloth_api_version: String by project
 val satin_version: String by project
 val roughlyenoughitems: String by project
 val fabric_kotlin_version: String by project
@@ -52,9 +52,7 @@ dependencies {
     //REI
     modImplementation("me.shedaniel:RoughlyEnoughItems:${roughlyenoughitems}")
     //Cloth Api
-    modImplementation("me.shedaniel.cloth.api:cloth-client-events-v0:${cloth_client_events_v0_version}")
-    //Stain
-    modImplementation("io.github.ladysnake:Satin:${satin_version}")
+    modImplementation("me.shedaniel.cloth:cloth-events:${cloth_api_version}")
     //Kotlin
     modImplementation("net.fabricmc:fabric-language-kotlin:${fabric_kotlin_version}")
 }
@@ -91,21 +89,17 @@ curseforge {
     project(closureOf<CurseProject> {
         id = "440032"
         releaseType = "release"
-        changelog = "fix candidatelist not change"
+        changelog = "support 1.15"
         mainArtifact(tasks["remapJar"])
         addArtifact(tasks["jar"])
         addGameVersion("Fabric")
         addGameVersion("Java 8")
-        addGameVersion("1.16")
-        addGameVersion("1.16.1")
-        addGameVersion("1.16.2")
-        addGameVersion("1.16.3")
-        addGameVersion("1.16.4")
-        addGameVersion("1.16.5")
+        addGameVersion("1.15")
+        addGameVersion("1.15.1")
+        addGameVersion("1.15.2")
         relations(closureOf<CurseRelation> {
             requiredDependency("fabric-language-kotlin")
             requiredDependency("fabric-api")
-            requiredDependency("satin-api")
             requiredDependency("cloth-api")
         })
     })
