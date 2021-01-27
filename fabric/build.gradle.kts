@@ -86,12 +86,14 @@ tasks {
     }
 }
 
+val changeLog: String by rootProject
+
 curseforge {
     apiKey = rootProject.ext["apiKey"]
     project(closureOf<CurseProject> {
         id = "440032"
         releaseType = "release"
-        changelog = "fix candidatelist not change"
+        changelog = changeLog
         mainArtifact(tasks["remapJar"])
         addArtifact(tasks["jar"])
         addGameVersion("Fabric")
