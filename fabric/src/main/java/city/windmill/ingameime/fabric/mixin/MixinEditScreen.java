@@ -1,20 +1,14 @@
 package city.windmill.ingameime.fabric.mixin;
 
 import city.windmill.ingameime.fabric.ScreenEvents;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
 import kotlin.Pair;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.BookEditScreen;
 import net.minecraft.client.gui.screens.inventory.SignEditScreen;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Surrogate;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -54,7 +48,7 @@ abstract class MixinSignEditScreen extends Screen {
 //                    @At(value = "INVOKE",
 //                            target = "Lnet/minecraft/client/gui/GuiComponent;fill(Lcom/mojang/math/Matrix4f;IIIII)V",
 //                            ordinal = 0)
-                            },
+            },
             locals = LocalCapture.PRINT)
     private void onCaret_Sign(CallbackInfo ci) {
         //u(25)->x,q(20)->y

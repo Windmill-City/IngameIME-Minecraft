@@ -2,11 +2,9 @@ package city.windmill.ingameime.forge.mixin;
 
 import city.windmill.ingameime.forge.IngameIMEClient;
 import city.windmill.ingameime.forge.ScreenEvents;
-import com.mojang.blaze3d.vertex.PoseStack;
 import kotlin.Pair;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;

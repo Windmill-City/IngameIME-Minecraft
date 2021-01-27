@@ -4,6 +4,7 @@ import city.windmill.ingameime.fabric.ScreenEvents.EditCaret
 import city.windmill.ingameime.fabric.ScreenEvents.EditClose
 import city.windmill.ingameime.fabric.ScreenEvents.EditOpen
 import city.windmill.ingameime.fabric.ScreenEvents.ScreenChanged
+import city.windmill.ingameime.fabric.ScreenEvents.ScreenSizeChanged
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.event.Event

@@ -1,8 +1,7 @@
 package city.windmill.ingameime.forge.mixin;
 
-import city.windmill.ingameime.forge.ScreenEvents;
 import city.windmill.ingameime.forge.IngameIMEClient;
-import com.mojang.blaze3d.vertex.PoseStack;
+import city.windmill.ingameime.forge.ScreenEvents;
 import com.mojang.math.Matrix4f;
 import kotlin.Pair;
 import net.minecraft.client.gui.screens.Screen;
@@ -12,10 +11,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Surrogate;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 

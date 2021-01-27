@@ -7,7 +7,7 @@ version = "${file.jarVersion}"
 displayName = "IngameIME"
 # A URL to query for updates for this mod. See the JSON update specification <here>
 #updateJSONURL="http://myurl.me/" #optional
-displayURL="https://github.com/Windmill-City/IngameIME-Minecraft"
+displayURL = "https://github.com/Windmill-City/IngameIME-Minecraft"
 logoFile = "icon.png"
 authors = "Windmill_City"
 description = '''

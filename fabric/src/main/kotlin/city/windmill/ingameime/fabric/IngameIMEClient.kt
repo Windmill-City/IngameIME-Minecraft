@@ -41,7 +41,7 @@ object IngameIMEClient : ClientModInitializer {
                         InteractionResult.PASS
                 })
                 ClothClientHooks.SCREEN_KEY_RELEASED.register(ScreenKeyReleasedCallback { _, _, keyCode, scanCode, modifiers ->
-                    if(KeyHandler.KeyState.onKeyUp(keyCode, scanCode, modifiers))
+                    if (KeyHandler.KeyState.onKeyUp(keyCode, scanCode, modifiers))
                         InteractionResult.CONSUME
                     else
                         InteractionResult.PASS
