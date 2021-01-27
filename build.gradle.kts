@@ -1,11 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.util.Properties
+import java.util.*
 
 plugins {
     java
     id("com.matthewprenger.cursegradle") version "1.4.0" apply false
     kotlin("jvm") version "1.4.21" apply false
-    id("forgified-fabric-loom") version "0.6.49" apply false
+    id("forgified-fabric-loom") version "0.6.54" apply false
 }
 
 val curse_api_key: String
