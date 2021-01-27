@@ -5,10 +5,8 @@ import city.windmill.ingameime.client.gui.widget.CandidateListWidget
 import city.windmill.ingameime.client.gui.widget.CompositionWidget
 import city.windmill.ingameime.client.gui.widget.Widget
 import city.windmill.ingameime.client.jni.ExternalBaseIME
-import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiComponent
 import kotlin.ranges.*
 
 object OverlayScreen : net.minecraft.client.gui.components.Widget {
@@ -56,15 +54,11 @@ object OverlayScreen : net.minecraft.client.gui.components.Widget {
     
     override fun render(mouseX: Int, mouseY: Int, delta: Float) {
         if (ExternalBaseIME.State) {
-            RenderSystem.enableDepthTest()
-            RenderSystem.enableRescaleNormal()
             val poseStack = PoseStack()
-            poseStack.translate(0.0, 0.0, 400.0)
+            poseStack.translate(0.0, 0.0, 500.0)
             compositionWidget.render(poseStack, mouseX, mouseY, delta)
             alphaModeWidget.render(poseStack, mouseX, mouseY, delta)
             candidateListWidget.render(poseStack, mouseX, mouseY, delta)
-            RenderSystem.disableDepthTest()
-            RenderSystem.disableRescaleNormal()
         }
     }
     

@@ -1,11 +1,10 @@
 package city.windmill.ingameime.client.gui.widget
 
 import com.mojang.blaze3d.systems.RenderSystem
-import com.mojang.blaze3d.vertex.BufferUploader
-import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.Tesselator
 import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.GuiComponent
 import net.minecraft.client.renderer.MultiBufferSource
 
 
@@ -55,23 +54,8 @@ abstract class Widget(val font: Font) {
     }
     
     fun fill(poseStack: PoseStack, x1: Int, y1: Int, x2: Int, y2: Int, color: Int) {
-        val matrix4f = poseStack.last().pose()
-        val a = (color shr 24 and 255).toFloat() / 255.0f
-        val r = (color shr 16 and 255).toFloat() / 255.0f
-        val g = (color shr 8 and 255).toFloat() / 255.0f
-        val b = (color and 255).toFloat() / 255.0f
-        val bufferBuilder = Tesselator.getInstance().builder
-        RenderSystem.enableBlend()
-        RenderSystem.disableTexture()
-        RenderSystem.defaultBlendFunc()
-        bufferBuilder.begin(7, DefaultVertexFormat.POSITION_COLOR)
-        bufferBuilder.vertex(matrix4f, x1.toFloat(), y2.toFloat(), 1.0f).color(r, g, b, a).endVertex()
-        bufferBuilder.vertex(matrix4f, x2.toFloat(), y2.toFloat(), 1.0f).color(r, g, b, a).endVertex()
-        bufferBuilder.vertex(matrix4f, x2.toFloat(), y1.toFloat(), 1.0f).color(r, g, b, a).endVertex()
-        bufferBuilder.vertex(matrix4f, x1.toFloat(), y1.toFloat(), 1.0f).color(r, g, b, a).endVertex()
-        bufferBuilder.end()
-        BufferUploader.end(bufferBuilder)
-        RenderSystem.enableTexture()
-        RenderSystem.disableBlend()
+        RenderSystem.enableDepthTest()
+        GuiComponent.fill(poseStack.last().pose(), x1, y1, x2, y2, color)
+        RenderSystem.disableDepthTest()
     }
 }

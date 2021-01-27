@@ -31,11 +31,11 @@ object IngameIMEClient : ClientModInitializer {
         if (Util.getPlatform() == Util.OS.WINDOWS) {
             LOGGER.info("it is Windows OS! Loading mod...")
             ClientLifecycleEvents.CLIENT_STARTED.register(ClientLifecycleEvents.ClientStarted {
-                ClothClientHooks.SCREEN_RENDER_POST.register(ScreenRenderCallback.Post { _, _, mouseX, mouseY, delta ->
+                ClothClientHooks.SCREEN_LATE_RENDER.register(ScreenRenderCallback.Post { _, _, mouseX, mouseY, delta ->
                     OverlayScreen.render(mouseX, mouseY, delta)
                 })
                 ClothClientHooks.SCREEN_KEY_PRESSED.register(ScreenKeyPressedCallback { _, _, keyCode, scanCode, modifiers ->
-                    if(KeyHandler.KeyState.onKeyDown(keyCode, scanCode, modifiers))
+                    if (KeyHandler.KeyState.onKeyDown(keyCode, scanCode, modifiers))
                         InteractionResult.CONSUME
                     else
                         InteractionResult.PASS
