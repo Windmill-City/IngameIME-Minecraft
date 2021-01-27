@@ -11,11 +11,11 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Surrogate;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin({BookEditScreen.class, SignEditScreen.class})
@@ -33,13 +33,9 @@ class MixinEditScreen {
 
 @Mixin(BookEditScreen.class)
 abstract class MixinBookEditScreen {
-    @Shadow
-    protected abstract BookEditScreen.Pos2i convertLocalToScreen(BookEditScreen.Pos2i position);
-
-    @Inject(method = "renderCursor",
-            at = @At("HEAD"))
-    private void onCaret_Book(PoseStack poseStack, BookEditScreen.Pos2i pos2i, boolean bl, CallbackInfo ci) {
-        pos2i = convertLocalToScreen(pos2i);
+    @Inject(method = "convertLocalToScreen",
+            at = @At("TAIL"))
+    private void onCaret_Book(BookEditScreen.Pos2i pos2i, CallbackInfoReturnable<BookEditScreen.Pos2i> cir) {
         ScreenEvents.INSTANCE.getEDIT_CARET().invoker().onEditCaret(this, new Pair<>(pos2i.x, pos2i.y));
     }
 }
