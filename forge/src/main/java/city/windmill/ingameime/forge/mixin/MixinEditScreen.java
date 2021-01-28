@@ -11,7 +11,6 @@ import net.minecraft.client.gui.screens.inventory.SignEditScreen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
-import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -48,7 +47,6 @@ abstract class MixinEditSignScreen extends Screen {
         super(p_i51108_1_);
     }
 
-    @Debug(print = true, export = true)
     @Inject(method = "render",
             at = {
                     @At(value = "INVOKE",
