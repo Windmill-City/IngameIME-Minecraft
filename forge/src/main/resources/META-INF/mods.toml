@@ -16,12 +16,12 @@ Enable IME in FullScreen Minecraft
 [[dependencies.ingameime]]
 modId = "forge"
 mandatory = true
-versionRange = "[29,)"
+versionRange = "[26,)"
 ordering = "NONE"
 side = "CLIENT"
 [[dependencies.ingameime]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.15,1.16)"
+versionRange = "[1.14.2,1.16)"
 ordering = "NONE"
 side = "CLIENT"

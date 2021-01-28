@@ -36,13 +36,13 @@ object IngameIMEClient : ClientModInitializer {
                 })
                 ClothClientHooks.SCREEN_KEY_PRESSED.register(ScreenKeyPressedCallback { _, _, keyCode, scanCode, modifiers ->
                     if (KeyHandler.KeyState.onKeyDown(keyCode, scanCode, modifiers))
-                        InteractionResult.CONSUME
+                        InteractionResult.SUCCESS
                     else
                         InteractionResult.PASS
                 })
                 ClothClientHooks.SCREEN_KEY_RELEASED.register(ScreenKeyReleasedCallback { _, _, keyCode, scanCode, modifiers ->
                     if (KeyHandler.KeyState.onKeyUp(keyCode, scanCode, modifiers))
-                        InteractionResult.CONSUME
+                        InteractionResult.SUCCESS
                     else
                         InteractionResult.PASS
                 })

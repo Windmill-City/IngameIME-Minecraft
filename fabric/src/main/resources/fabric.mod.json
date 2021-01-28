@@ -27,10 +27,10 @@
     "IngameIME-fabric.mixins.json"
   ],
   "depends": {
-    "minecraft": ">=1.15",
+    "minecraft": ">=1.14",
     "fabricloader": ">=0.1",
     "fabric-key-binding-api-v1": ">=1.0.1",
     "fabric-language-kotlin": ">=1.4.0",
-    "cloth": ">=1.2.0"
+    "cloth": ">=0.6.0"
   }
 }

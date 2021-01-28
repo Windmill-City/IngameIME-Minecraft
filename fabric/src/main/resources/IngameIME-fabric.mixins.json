@@ -6,9 +6,9 @@
   "client": [
     "MixinBookEditScreen",
     "MixinEditBox",
-    "MixinEditScreen",
     "MixinMinecraft",
     "MixinSignEditScreen",
+    "MixinSignRenderer",
     "MixinTextFieldWidget"
   ],
   "injectors": {

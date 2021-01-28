@@ -13,6 +13,7 @@ plugins {
 repositories {
     jcenter()
     mavenCentral()
+    maven("https://repo.spongepowered.org/maven")
     maven("https://files.minecraftforge.net/maven")
     maven("https://dl.bintray.com/shedaniel/shedaniel-mods")
     maven("https://jitpack.io")
@@ -47,6 +48,7 @@ dependencies {
     
     //Forge Kotlin
     modImplementation("thedarkcolour:kotlinforforge:${forge_kotlin_version}")
+    implementation("org.spongepowered:mixin:0.8")
 }
 
 sourceSets {
@@ -95,9 +97,10 @@ curseforge {
         addArtifact(tasks["jar"])
         addGameVersion("Forge")
         addGameVersion("Java 8")
-        addGameVersion("1.15")
-        addGameVersion("1.15.1")
-        addGameVersion("1.15.2")
+        addGameVersion("1.14.1")
+        addGameVersion("1.14.2")
+        addGameVersion("1.14.3")
+        addGameVersion("1.14.4")
         relations(closureOf<CurseRelation> {
             requiredDependency("kotlin-for-forge")
         })

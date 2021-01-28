@@ -96,9 +96,10 @@ curseforge {
         addArtifact(tasks["jar"])
         addGameVersion("Fabric")
         addGameVersion("Java 8")
-        addGameVersion("1.15")
-        addGameVersion("1.15.1")
-        addGameVersion("1.15.2")
+        addGameVersion("1.14.1")
+        addGameVersion("1.14.2")
+        addGameVersion("1.14.3")
+        addGameVersion("1.14.4")
         relations(closureOf<CurseRelation> {
             requiredDependency("fabric-language-kotlin")
             requiredDependency("fabric-api")

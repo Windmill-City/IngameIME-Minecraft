@@ -1,7 +1,6 @@
 package city.windmill.ingameime.client.gui.widget
 
 import city.windmill.ingameime.client.jni.ExternalBaseIME
-import com.mojang.blaze3d.vertex.PoseStack
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -35,10 +34,10 @@ class AlphaModeWidget(font: Font) : Widget(font) {
         get() = 2 to 3
     
     @Suppress("NAME_SHADOWING")
-    override fun draw(poseStack: PoseStack, offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int, delta: Float) {
-        super.draw(poseStack, offsetX, offsetY, mouseX, mouseY, delta)
+    override fun draw(offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int, delta: Float) {
+        super.draw(offsetX, offsetY, mouseX, mouseY, delta)
         val offsetX = offsetX + width / 2 - font.width(text) / 2
         val offsetY = offsetY + padding.second
-        font.draw(poseStack, text, offsetX.toFloat(), offsetY.toFloat(), textColor)
+        font.draw(text, offsetX.toFloat(), offsetY.toFloat(), textColor)
     }
 }

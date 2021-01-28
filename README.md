@@ -17,5 +17,4 @@ FullScreen Mode
 ### Fabric
 - https://www.curseforge.com/minecraft/mc-mods/fabric-language-kotlin
 - https://www.curseforge.com/minecraft/mc-mods/fabric-api
-- https://www.curseforge.com/minecraft/mc-mods/satin-api
 - https://www.curseforge.com/minecraft/mc-mods/cloth-api

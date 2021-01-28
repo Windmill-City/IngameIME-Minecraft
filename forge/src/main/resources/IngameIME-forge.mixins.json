@@ -3,14 +3,12 @@
   "minVersion": "0.8",
   "package": "city.windmill.ingameime.forge.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-  ],
   "client": [
     "MixinBookEditScreen",
     "MixinEditBox",
-    "MixinEditScreen",
-    "MixinEditSignScreen",
-    "MixinMinecraft"
+    "MixinMinecraft",
+    "MixinSignEditScreen",
+    "MixinSignRenderer"
   ],
   "injectors": {
     "defaultRequire": 1
