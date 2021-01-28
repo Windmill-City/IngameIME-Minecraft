@@ -44,6 +44,7 @@ object ExternalBaseIME {
         NativeLoader.load(Minecraft.getInstance().resourceManager.getResource(resourceNative))
         LOGGER.trace("Initialing window")
         nInitialize(glfwGetWin32Window(Minecraft.getInstance().window.window))
+        FullScreen = Minecraft.getInstance().window.isFullscreen
     }
     
     //region Natives
