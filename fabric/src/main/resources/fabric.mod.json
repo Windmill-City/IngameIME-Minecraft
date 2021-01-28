@@ -24,7 +24,10 @@
   },
   "accessWidener": "ingameime.accessWidener",
   "mixins": [
-    "IngameIME-fabric.mixins.json"
+    {
+      "config": "IngameIME-fabric.mixins.json",
+      "environment": "client"
+    }
   ],
   "depends": {
     "minecraft": ">=1.14",
@@ -32,5 +35,8 @@
     "fabric-key-binding-api-v1": ">=1.0.1",
     "fabric-language-kotlin": ">=1.4.0",
     "cloth": ">=0.6.0"
+  },
+  "breaks": {
+    "minecraft": ">=1.15"
   }
 }
