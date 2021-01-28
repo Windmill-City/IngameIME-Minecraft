@@ -57,7 +57,6 @@ object IngameIMEClient : ClientModInitializer {
                     EDIT_CARET.register(ScreenEvents.EditCaret(::onEditCaret))
                     EDIT_CLOSE.register(ScreenEvents.EditClose(::onEditClose))
                 }
-                ExternalBaseIME.FullScreen = Minecraft.getInstance().window.isFullscreen
             })
             KeyBindingHelper.registerKeyBinding(KeyHandler.toogleKey)
         } else
