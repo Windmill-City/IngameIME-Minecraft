@@ -26,7 +26,12 @@ println("Curse Api Key:$curse_api_key")
 subprojects {
     tasks {
         withType<KotlinCompile> {
-            kotlinOptions.jvmTarget = "1.8"
+            kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
+        }
+    
+        withType<JavaCompile> {
+            sourceCompatibility = JavaVersion.VERSION_1_8.toString()
+            targetCompatibility = JavaVersion.VERSION_1_8.toString()
         }
     }
 }
