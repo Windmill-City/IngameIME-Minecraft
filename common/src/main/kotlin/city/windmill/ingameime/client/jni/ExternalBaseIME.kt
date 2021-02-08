@@ -39,12 +39,16 @@ object ExternalBaseIME {
         }
     
     init {
-        val x86 = if (Minecraft.getInstance().is64Bit) "" else "-x86"
-        val resourceNative = ResourceLocation("ingameime", "natives/jni$x86.dll")
-        NativeLoader.load(Minecraft.getInstance().resourceManager.getResource(resourceNative))
-        LOGGER.trace("Initialing window")
-        nInitialize(glfwGetWin32Window(Minecraft.getInstance().window.window))
-        FullScreen = Minecraft.getInstance().window.isFullscreen
+        try {
+            val x86 = if (Minecraft.getInstance().is64Bit) "" else "-x86"
+            val resourceNative = ResourceLocation("ingameime", "natives/jni$x86.dll")
+            NativeLoader.load(Minecraft.getInstance().resourceManager.getResource(resourceNative))
+            LOGGER.debug("Initialing window")
+            nInitialize(glfwGetWin32Window(Minecraft.getInstance().window.window))
+            FullScreen = Minecraft.getInstance().window.isFullscreen
+        } catch (ex: Exception) {
+            LOGGER.error("Failed in initializing ExternalBaseIME:", ex)
+        }
     }
     
     //region Natives
