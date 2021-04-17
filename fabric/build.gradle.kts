@@ -9,12 +9,10 @@ plugins {
 }
 
 repositories {
+    maven("https://maven.shedaniel.me/")
     jcenter()
     mavenCentral()
-    maven("https://files.minecraftforge.net/maven")
-    maven("https://dl.bintray.com/shedaniel/shedaniel-mods")
     maven("https://jitpack.io")
-    maven("https://thedarkcolour.github.io/KotlinForForge/")
 }
 
 loom {
