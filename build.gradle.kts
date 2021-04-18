@@ -17,11 +17,10 @@ val curse_api_key: String
                 return (props["curse_api_key"] ?: "") as String
             }
         }
-        return ""
+        return System.getenv("CURSE_API_KEY")
     }
 
 rootProject.ext["apiKey"] = curse_api_key
-println("Curse Api Key:$curse_api_key")
 
 subprojects {
     tasks {
