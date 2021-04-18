@@ -83,6 +83,9 @@ tasks {
             )
         }
     }
+    processResources {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
 }
 
 val changeLog: String by rootProject
