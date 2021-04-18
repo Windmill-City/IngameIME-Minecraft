@@ -43,7 +43,7 @@ base {
 dependencies {
     minecraft("com.mojang:minecraft:${minecraft_version}")
     mappings(minecraft.officialMojangMappings())
-    
+
     //Fabric
     modImplementation("net.fabricmc:fabric-loader:${fabric_loader_version}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${fabric_api_version}")
@@ -105,7 +105,7 @@ curseforge {
             requiredDependency("cloth-api")
         })
     })
-    
+
     options(closureOf<Options> {
         forgeGradleIntegration = false
     })
