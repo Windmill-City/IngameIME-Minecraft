@@ -4,10 +4,6 @@ name: UploadCurseForge
 
 # Controls when the action will run. 
 on:
-  # Triggers the workflow on pull request events but only for the 1.16, 1.15, 1.14 branch
-  pull_request:
-    branches: [ "1.16", "1.15", "1.14" ]
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
