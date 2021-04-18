@@ -57,6 +57,8 @@ object IngameIMEClient : ClientModInitializer {
                     EDIT_CARET.register(ScreenEvents.EditCaret(::onEditCaret))
                     EDIT_CLOSE.register(ScreenEvents.EditClose(::onEditClose))
                 }
+                //Ensure native dll are loaded, or crash the game
+                LOGGER.info("Current IME State:${ExternalBaseIME.State}")
             })
             KeyBindingHelper.registerKeyBinding(KeyHandler.toogleKey)
         } else

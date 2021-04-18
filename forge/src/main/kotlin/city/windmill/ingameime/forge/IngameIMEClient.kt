@@ -84,5 +84,7 @@ object IngameIMEClient {
                 ScreenHandler.ScreenState.EditState.onEditClose(it.edit)
             }
         }
+        //Ensure native dll are loaded, or crash the game
+        LOGGER.info("Current IME State:${ExternalBaseIME.State}")
     }
 }
