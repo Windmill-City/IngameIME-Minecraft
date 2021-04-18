@@ -80,6 +80,7 @@ tasks {
         filesMatching("fabric.mod.json") {
             expand("version" to version)
         }
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         inputs.property("version", version)
     }
 }
