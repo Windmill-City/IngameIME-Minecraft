@@ -86,10 +86,10 @@ subprojects {
     afterEvaluate {
         tasks {
             withType<com.matthewprenger.cursegradle.CurseUploadTask> {
-                val curseforgeFile = file("../CurseForgeLatest.json")
-                val versionInfo =
-                    (groovy.json.JsonSlurper().parse(curseforgeFile) as Map<String, String>).toMutableMap()
                 onlyIf {
+                    val curseforgeFile = file("../CurseForgeLatest.json")
+                    val versionInfo =
+                        (groovy.json.JsonSlurper().parse(curseforgeFile) as Map<String, String>).toMutableMap()
                     val uploadedVersion = Version(versionInfo[project.name]!!)
                     val currentVersion = Version(project.version.toString())
                     println("Uploaded:$uploadedVersion")
@@ -97,6 +97,9 @@ subprojects {
                     return@onlyIf uploadedVersion < currentVersion
                 }
                 doLast {
+                    val curseforgeFile = file("../CurseForgeLatest.json")
+                    val versionInfo =
+                        (groovy.json.JsonSlurper().parse(curseforgeFile) as Map<String, String>).toMutableMap()
                     //Uploaded, update json file
                     versionInfo[project.name] = project.version.toString()
                     groovy.json.JsonOutput.toJson(versionInfo).let {
