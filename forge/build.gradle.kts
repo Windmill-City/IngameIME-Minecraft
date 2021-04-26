@@ -103,6 +103,7 @@ curseforge {
         addGameVersion("1.15.2")
         relations(closureOf<CurseRelation> {
             requiredDependency("kotlin-for-forge")
+            optionalDependency("mixinbootstrap")
         })
     })
     options(closureOf<Options> {
