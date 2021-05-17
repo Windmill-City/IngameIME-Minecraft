@@ -8,6 +8,7 @@ import city.windmill.ingameime.fabric.ScreenEvents.EDIT_CARET
 import city.windmill.ingameime.fabric.ScreenEvents.EDIT_CLOSE
 import city.windmill.ingameime.fabric.ScreenEvents.EDIT_OPEN
 import city.windmill.ingameime.fabric.ScreenEvents.SCREEN_CHANGED
+import city.windmill.ingameime.fabric.ScreenEvents.WINDOW_SIZE_CHANGED
 import ladysnake.satin.api.event.ResolutionChangeCallback
 import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks
 import me.shedaniel.cloth.api.client.events.v0.ScreenKeyPressedCallback
@@ -46,9 +47,15 @@ object IngameIMEClient : ClientModInitializer {
                     else
                         InteractionResult.PASS
                 })
-                ResolutionChangeCallback.EVENT.register(ResolutionChangeCallback { _, _ ->
-                    ExternalBaseIME.FullScreen = Minecraft.getInstance().window.isFullscreen
-                })
+                if (net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("satin"))
+                    ResolutionChangeCallback.EVENT.register(ResolutionChangeCallback { _, _ ->
+                        ExternalBaseIME.FullScreen = Minecraft.getInstance().window.isFullscreen
+                    })
+                else {
+                    WINDOW_SIZE_CHANGED.register(ScreenEvents.WindowSizeChanged { _, _ ->
+                        ExternalBaseIME.FullScreen = Minecraft.getInstance().window.isFullscreen
+                    })
+                }
                 with(ScreenHandler.ScreenState) {
                     SCREEN_CHANGED.register(ScreenEvents.ScreenChanged(::onScreenChange))
                 }

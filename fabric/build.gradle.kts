@@ -106,8 +106,8 @@ curseforge {
         relations(closureOf<CurseRelation> {
             requiredDependency("fabric-language-kotlin")
             requiredDependency("fabric-api")
-            requiredDependency("satin-api")
             requiredDependency("cloth-api")
+            optionalDependency("satin-api")
         })
     })
 
