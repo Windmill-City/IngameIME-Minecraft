@@ -71,7 +71,7 @@ object IngameIMEClient : ClientModInitializer {
                 //Ensure native dll are loaded, or crash the game
                 LOGGER.info("Current IME State:${ExternalBaseIME.State}")
             })
-            KeyBindingHelper.registerKeyBinding(KeyHandler.toogleKey)
+            KeyBindingHelper.registerKeyBinding(KeyHandler.toggleKey)
         } else
             LOGGER.warn("This mod cant work in ${Util.getPlatform()} !")
     }

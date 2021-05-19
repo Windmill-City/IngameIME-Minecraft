@@ -41,7 +41,7 @@ object IngameIMEClient {
         LOADING_CONTEXT.registerExtensionPoint(
             ExtensionPoint.CONFIGGUIFACTORY
         ) {
-            BiFunction { client, parent ->
+            BiFunction { _, parent ->
                 return@BiFunction ConfigHandler.createConfigScreen().setParentScreen(parent).build()
             }
         }
@@ -61,7 +61,7 @@ object IngameIMEClient {
 
     @Suppress("UNUSED_PARAMETER")
     private fun onClientSetup(event: FMLClientSetupEvent) {
-        ClientRegistry.registerKeyBinding(KeyHandler.toogleKey)
+        ClientRegistry.registerKeyBinding(KeyHandler.toggleKey)
     }
 
     @Suppress("UNUSED_PARAMETER")

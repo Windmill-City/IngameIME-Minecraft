@@ -9,6 +9,8 @@ import net.minecraftforge.fml.event.lifecycle.IModBusEvent
 @OnlyIn(Dist.CLIENT)
 class ScreenEvents {
     abstract class ModEvent : Event(), IModBusEvent
+
+    @Suppress("unused")
     class WindowSizeChanged(val width: Int, val height: Int) : ModEvent()
     class ScreenChanged(val oldScreen: Screen?, val newScreen: Screen?) : ModEvent()
     

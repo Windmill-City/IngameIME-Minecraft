@@ -48,6 +48,8 @@ object ConfigHandler {
                 }
             field = value
         }
+
+    @Suppress("MemberVisibilityCanBePrivate")
     var autoReplaceSlashChar = false
         set(value) {
             if (field != value)
@@ -57,7 +59,7 @@ object ConfigHandler {
                         if (ScreenHandler.ScreenState.currentScreen is ChatScreen
                             && ScreenHandler.ScreenState.EditState.currentEdit is EditBox
                             && (ScreenHandler.ScreenState.EditState.currentEdit as EditBox).cursorPosition == 0
-                            && commit.length > 0 && slashCharArray.contains(commit[0])
+                            && commit.isNotEmpty() && slashCharArray.contains(commit[0])
                         ) {
                             //Change to command mode, replace the char /
                             result = "/${commit.substring(1)}"
@@ -72,6 +74,8 @@ object ConfigHandler {
                 }
             field = value
         }
+
+    @Suppress("MemberVisibilityCanBePrivate")
     var slashCharArray = charArrayOf('、')
 
     private val config = Paths.get(
