@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager
 import org.lwjgl.glfw.GLFW
 import java.lang.ref.WeakReference
 
-interface ICombinationKeyActionListener {
+fun interface ICombinationKeyActionListener {
     fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction)
 }
 

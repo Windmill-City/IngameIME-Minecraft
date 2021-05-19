@@ -1,76 +1,42 @@
-import com.matthewprenger.cursegradle.CurseProject
-import com.matthewprenger.cursegradle.CurseRelation
-import com.matthewprenger.cursegradle.Options
-
-plugins {
-    kotlin("jvm")
-    id("forgified-fabric-loom")
-    id("com.matthewprenger.cursegradle")
+architectury {
+    platformSetupLoomIde()
+    fabric()
 }
 
 repositories {
+    maven("https://maven.fabricmc.net")
     maven("https://maven.shedaniel.me/")
-    jcenter()
-    mavenCentral()
-    maven("https://jitpack.io")
+    maven("https://maven.terraformersmc.com/releases/")
 }
 
 loom {
-    silentMojangMappingsLicense()
     accessWidener = file("src/main/resources/ingameime.accessWidener")
 }
 
-//General
-val minecraft_version: String by rootProject
-//Mod Props
-val archives_base_name: String by project
-val mod_version: String by rootProject
-val maven_group: String by rootProject
-//Fabric
-val fabric_api_version: String by project
-val fabric_loader_version: String by project
-val cloth_api_version: String by project
-val satin_version: String by project
-val roughlyenoughitems: String by project
-val fabric_kotlin_version: String by project
-
-version = mod_version
-group = maven_group
-base {
-    archivesBaseName = "$archives_base_name-$name-$minecraft_version"
+minecraft {
+    mixinConfig("IngameIME-fabric.mixins.json")
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${minecraft_version}")
-    mappings(minecraft.officialMojangMappings())
-
     //Fabric
-    modImplementation("net.fabricmc:fabric-loader:${fabric_loader_version}")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${fabric_api_version}")
+    modImplementation("net.fabricmc:fabric-loader:0.11.3")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.28.5+1.15")
     //REI
-    modImplementation("me.shedaniel:RoughlyEnoughItems:${roughlyenoughitems}")
+    modImplementation("me.shedaniel:RoughlyEnoughItems:3.6.21")
     //Cloth Api
-    modImplementation("me.shedaniel.cloth:cloth-events:${cloth_api_version}")
+    modImplementation("me.shedaniel.cloth:cloth-events:1.2.0")
     //Kotlin
-    modImplementation("net.fabricmc:fabric-language-kotlin:${fabric_kotlin_version}")
-}
-
-sourceSets {
-    main {
-        java {
-            srcDirs(
-                "src/main/java",
-                "src/main/kotlin",
-                "../common/src/main/kotlin"
-            )
-        }
-        resources {
-            srcDirs(
-                "src/main/resources",
-                "../common/src/main/resources"
-            )
-        }
+    modImplementation("net.fabricmc:fabric-language-kotlin:1.5.+")
+    //Cloth Config
+    modImplementation("me.shedaniel.cloth:config-2:2.14.2") {
+        exclude("net.fabricmc.fabric-api")
     }
+    //ModMenu
+    modImplementation("com.terraformersmc:modmenu:1.10.6")
+
+    implementation(project(path = ":common")) { isTransitive = false }
+    add("developmentFabric", project(path = ":common")) { isTransitive = false }
+    shadowC(project(path = ":common", configuration = "transformProductionFabric")) { isTransitive = false }
 }
 
 tasks {
@@ -81,31 +47,35 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         inputs.property("version", version)
     }
+    jar {
+        archiveClassifier.set("dev")
+    }
 }
 
 val changeLog: String by rootProject
 
 curseforge {
     apiKey = rootProject.ext["apiKey"]
-    project(closureOf<CurseProject> {
+    project(closureOf<com.matthewprenger.cursegradle.CurseProject> {
         id = "440032"
         releaseType = "release"
         changelog = changeLog
         mainArtifact(tasks["remapJar"])
-        addArtifact(tasks["jar"])
+        addArtifact(tasks["shadowJar"])
         addGameVersion("Fabric")
         addGameVersion("Java 8")
         addGameVersion("1.15")
         addGameVersion("1.15.1")
         addGameVersion("1.15.2")
-        relations(closureOf<CurseRelation> {
+        relations(closureOf<com.matthewprenger.cursegradle.CurseRelation> {
             requiredDependency("fabric-language-kotlin")
             requiredDependency("fabric-api")
             requiredDependency("cloth-api")
+            requiredDependency("cloth-config")
         })
     })
 
-    options(closureOf<Options> {
+    options(closureOf<com.matthewprenger.cursegradle.Options> {
         forgeGradleIntegration = false
     })
 }

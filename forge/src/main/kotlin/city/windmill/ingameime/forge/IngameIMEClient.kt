@@ -1,5 +1,6 @@
 package city.windmill.ingameime.forge
 
+import city.windmill.ingameime.client.ConfigHandler
 import city.windmill.ingameime.client.KeyHandler
 import city.windmill.ingameime.client.ScreenHandler
 import city.windmill.ingameime.client.gui.OverlayScreen
@@ -18,6 +19,7 @@ import thedarkcolour.kotlinforforge.forge.FORGE_BUS
 import thedarkcolour.kotlinforforge.forge.LOADING_CONTEXT
 import thedarkcolour.kotlinforforge.forge.MOD_BUS
 import thedarkcolour.kotlinforforge.forge.runForDist
+import java.util.function.BiFunction
 import java.util.function.BiPredicate
 import java.util.function.Supplier
 
@@ -26,7 +28,7 @@ import java.util.function.Supplier
 object IngameIMEClient {
     private val LOGGER = LogManager.getLogger()
     val INGAMEIME_BUS = MOD_BUS
-    
+
     init {
         //Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible
         LOADING_CONTEXT.registerExtensionPoint(
@@ -36,10 +38,18 @@ object IngameIMEClient {
                 Supplier { FMLNetworkConstants.IGNORESERVERONLY },
                 BiPredicate { _, _ -> true })
         }
-        
+        LOADING_CONTEXT.registerExtensionPoint(
+            ExtensionPoint.CONFIGGUIFACTORY
+        ) {
+            BiFunction { client, parent ->
+                return@BiFunction ConfigHandler.createConfigScreen().setParentScreen(parent).build()
+            }
+        }
+
         runForDist({
             if (Util.getPlatform() == Util.OS.WINDOWS) {
                 LOGGER.info("it is Windows OS! Loading mod...")
+
                 with(INGAMEIME_BUS) {
                     addListener(::onClientSetup)
                     addListener(::enqueueIMC)
@@ -48,12 +58,12 @@ object IngameIMEClient {
                 LOGGER.warn("This mod cant work in ${Util.getPlatform()} !")
         }) { LOGGER.warn("This mod cant work in a DelicateServer!") }
     }
-    
+
     @Suppress("UNUSED_PARAMETER")
     private fun onClientSetup(event: FMLClientSetupEvent) {
         ClientRegistry.registerKeyBinding(KeyHandler.toogleKey)
     }
-    
+
     @Suppress("UNUSED_PARAMETER")
     private fun enqueueIMC(event: InterModEnqueueEvent) {
         with(FORGE_BUS) {
@@ -84,6 +94,7 @@ object IngameIMEClient {
                 ScreenHandler.ScreenState.EditState.onEditClose(it.edit)
             }
         }
+        ConfigHandler.initialConfig()
         //Ensure native dll are loaded, or crash the game
         LOGGER.info("Current IME State:${ExternalBaseIME.State}")
     }
