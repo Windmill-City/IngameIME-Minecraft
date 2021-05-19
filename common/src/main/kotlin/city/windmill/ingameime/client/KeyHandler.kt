@@ -14,7 +14,7 @@ fun interface ICombinationKeyActionListener {
 }
 
 object KeyHandler {
-    val toogleKey: KeyMapping = KeyMapping(
+    val toggleKey: KeyMapping = KeyMapping(
         "key.ingameime.hotkey",
         InputConstants.Type.KEYSYM,
         GLFW.GLFW_KEY_HOME,
@@ -93,7 +93,7 @@ object KeyHandler {
             lateinit var longPressRepeat: WeakReference<Job>
             
             fun onKeyDown(keyCode: Int, scanCode: Int, modifier: Int): Boolean {
-                if (keyCode == toogleKey.key.value) {
+                if (keyCode == toggleKey.key.value) {
                     keyState = keyState.onKeyDown(keyCode, scanCode, modifier)
                     return true
                 }
@@ -101,7 +101,7 @@ object KeyHandler {
             }
             
             fun onKeyUp(keyCode: Int, scanCode: Int, modifier: Int): Boolean {
-                if (keyCode == toogleKey.key.value) {
+                if (keyCode == toggleKey.key.value) {
                     keyState = keyState.onKeyUp(keyCode, scanCode, modifier)
                     return true
                 }

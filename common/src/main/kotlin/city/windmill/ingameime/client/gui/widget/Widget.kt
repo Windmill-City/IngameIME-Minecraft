@@ -8,12 +8,14 @@ abstract class Widget(val font: Font) {
     var offsetX = 0
     var offsetY = 0
     var textColor = 0xFF_00_00_00.toInt()
+
+    @Suppress("MemberVisibilityCanBePrivate")
     var backgroundColor = 0xEB_EB_EB_EB.toInt()
     open val active get() = false
     open val width get() = padding.first * 2
     open val height get() = padding.second * 2
     open val padding = 0 to 0
-    
+
     fun render(mouseX: Int, mouseY: Int, delta: Float) {
         if (active)
             draw(offsetX, offsetY, mouseX, mouseY, delta)
