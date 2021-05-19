@@ -7,21 +7,17 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.stream.JsonReader
-import me.shedaniel.clothconfig2.api.ConfigBuilder
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.screens.ChatScreen
-import net.minecraft.client.resources.language.I18n
-import net.minecraft.network.chat.TextComponent
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
-import java.util.*
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.outputStream
 import kotlin.io.path.reader
 
-object ConfigHandler {
+abstract class ConfigHandler {
     var disableIMEInCommandMode = false
         set(value) {
             if (field != value)
@@ -127,55 +123,5 @@ object ConfigHandler {
         }
     }
 
-    fun createConfigScreen(): ConfigBuilder {
-        return ConfigBuilder.create()
-            .setTitle(TextComponent(I18n.get("config.title")))
-            .setSavingRunnable { saveConfig() }.apply {
-                getOrCreateCategory(TextComponent(I18n.get("config.category.chat"))).apply {
-                    addEntry(
-                        entryBuilder()
-                            .startBooleanToggle(
-                                TextComponent(I18n.get("desc.disableIMEInCommandMode")),
-                                disableIMEInCommandMode
-                            )
-                            .setDefaultValue(true)
-                            .setTooltip(TextComponent(I18n.get("tooltip.disableIMEInCommandMode")))
-                            .setSaveConsumer { result -> disableIMEInCommandMode = result }
-                            .build()
-                    )
-                    addEntry(
-                        entryBuilder()
-                            .startBooleanToggle(
-                                TextComponent(I18n.get("desc.autoReplaceSlashChar")),
-                                autoReplaceSlashChar
-                            )
-                            .setDefaultValue(true)
-                            .setTooltip(TextComponent(I18n.get("tooltip.autoReplaceSlashChar")))
-                            .setSaveConsumer { result -> autoReplaceSlashChar = result }
-                            .build()
-                    )
-                    addEntry(
-                        entryBuilder().startStrList(
-                            TextComponent(I18n.get("desc.slashChars")),
-                            slashCharArray.map { it.toString() }
-                        )
-                            .setDefaultValue(mutableListOf("、"))
-                            .setTooltip(TextComponent(I18n.get("tooltip.slashChars")))
-                            .setCellErrorSupplier { str ->
-                                if (str.length > 1)
-                                    return@setCellErrorSupplier Optional.of(TextComponent(I18n.get("desc.error.slashChars")))
-                                return@setCellErrorSupplier Optional.empty()
-                            }
-                            .setSaveConsumer { result ->
-                                slashCharArray = result
-                                    .filterNot { it.isBlank() }
-                                    .map { it[0] }
-                                    .toSet()
-                                    .toCharArray()
-                            }
-                            .build()
-                    )
-                }
-            }
-    }
+    abstract fun createConfigScreen(): Any
 }

@@ -1,6 +1,5 @@
 package city.windmill.ingameime.forge
 
-import city.windmill.ingameime.client.ConfigHandler
 import city.windmill.ingameime.client.KeyHandler
 import city.windmill.ingameime.client.ScreenHandler
 import city.windmill.ingameime.client.gui.OverlayScreen
@@ -42,7 +41,7 @@ object IngameIMEClient {
             ExtensionPoint.CONFIGGUIFACTORY
         ) {
             BiFunction { client, parent ->
-                return@BiFunction ConfigHandler.createConfigScreen().setParentScreen(parent).build()
+                return@BiFunction ConfigHandlerImpl.createConfigScreen().setParentScreen(parent).build()
             }
         }
 
@@ -94,7 +93,7 @@ object IngameIMEClient {
                 ScreenHandler.ScreenState.EditState.onEditClose(it.edit)
             }
         }
-        ConfigHandler.initialConfig()
+        ConfigHandlerImpl.initialConfig()
         //Ensure native dll are loaded, or crash the game
         LOGGER.info("Current IME State:${ExternalBaseIME.State}")
     }

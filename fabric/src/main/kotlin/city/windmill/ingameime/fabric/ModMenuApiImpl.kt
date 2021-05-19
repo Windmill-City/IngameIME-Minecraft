@@ -1,11 +1,15 @@
 package city.windmill.ingameime.fabric
 
-import city.windmill.ingameime.client.ConfigHandler
-import com.terraformersmc.modmenu.api.ConfigScreenFactory
-import com.terraformersmc.modmenu.api.ModMenuApi
+import io.github.prospector.modmenu.api.ModMenuApi
+import net.minecraft.client.gui.screens.Screen
+import java.util.function.Function
 
 class ModMenuApiImpl : ModMenuApi {
-    override fun getModConfigScreenFactory(): ConfigScreenFactory<*> {
-        return ConfigScreenFactory { parent -> ConfigHandler.createConfigScreen().setParentScreen(parent).build() }
+    override fun getModId(): String {
+        return "ingameime"
+    }
+
+    override fun getConfigScreenFactory(): Function<Screen, out Screen> {
+        return Function { parent -> ConfigHandlerImpl.createConfigScreen().setParentScreen(parent).build() }
     }
 }
