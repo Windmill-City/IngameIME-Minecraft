@@ -17,12 +17,14 @@ FullScreen Mode
 ### Forge
 
 - https://www.curseforge.com/minecraft/mc-mods/kotlin-for-forge
+- https://www.curseforge.com/minecraft/mc-mods/cloth-config-forge
 
 ### Fabric
 
 - https://www.curseforge.com/minecraft/mc-mods/fabric-language-kotlin
 - https://www.curseforge.com/minecraft/mc-mods/fabric-api
 - https://www.curseforge.com/minecraft/mc-mods/cloth-api
+- https://www.curseforge.com/minecraft/mc-mods/cloth-config
 
 #### Optional
 
