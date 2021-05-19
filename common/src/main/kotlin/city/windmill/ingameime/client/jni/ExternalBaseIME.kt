@@ -48,6 +48,7 @@ object ExternalBaseIME {
             NativeLoader.load(Minecraft.getInstance().resourceManager.getResource(resourceNative))
             LOGGER.debug("Initialing window")
             nInitialize(glfwGetWin32Window(Minecraft.getInstance().window.window))
+            nSetState(State)//Force a state
             FullScreen = Minecraft.getInstance().window.isFullscreen
         } catch (ex: Exception) {
             LOGGER.error("Failed in initializing ExternalBaseIME:", ex)
