@@ -7,7 +7,7 @@ import org.apache.logging.log4j.LogManager
 
 object IMEHandler {
     private val LOGGER = LogManager.getFormatterLogger("IngameIME|IMEHandler")!!
-    
+
     enum class IMEState {
         DISABLED {
             override fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction): IMEState {
@@ -21,11 +21,11 @@ object IMEHandler {
                     LONG_PRESS -> this
                 }
             }
-            
+
             override fun onCommit(): IMEState {
                 return this //do nothing
             }
-            
+
             override fun onScreenState(state: ScreenHandler.ScreenState): IMEState {
                 return when (state) {
                     ScreenHandler.ScreenState.NULL_SCREEN,
@@ -37,7 +37,7 @@ object IMEHandler {
                     }
                 }
             }
-            
+
             override fun onEditState(state: ScreenHandler.ScreenState.EditState): IMEState {
                 return when (state) {
                     ScreenHandler.ScreenState.EditState.NULL_EDIT -> {
@@ -61,12 +61,12 @@ object IMEHandler {
                     LONG_PRESS -> this
                 }
             }
-            
+
             override fun onCommit(): IMEState {
                 ExternalBaseIME.State = false
                 return DISABLED
             }
-            
+
             override fun onScreenState(state: ScreenHandler.ScreenState): IMEState {
                 return when (state) {
                     ScreenHandler.ScreenState.NULL_SCREEN,
@@ -78,7 +78,7 @@ object IMEHandler {
                     }
                 }
             }
-            
+
             override fun onEditState(state: ScreenHandler.ScreenState.EditState): IMEState {
                 return when (state) {
                     ScreenHandler.ScreenState.EditState.NULL_EDIT -> {
@@ -102,11 +102,11 @@ object IMEHandler {
                     LONG_PRESS -> this
                 }
             }
-            
+
             override fun onCommit(): IMEState {
                 return this //do nothing
             }
-            
+
             override fun onScreenState(state: ScreenHandler.ScreenState): IMEState {
                 return when (state) {
                     ScreenHandler.ScreenState.NULL_SCREEN,
@@ -118,7 +118,7 @@ object IMEHandler {
                     }
                 }
             }
-            
+
             override fun onEditState(state: ScreenHandler.ScreenState.EditState): IMEState {
                 return when (state) {
                     ScreenHandler.ScreenState.EditState.NULL_EDIT -> {
@@ -130,7 +130,7 @@ object IMEHandler {
                 }
             }
         };
-        
+
         companion object : ICombinationKeyActionListener, ICommitListener, IScreenStateListener,
             IEditStateListener {
             private var imeState = DISABLED
@@ -144,24 +144,25 @@ object IMEHandler {
                         ENABLED -> ExternalBaseIME.State = true
                     }
                 }
-            
+
             override fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction) {
                 imeState = imeState.onAction(action)
             }
-            
-            override fun onCommit() {
-                imeState = imeState.onCommit()
-            }
-            
+
             override fun onScreenState(state: ScreenHandler.ScreenState) {
                 imeState = imeState.onScreenState(state)
             }
-            
+
             override fun onEditState(state: ScreenHandler.ScreenState.EditState) {
                 imeState = imeState.onEditState(state)
             }
+
+            override fun onCommit(commit: String): String {
+                imeState = imeState.onCommit()
+                return commit
+            }
         }
-        
+
         abstract fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction): IMEState
         abstract fun onCommit(): IMEState
         abstract fun onScreenState(state: ScreenHandler.ScreenState): IMEState

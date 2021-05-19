@@ -4,11 +4,11 @@ import city.windmill.ingameime.client.gui.OverlayScreen
 import net.minecraft.client.gui.screens.Screen
 import org.apache.logging.log4j.LogManager
 
-interface IScreenStateListener {
+fun interface IScreenStateListener {
     fun onScreenState(state: ScreenHandler.ScreenState)
 }
 
-interface IEditStateListener {
+fun interface IEditStateListener {
     fun onEditState(state: ScreenHandler.ScreenState.EditState)
 }
 
@@ -53,11 +53,12 @@ object ScreenHandler {
                 set(value) {
                     LOGGER.trace("ScreenState $field -> $value")
                     field = value
-                    IMEHandler.IMEState.onScreenState(field)
+                    iScreenStateListener.onScreenState(field)
                     EditState.onScreenState(field)
                 }
-            private var currentScreen: Screen? = null
-            
+            var currentScreen: Screen? = null
+            var iScreenStateListener: IScreenStateListener = IMEHandler.IMEState
+
             fun onScreenChange(oldScreen: Screen?, newScreen: Screen?) {
                 LOGGER.trace("$oldScreen -> $newScreen")
                 screenState = screenState.onScreenChange(oldScreen, newScreen)
@@ -113,19 +114,20 @@ object ScreenHandler {
                         if (field == value) return
                         LOGGER.trace("EditState $editState -> $value")
                         field = value
-                        IMEHandler.IMEState.onEditState(field)
+                        iEditstateListener.onEditState(field)
                     }
-                
-                private var currentEdit: Any? = null
-                
+
+                var currentEdit: Any? = null
+                var iEditstateListener: IEditStateListener = IMEHandler.IMEState
+
                 fun onEditOpen(edit: Any, caretPos: Pair<Int, Int>) {
                     editState = editState.onEditOpen(edit, caretPos)
                 }
-                
+
                 fun onEditCaret(edit: Any, caretPos: Pair<Int, Int>) {
                     editState = editState.onEditCaret(edit, caretPos)
                 }
-                
+
                 fun onEditClose(edit: Any) {
                     editState = editState.onEditClose(edit)
                 }

@@ -1,72 +1,41 @@
-import com.matthewprenger.cursegradle.CurseProject
-import com.matthewprenger.cursegradle.CurseRelation
-import com.matthewprenger.cursegradle.Options
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
-plugins {
-    kotlin("jvm")
-    id("forgified-fabric-loom")
-    id("com.matthewprenger.cursegradle")
+architectury {
+    platformSetupLoomIde()
+    forge()
 }
 
 repositories {
     jcenter()
     mavenCentral()
-    maven("https://repo.spongepowered.org/maven")
     maven("https://files.minecraftforge.net/maven")
-    maven("https://dl.bintray.com/shedaniel/shedaniel-mods")
-    maven("https://jitpack.io")
+    maven("https://maven.shedaniel.me/")
     maven("https://thedarkcolour.github.io/KotlinForForge/")
+    maven("https://repo.spongepowered.org/maven")
+    maven("https://www.cursemaven.com") {
+        content {
+            includeGroup("curse.maven")
+        }
+    }
 }
 
-loom {
-    silentMojangMappingsLicense()
-    mixinConfig = "IngameIME-forge.mixins.json"
-}
-
-//General
-val minecraft_version: String by rootProject
-val forge_version: String by project
-//Mod Props
-val archives_base_name: String by project
-val mod_version: String by rootProject
-val maven_group: String by rootProject
-//Kotlin
-val forge_kotlin_version: String by project
-
-version = mod_version
-group = maven_group
-base {
-    archivesBaseName = "$archives_base_name-$name-$minecraft_version"
+minecraft {
+    mixinConfig("IngameIME-forge.mixins.json")
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${minecraft_version}")
-    mappings(minecraft.officialMojangMappings())
-    forge("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
-    
-    //Forge Kotlin
-    modImplementation("thedarkcolour:kotlinforforge:${forge_kotlin_version}")
-    implementation("org.spongepowered:mixin:0.8")
-}
+    forge("net.minecraftforge:forge:${rootProject.architectury.minecraft}-28.2.23")
 
-sourceSets {
-    main {
-        java {
-            srcDirs(
-                "src/main/java",
-                "src/main/kotlin",
-                "../common/src/main/kotlin"
-            )
-        }
-        resources {
-            srcDirs(
-                "src/main/resources",
-                "../common/src/main/resources"
-            )
-        }
-    }
+    //Forge Kotlin
+    modImplementation("thedarkcolour:kotlinforforge:1.11.1")
+    //ClothConfig2-1.4.1
+    modImplementation("curse.maven:ClothConfig2-348521:2813656")
+    modImplementation("org.spongepowered:mixin:0.8")
+
+    implementation(project(path = ":common")) { isTransitive = false }
+    add("developmentForge", project(path = ":common")) { isTransitive = false }
+    shadowC(project(path = ":common", configuration = "transformProductionForge")) { isTransitive = false }
 }
 
 tasks {
@@ -92,24 +61,25 @@ val changeLog: String by rootProject
 
 curseforge {
     apiKey = rootProject.ext["apiKey"]
-    project(closureOf<CurseProject> {
+    project(closureOf<com.matthewprenger.cursegradle.CurseProject> {
         id = "440032"
         releaseType = "release"
         changelog = changeLog
         mainArtifact(tasks["remapJar"])
-        addArtifact(tasks["jar"])
+        addArtifact(tasks["shadowJar"])
         addGameVersion("Forge")
         addGameVersion("Java 8")
         addGameVersion("1.14.1")
         addGameVersion("1.14.2")
         addGameVersion("1.14.3")
         addGameVersion("1.14.4")
-        relations(closureOf<CurseRelation> {
+        relations(closureOf<com.matthewprenger.cursegradle.CurseRelation> {
             requiredDependency("kotlin-for-forge")
-            optionalDependency("mixinbootstrap")
+            requiredDependency("cloth-config-forge")
+            requiredDependency("mixinbootstrap")
         })
     })
-    options(closureOf<Options> {
+    options(closureOf<com.matthewprenger.cursegradle.Options> {
         forgeGradleIntegration = false
     })
 }

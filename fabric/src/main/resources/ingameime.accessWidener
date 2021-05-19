@@ -1,5 +1,6 @@
 accessWidener   v1  named
 accessible field net/minecraft/client/KeyMapping key Lcom/mojang/blaze3d/platform/InputConstants$Key;
+accessible field net/minecraft/client/gui/screens/ChatScreen initial Ljava/lang/String;
 accessible method net/minecraft/client/KeyboardHandler charTyped (JII)V
 accessible class net/minecraft/client/gui/screens/inventory/BookEditScreen$Pos2i
 accessible field net/minecraft/client/gui/screens/inventory/BookEditScreen$Pos2i x I
