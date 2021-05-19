@@ -7,12 +7,18 @@ version = "${file.jarVersion}"
 displayName = "IngameIME"
 # A URL to query for updates for this mod. See the JSON update specification <here>
 #updateJSONURL="http://myurl.me/" #optional
-displayURL="https://github.com/Windmill-City/IngameIME-Minecraft"
+displayURL = "https://github.com/Windmill-City/IngameIME-Minecraft"
 logoFile = "icon.png"
 authors = "Windmill_City"
 description = '''
 Enable IME in FullScreen Minecraft
 '''
+[[dependencies.ingameime]]
+modId = "cloth-config"
+mandatory = true
+versionRange = "[4.11,)"
+ordering = "AFTER"
+side = "CLIENT"
 [[dependencies.ingameime]]
 modId = "forge"
 mandatory = true

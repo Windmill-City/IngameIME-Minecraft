@@ -1,70 +1,32 @@
-import com.matthewprenger.cursegradle.CurseProject
-import com.matthewprenger.cursegradle.CurseRelation
-import com.matthewprenger.cursegradle.Options
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
-plugins {
-    kotlin("jvm")
-    id("forgified-fabric-loom")
-    id("com.matthewprenger.cursegradle")
+architectury {
+    platformSetupLoomIde()
+    forge()
 }
 
 repositories {
-    jcenter()
-    mavenCentral()
     maven("https://files.minecraftforge.net/maven")
-    maven("https://dl.bintray.com/shedaniel/shedaniel-mods")
-    maven("https://jitpack.io")
+    maven("https://maven.shedaniel.me/")
     maven("https://thedarkcolour.github.io/KotlinForForge/")
 }
 
-loom {
-    silentMojangMappingsLicense()
-    mixinConfig = "IngameIME-forge.mixins.json"
-}
-
-//General
-val minecraft_version: String by rootProject
-val forge_version: String by project
-//Mod Props
-val archives_base_name: String by project
-val mod_version: String by rootProject
-val maven_group: String by rootProject
-//Kotlin
-val forge_kotlin_version: String by project
-
-version = mod_version
-group = maven_group
-base {
-    archivesBaseName = "$archives_base_name-$name-$minecraft_version"
+minecraft {
+    mixinConfig("IngameIME-forge.mixins.json")
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${minecraft_version}")
-    mappings(minecraft.officialMojangMappings())
-    forge("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
-    
-    //Forge Kotlin
-    modImplementation("thedarkcolour:kotlinforforge:${forge_kotlin_version}")
-}
+    forge("net.minecraftforge:forge:${rootProject.architectury.minecraft}-36.1.4")
 
-sourceSets {
-    main {
-        java {
-            srcDirs(
-                "src/main/java",
-                "src/main/kotlin",
-                "../common/src/main/kotlin"
-            )
-        }
-        resources {
-            srcDirs(
-                "src/main/resources",
-                "../common/src/main/resources"
-            )
-        }
-    }
+    //Forge Kotlin
+    modImplementation("thedarkcolour:kotlinforforge:1.11.1")
+    //Cloth Config
+    modImplementation("me.shedaniel.cloth:cloth-config-forge:4.11.+")
+
+    implementation(project(path = ":common")) { isTransitive = false }
+    add("developmentForge", project(path = ":common")) { isTransitive = false }
+    shadowC(project(path = ":common", configuration = "transformProductionForge")) { isTransitive = false }
 }
 
 tasks {
@@ -90,12 +52,12 @@ val changeLog: String by rootProject
 
 curseforge {
     apiKey = rootProject.ext["apiKey"]
-    project(closureOf<CurseProject> {
+    project(closureOf<com.matthewprenger.cursegradle.CurseProject> {
         id = "440032"
         releaseType = "release"
         changelog = changeLog
         mainArtifact(tasks["remapJar"])
-        addArtifact(tasks["jar"])
+        addArtifact(tasks["shadowJar"])
         addGameVersion("Forge")
         addGameVersion("Java 8")
         addGameVersion("1.16")
@@ -104,11 +66,12 @@ curseforge {
         addGameVersion("1.16.3")
         addGameVersion("1.16.4")
         addGameVersion("1.16.5")
-        relations(closureOf<CurseRelation> {
+        relations(closureOf<com.matthewprenger.cursegradle.CurseRelation> {
             requiredDependency("kotlin-for-forge")
+            requiredDependency("cloth-config-forge")
         })
     })
-    options(closureOf<Options> {
+    options(closureOf<com.matthewprenger.cursegradle.Options> {
         forgeGradleIntegration = false
     })
 }

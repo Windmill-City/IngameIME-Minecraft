@@ -1,29 +1,49 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
 plugins {
-    java
+    kotlin("jvm") version "1.4.32"
+    id("architectury-plugin") version "[3.0.100, 3.3["
+    id("dev.architectury.loom") version "0.7.2-SNAPSHOT" apply false
+    id("com.github.johnrengelman.shadow") version "6.1.0" apply false
     id("com.matthewprenger.cursegradle") version "1.4.0" apply false
-    kotlin("jvm") version "1.4.32" apply false
-    id("forgified-fabric-loom") version "0.6.54" apply false
 }
 
-val curse_api_key: String
-    get() {
-        with(file("./local.properties")){
-            if (exists()){
-                val props = Properties()
-                props.load(inputStream())
-                return (props["curse_api_key"] ?: "") as String
-            }
-        }
-        return System.getenv("CURSE_API_KEY")
-    }
+//General
+val minecraft_version = "1.16.5"
+val mod_version = "1.6"
+val maven_group = "city.windmill"
+val archives_base_name = "IngameIME"
 
-rootProject.ext["apiKey"] = curse_api_key
+version = mod_version
+group = maven_group
+
+architectury {
+    minecraft = minecraft_version
+}
 
 subprojects {
+    apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "dev.architectury.loom")
+    apply(plugin = "com.github.johnrengelman.shadow")
+    apply(plugin = "com.matthewprenger.cursegradle")
+
+    val shadowC by configurations.creating
+
+    version = mod_version
+    group = maven_group
+    base {
+        archivesBaseName = "$archives_base_name-$name-$minecraft_version"
+    }
+
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+
     tasks {
+        withType(ShadowJar::class) { this.configurations = listOf(shadowC) }
         withType<KotlinCompile> {
             kotlinOptions.jvmTarget = "1.8"
         }
@@ -32,6 +52,16 @@ subprojects {
             sourceCompatibility = "1.8"
             targetCompatibility = "1.8"
         }
+    }
+
+    lateinit var mappingsDep: Dependency
+    extensions.configure<net.fabricmc.loom.LoomGradleExtension>("loom") {
+        mappingsDep = officialMojangMappings()
+        silentMojangMappingsLicense()
+    }
+    dependencies {
+        "minecraft"("com.mojang:minecraft:${minecraft_version}")
+        "mappings"(mappingsDep)
     }
     class Version(version: String) : Comparable<Version> {
         @Suppress("PropertyName")
@@ -113,6 +143,37 @@ subprojects {
                     }
                 }
             }
+            withType(ShadowJar::class) {
+                archiveClassifier.set("shadow-dev")
+            }
+            withType(net.fabricmc.loom.task.RemapJarTask::class) {
+                onlyIf {
+                    return@onlyIf this@subprojects.name != "common"
+                }
+                val shadowTask = getByName("shadowJar") as ShadowJar
+                dependsOn(shadowTask)
+                input.set(shadowTask.archiveFile)
+                archiveAppendix.set("remapped")
+            }
         }
     }
 }
+
+allprojects {
+    apply(plugin = "java")
+    apply(plugin = "architectury-plugin")
+}
+
+val curse_api_key: String
+    get() {
+        with(file("./local.properties")) {
+            if (exists()) {
+                val props = Properties()
+                props.load(inputStream())
+                return (props["curse_api_key"] ?: "") as String
+            }
+        }
+        return System.getenv("CURSE_API_KEY")
+    }
+
+rootProject.ext["apiKey"] = curse_api_key

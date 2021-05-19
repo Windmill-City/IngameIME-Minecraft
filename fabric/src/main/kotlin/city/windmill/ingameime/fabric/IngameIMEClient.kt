@@ -1,5 +1,6 @@
 package city.windmill.ingameime.fabric
 
+import city.windmill.ingameime.client.ConfigHandler
 import city.windmill.ingameime.client.KeyHandler
 import city.windmill.ingameime.client.ScreenHandler
 import city.windmill.ingameime.client.gui.OverlayScreen
@@ -31,7 +32,10 @@ object IngameIMEClient : ClientModInitializer {
     override fun onInitializeClient() {
         if (Util.getPlatform() == Util.OS.WINDOWS) {
             LOGGER.info("it is Windows OS! Loading mod...")
+
             ClientLifecycleEvents.CLIENT_STARTED.register(ClientLifecycleEvents.ClientStarted {
+                ConfigHandler.initialConfig()
+
                 ClothClientHooks.SCREEN_LATE_RENDER.register(ScreenRenderCallback.Post { matrixStack, _, _, mouseX, mouseY, delta ->
                     OverlayScreen.render(matrixStack, mouseX, mouseY, delta)
                 })
