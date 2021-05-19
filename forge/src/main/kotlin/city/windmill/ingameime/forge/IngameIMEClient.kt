@@ -4,9 +4,13 @@ import city.windmill.ingameime.client.KeyHandler
 import city.windmill.ingameime.client.ScreenHandler
 import city.windmill.ingameime.client.gui.OverlayScreen
 import city.windmill.ingameime.client.jni.ExternalBaseIME
+import cpw.mods.modlauncher.Launcher
+import net.minecraft.ChatFormatting
 import net.minecraft.Util
 import net.minecraft.client.Minecraft
+import net.minecraft.network.chat.*
 import net.minecraftforge.client.event.GuiScreenEvent
+import net.minecraftforge.event.entity.player.PlayerEvent
 import net.minecraftforge.fml.ExtensionPoint
 import net.minecraftforge.fml.client.registry.ClientRegistry
 import net.minecraftforge.fml.common.Mod
@@ -74,6 +78,29 @@ object IngameIMEClient {
             }
             addListener<GuiScreenEvent.KeyboardKeyReleasedEvent.Pre> {
                 it.isCanceled = KeyHandler.KeyState.onKeyUp(it.keyCode, it.scanCode, it.modifiers)
+            }
+            addListener<PlayerEvent.PlayerLoggedInEvent> {
+                if (!Launcher.INSTANCE.environment().findLaunchPlugin("mixin").isPresent) {
+                    it.player.sendMessage(
+                        TranslatableComponent("message.nomixin",
+                            ComponentUtils.wrapInSquareBrackets(
+                                TextComponent("MixinBootStrap").apply {
+                                    style.clickEvent = ClickEvent(
+                                        ClickEvent.Action.OPEN_URL,
+                                        "https://www.curseforge.com/minecraft/mc-mods/mixinbootstrap"
+                                    )
+                                    style.hoverEvent = HoverEvent(
+                                        HoverEvent.Action.SHOW_TEXT,
+                                        TranslatableComponent("tooltip.openlink")
+                                    )
+                                    style.isUnderlined = true
+                                    style.isBold = false
+                                    style.color = ChatFormatting.AQUA
+                                }
+                            ).apply { style.isBold = true }
+                        )
+                    )
+                }
             }
         }
         with(INGAMEIME_BUS) {

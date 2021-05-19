@@ -11,5 +11,7 @@
   "tooltip.autoReplaceSlashChar": "When the caret of the chat box is zero",
   "desc.slashChars": "Which char is considered /",
   "desc.error.slashChars": "per char each line",
-  "tooltip.slashChars": "For auto replace slash char"
+  "tooltip.slashChars": "For auto replace slash char",
+  "message.nomixin": "[§bIngameIME§r]You have no %s installed, IME will §cNOT§r enable automatically!",
+  "tooltip.openlink": "Open link"
 }
