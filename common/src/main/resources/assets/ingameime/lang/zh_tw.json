@@ -11,5 +11,7 @@
   "tooltip.autoReplaceSlashChar": "当聊天框的光标在零位时",
   "desc.slashChars": "应当被替换为 \"/\" 的字符",
   "desc.error.slashChars": "每行一个字符",
-  "tooltip.slashChars": "配合\"自动替换命令前缀\"使用"
+  "tooltip.slashChars": "配合\"自动替换命令前缀\"使用",
+  "message.nomixin": "[§bIngameIME§r]你没有安装 %s， 输入法将§l§c不会§r自动开启！",
+  "tooltip.openlink": "打开链接"
 }
