@@ -14,9 +14,9 @@ description = '''
 Enable IME in FullScreen Minecraft
 '''
 [[dependencies.ingameime]]
-modId = "cloth-config"
+modId = "cloth-config2"
 mandatory = true
-versionRange = "[4.11,)"
+versionRange = "[1.4.1,)"
 ordering = "AFTER"
 side = "CLIENT"
 [[dependencies.ingameime]]
