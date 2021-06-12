@@ -17,7 +17,6 @@ import org.apache.logging.log4j.LogManager
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
 import java.util.*
-import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.outputStream
 import kotlin.io.path.reader
 
@@ -94,7 +93,6 @@ object ConfigHandler {
         slashCharArray = charArrayOf('、')
     }
 
-    @OptIn(ExperimentalPathApi::class)
     fun readConfig() {
         try {
             JsonParser().parse(JsonReader(config.reader())).apply {
@@ -110,7 +108,6 @@ object ConfigHandler {
         saveConfig()
     }
 
-    @OptIn(ExperimentalPathApi::class)
     fun saveConfig() {
         config.outputStream(
             StandardOpenOption.CREATE,

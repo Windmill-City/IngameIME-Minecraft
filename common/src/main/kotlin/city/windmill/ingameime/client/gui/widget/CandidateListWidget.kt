@@ -11,7 +11,7 @@ class CandidateListWidget(font: Font) : Widget(font) {
     
     override val active get() = !candidates.isNullOrEmpty()
     override val width
-        get() = super.width + candidates!!.sumBy { s -> drawItem.apply { this.text = s }.width }
+        get() = super.width + candidates!!.sumOf { s -> drawItem.apply { this.text = s }.width }
     override val height
         get() = super.height + font.lineHeight
     override val padding: Pair<Int, Int>

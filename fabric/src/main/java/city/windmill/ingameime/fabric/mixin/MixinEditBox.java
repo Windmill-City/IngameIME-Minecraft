@@ -4,7 +4,7 @@ import city.windmill.ingameime.fabric.ScreenEvents;
 import com.mojang.blaze3d.vertex.PoseStack;
 import kotlin.Pair;
 import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.gui.widget.TextFieldWidget;
+import me.shedaniel.rei.impl.client.gui.widget.basewidgets.TextFieldWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -21,6 +21,9 @@ abstract class MixinEditBox extends AbstractWidget {
     @Shadow
     private boolean bordered;
 
+    @Shadow
+    private boolean isEditable;
+
     private MixinEditBox(int i, int j, int k, int l, Component component) {
         super(i, j, k, l, component);
     }
@@ -29,10 +32,19 @@ abstract class MixinEditBox extends AbstractWidget {
     private void onSelected(boolean selected, CallbackInfo info) {
         int caretX = bordered ? x + 4 : x;
         int caretY = bordered ? y + (height - 8) / 2 : y;
-        if (selected)
+        if (selected && isEditable)
             ScreenEvents.INSTANCE.getEDIT_OPEN().invoker().onEditOpen(this, new Pair<>(caretX, caretY));
         else
             ScreenEvents.INSTANCE.getEDIT_CLOSE().invoker().onEditClose(this);
+    }
+
+    @Inject(method = "setEditable", at = @At("HEAD"))
+    private void onEditableChange(boolean bl, CallbackInfo ci) {
+        int caretX = bordered ? x + 4 : x;
+        int caretY = bordered ? y + (height - 8) / 2 : y;
+        if (!bl) ScreenEvents.INSTANCE.getEDIT_CLOSE().invoker().onEditClose(this);
+        else if (isFocused())
+            ScreenEvents.INSTANCE.getEDIT_OPEN().invoker().onEditOpen(this, new Pair<>(caretX, caretY));
     }
 
     @Inject(method = "mouseClicked", at = @At(value = "INVOKE",
@@ -53,6 +65,7 @@ abstract class MixinEditBox extends AbstractWidget {
     }
 }
 
+@SuppressWarnings("UnstableApiUsage")
 @Mixin(value = TextFieldWidget.class, remap = false)
 abstract class MixinTextFieldWidget {
     @Shadow(remap = false)
@@ -70,7 +83,7 @@ abstract class MixinTextFieldWidget {
             ScreenEvents.INSTANCE.getEDIT_CLOSE().invoker().onEditClose(this);
     }
 
-    @Inject(method = {"render", "method_25394"},
+    @Inject(method = {"render"},
             at = @At(value = "INVOKE", target = "java/lang/String.isEmpty()Z", ordinal = 1),
             locals = LocalCapture.CAPTURE_FAILSOFT, remap = false)
     private void onCaret(PoseStack poseStack, int arg1, int arg2, float arg3, CallbackInfo ci, int l, int m, int n, String string, boolean bl, boolean bl2, int o, int p, int q, boolean bl3, int r) {

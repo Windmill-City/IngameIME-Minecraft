@@ -20,21 +20,21 @@ minecraft {
 dependencies {
     //Fabric
     modImplementation("net.fabricmc:fabric-loader:0.11.3")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.32.5+1.16")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.34.8+1.17")
     //REI
-    modImplementation("me.shedaniel:RoughlyEnoughItems:5.11.+")
+    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:6.0.+")
     //Cloth Api
-    modImplementation("me.shedaniel.cloth.api:cloth-client-events-v0:1.5.+")
+    modImplementation("me.shedaniel.cloth.api:cloth-client-events-v0:2.0.+")
     //Stain
-    modImplementation("io.github.ladysnake:Satin:1.5.1")
+    modCompileOnly("io.github.ladysnake:Satin:1.6.+")
     //Kotlin
-    modImplementation("net.fabricmc:fabric-language-kotlin:1.5.+")
+    modImplementation("net.fabricmc:fabric-language-kotlin:1.6.+")
     //Cloth Config
-    modImplementation("me.shedaniel.cloth:cloth-config-fabric:4.11.+") {
+    modImplementation("me.shedaniel.cloth:cloth-config-fabric:5.0.+") {
         exclude("net.fabricmc.fabric-api")
     }
     //ModMenu
-    modImplementation("com.terraformersmc:modmenu:1.16.9")
+    modImplementation("com.terraformersmc:modmenu:2.0.+")
 
     implementation(project(path = ":common")) { isTransitive = false }
     add("developmentFabric", project(path = ":common")) { isTransitive = false }
@@ -65,13 +65,8 @@ curseforge {
         mainArtifact(tasks["remapJar"])
         addArtifact(tasks["shadowJar"])
         addGameVersion("Fabric")
-        addGameVersion("Java 8")
-        addGameVersion("1.16")
-        addGameVersion("1.16.1")
-        addGameVersion("1.16.2")
-        addGameVersion("1.16.3")
-        addGameVersion("1.16.4")
-        addGameVersion("1.16.5")
+        addGameVersion("Java 16")
+        addGameVersion("1.17")
         relations(closureOf<com.matthewprenger.cursegradle.CurseRelation> {
             requiredDependency("fabric-language-kotlin")
             requiredDependency("fabric-api")
