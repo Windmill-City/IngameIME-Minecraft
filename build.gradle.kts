@@ -49,8 +49,8 @@ subprojects {
         }
 
         withType<JavaCompile> {
-            sourceCompatibility = "15"
-            targetCompatibility = "15"
+            sourceCompatibility = "16"
+            targetCompatibility = "16"
         }
     }
 
