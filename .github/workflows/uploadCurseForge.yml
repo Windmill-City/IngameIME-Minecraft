@@ -38,11 +38,11 @@ jobs:
 
       # build jars
       - name: Run build task
-        run: gradle build
+        run: ./gradlew build
 
       # Upload to curseforge
       - name: Run upload curseforge task
-        run: gradle curseforge
+        run: ./gradlew curseforge
 
       # Commit CurseForgeLatest.json
       - name: Commit json
