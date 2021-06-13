@@ -7,6 +7,12 @@ repositories {
     maven("https://maven.fabricmc.net")
     maven("https://maven.shedaniel.me/")
     maven("https://maven.terraformersmc.com/releases/")
+    maven("https://ladysnake.jfrog.io/artifactory/mods") {
+        mavenContent {
+            includeGroup("io.github.ladysnake")
+            includeGroupByRegex("io\\.github\\.onyxstudios.*")
+        }
+    }
 }
 
 loom {
@@ -26,7 +32,7 @@ dependencies {
     //Cloth Api
     modImplementation("me.shedaniel.cloth.api:cloth-client-events-v0:2.0.+")
     //Stain
-    modCompileOnly("io.github.ladysnake:Satin:1.6.+")
+    modCompileOnly("io.github.ladysnake:satin:1.6.+")
     //Kotlin
     modImplementation("net.fabricmc:fabric-language-kotlin:1.6.+")
     //Cloth Config
