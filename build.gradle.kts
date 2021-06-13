@@ -12,7 +12,7 @@ plugins {
 
 //General
 val minecraft_version = "1.17-pre5"
-val mod_version = "1.6"
+val mod_version = "1.6.1"
 val maven_group = "city.windmill"
 val archives_base_name = "IngameIME"
 

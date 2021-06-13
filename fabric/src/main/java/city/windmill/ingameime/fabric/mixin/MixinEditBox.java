@@ -83,7 +83,7 @@ abstract class MixinTextFieldWidget {
             ScreenEvents.INSTANCE.getEDIT_CLOSE().invoker().onEditClose(this);
     }
 
-    @Inject(method = {"render"},
+    @Inject(method = {"render", "method_25394"},
             at = @At(value = "INVOKE", target = "java/lang/String.isEmpty()Z", ordinal = 1),
             locals = LocalCapture.CAPTURE_FAILSOFT, remap = false)
     private void onCaret(PoseStack poseStack, int arg1, int arg2, float arg3, CallbackInfo ci, int l, int m, int n, String string, boolean bl, boolean bl2, int o, int p, int q, boolean bl3, int r) {
