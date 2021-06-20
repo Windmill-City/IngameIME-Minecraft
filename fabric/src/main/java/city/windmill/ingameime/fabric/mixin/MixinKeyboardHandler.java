@@ -7,5 +7,5 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(KeyboardHandler.class)
 public interface MixinKeyboardHandler {
     @Invoker
-    void callCharTyped(long l, int i, int j);
+    void invokeCharTyped(long l, int i, int j);
 }

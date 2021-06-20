@@ -32,7 +32,7 @@ dependencies {
         exclude("net.fabricmc.fabric-api")
     }
     //ModMenu
-    modImplementation("com.terraformersmc:modmenu:1.10.6")
+    modCompileOnly("com.terraformersmc:modmenu:1.10.6")
 
     implementation(project(path = ":common")) { isTransitive = false }
     add("developmentFabric", project(path = ":common")) { isTransitive = false }
