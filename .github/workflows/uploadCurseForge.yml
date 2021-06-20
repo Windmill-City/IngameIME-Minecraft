@@ -14,11 +14,17 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CURSE_API_KEY: ${{ secrets.CURSE_API_KEY }}
+    strategy:
+      matrix:
+        java: [ 16 ]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
 
       # Cache gradle files
       - name: Cache Gradle packages
