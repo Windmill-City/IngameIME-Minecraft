@@ -4,10 +4,10 @@ import java.util.*
 
 plugins {
     kotlin("jvm") version "1.5.+"
-    id("architectury-plugin") version "3.1-SNAPSHOT"
-    id("dev.architectury.loom") version "0.7.2-SNAPSHOT" apply false
-    id("com.github.johnrengelman.shadow") version "6.1.0" apply false
-    id("com.matthewprenger.cursegradle") version "1.4.0" apply false
+    id("architectury-plugin") version "+"
+    id("dev.architectury.loom") version "+" apply false
+    id("com.github.johnrengelman.shadow") version "+" apply false
+    id("com.matthewprenger.cursegradle") version "+" apply false
 }
 
 //General
