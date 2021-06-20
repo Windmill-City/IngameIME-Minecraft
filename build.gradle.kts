@@ -4,15 +4,15 @@ import java.util.*
 
 plugins {
     kotlin("jvm") version "1.4.32"
-    id("architectury-plugin") version "[3.0.100, 3.3["
-    id("dev.architectury.loom") version "0.7.2-SNAPSHOT" apply false
+    id("architectury-plugin") version "+"
+    id("dev.architectury.loom") version "0.8.0-SNAPSHOT" apply false
     id("com.github.johnrengelman.shadow") version "6.1.0" apply false
     id("com.matthewprenger.cursegradle") version "1.4.0" apply false
 }
 
 //General
 val minecraft_version = "1.15.2"
-val mod_version = "1.6"
+val mod_version = "1.6.1"
 val maven_group = "city.windmill"
 val archives_base_name = "IngameIME"
 
