@@ -152,7 +152,7 @@ subprojects {
                 val shadowTask = getByName("shadowJar") as ShadowJar
                 dependsOn(shadowTask)
                 input.set(shadowTask.archiveFile)
-                archiveAppendix.set("remapped")
+                archiveAppendix.set("")
             }
         }
     }
