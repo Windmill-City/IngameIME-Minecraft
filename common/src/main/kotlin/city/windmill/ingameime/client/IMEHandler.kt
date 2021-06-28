@@ -1,6 +1,7 @@
 package city.windmill.ingameime.client
 
 import city.windmill.ingameime.client.KeyHandler.CombinationKeyState.CombinationKeyAction.*
+import city.windmill.ingameime.client.gui.OverlayScreen
 import city.windmill.ingameime.client.jni.ExternalBaseIME
 import city.windmill.ingameime.client.jni.ICommitListener
 import org.apache.logging.log4j.LogManager
@@ -23,6 +24,10 @@ object IMEHandler {
             }
 
             override fun onCommit(): IMEState {
+                return this //do nothing
+            }
+
+            override fun onMouseMove(): IMEState {
                 return this //do nothing
             }
 
@@ -50,6 +55,11 @@ object IMEHandler {
             }
         },
         TEMPORARY {
+            /**
+             * Track if we have committed something
+             */
+            var hasCommit = false
+
             override fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction): IMEState {
                 return when (action) {
                     CLICKED -> {
@@ -63,8 +73,18 @@ object IMEHandler {
             }
 
             override fun onCommit(): IMEState {
-                ExternalBaseIME.State = false
-                return DISABLED
+                hasCommit = true
+                //Disable IME when next mouse move && we are not composing
+                return this
+            }
+
+            /**
+             * Disable IME when mouse move && we are not composing && hasCommit
+             */
+            override fun onMouseMove(): IMEState {
+                return if (!OverlayScreen.composing && hasCommit)
+                    DISABLED
+                else this
             }
 
             override fun onScreenState(state: ScreenHandler.ScreenState): IMEState {
@@ -104,6 +124,10 @@ object IMEHandler {
             }
 
             override fun onCommit(): IMEState {
+                return this //do nothing
+            }
+
+            override fun onMouseMove(): IMEState {
                 return this //do nothing
             }
 
@@ -161,10 +185,15 @@ object IMEHandler {
                 imeState = imeState.onCommit()
                 return commit
             }
+
+            fun onMouseMove() {
+                imeState = imeState.onMouseMove()
+            }
         }
 
         abstract fun onAction(action: KeyHandler.CombinationKeyState.CombinationKeyAction): IMEState
         abstract fun onCommit(): IMEState
+        abstract fun onMouseMove(): IMEState
         abstract fun onScreenState(state: ScreenHandler.ScreenState): IMEState
         abstract fun onEditState(state: ScreenHandler.ScreenState.EditState): IMEState
     }

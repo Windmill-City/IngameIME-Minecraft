@@ -3,16 +3,16 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
 plugins {
-    kotlin("jvm") version "1.4.32"
+    kotlin("jvm") version "1.5.+"
     id("architectury-plugin") version "+"
-    id("dev.architectury.loom") version "+" apply false
+    id("dev.architectury.loom") version "0.8.+" apply false
     id("com.github.johnrengelman.shadow") version "+" apply false
     id("com.matthewprenger.cursegradle") version "+" apply false
 }
 
 //General
 val minecraft_version = "1.14.4"
-val mod_version = "1.6.1"
+val mod_version = "1.6.2"
 val maven_group = "city.windmill"
 val archives_base_name = "IngameIME"
 
@@ -38,7 +38,6 @@ subprojects {
     }
 
     repositories {
-        jcenter()
         mavenCentral()
     }
 
@@ -118,7 +117,7 @@ subprojects {
             withType<com.matthewprenger.cursegradle.CurseUploadTask> {
                 onlyIf {
                     val curseforgeFile = file("../CurseForgeLatest.json")
-                    val versionInfo =
+                    @Suppress("UNCHECKED_CAST") val versionInfo =
                         (groovy.json.JsonSlurper().parse(curseforgeFile) as Map<String, String>).toMutableMap()
                     val uploadedVersion = Version(versionInfo[project.name]!!)
                     val currentVersion = Version(project.version.toString())
@@ -128,7 +127,7 @@ subprojects {
                 }
                 doLast {
                     val curseforgeFile = file("../CurseForgeLatest.json")
-                    val versionInfo =
+                    @Suppress("UNCHECKED_CAST") val versionInfo =
                         (groovy.json.JsonSlurper().parse(curseforgeFile) as Map<String, String>).toMutableMap()
                     //Uploaded, update json file
                     versionInfo[project.name] = project.version.toString()

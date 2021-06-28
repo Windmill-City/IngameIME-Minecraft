@@ -1,5 +1,6 @@
 package city.windmill.ingameime.fabric
 
+import city.windmill.ingameime.client.IMEHandler
 import city.windmill.ingameime.client.KeyHandler
 import city.windmill.ingameime.client.ScreenHandler
 import city.windmill.ingameime.client.gui.OverlayScreen
@@ -27,6 +28,13 @@ import org.apache.logging.log4j.LogManager
 object IngameIMEClient : ClientModInitializer {
     @Suppress("MemberVisibilityCanBePrivate", "PropertyName")
     val LOGGER = LogManager.getFormatterLogger("IngameIME")!!
+
+    /**
+     * Track mouse move
+     */
+    private var prevX = 0
+    private var prevY = 0
+
     override fun onInitializeClient() {
         if (Util.getPlatform() == Util.OS.WINDOWS) {
             LOGGER.info("it is Windows OS! Loading mod...")
@@ -35,7 +43,18 @@ object IngameIMEClient : ClientModInitializer {
                 ConfigHandlerImpl.initialConfig()
 
                 ClothClientHooks.SCREEN_LATE_RENDER.register(ScreenRenderCallback.Post { _, _, mouseX, mouseY, delta ->
+                    //Track mouse move here
+                    if (mouseX != prevX || mouseY != prevY) {
+                        ScreenEvents.SCREEN_MOUSE_MOVE.invoker().onMouseMove(prevX, prevY, mouseX, mouseY)
+
+                        prevX = mouseX
+                        prevY = mouseY
+                    }
+
                     OverlayScreen.render(mouseX, mouseY, delta)
+                })
+                ScreenEvents.SCREEN_MOUSE_MOVE.register(ScreenEvents.MouseMove { _, _, _, _ ->
+                    IMEHandler.IMEState.onMouseMove()
                 })
                 ClothClientHooks.SCREEN_KEY_PRESSED.register(ScreenKeyPressedCallback { _, _, keyCode, scanCode, modifiers ->
                     if (KeyHandler.KeyState.onKeyDown(keyCode, scanCode, modifiers))

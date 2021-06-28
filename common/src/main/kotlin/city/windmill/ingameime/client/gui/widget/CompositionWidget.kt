@@ -4,31 +4,36 @@ import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiComponent
 
 class CompositionWidget(font: Font) : Widget(font) {
-    var args: Pair<String, Int>? = null
-    
+    /**
+     * Composition String, Caret pos
+     * the String is the composition text
+     * the caret is the position where the composition text is editing
+     */
+    var compositionData: Pair<String, Int>? = null
+
     private val caretWidth = 3
-    
-    override val active get() = args != null
-    
+
+    override val active get() = compositionData != null
+
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     override val width
-        get() = super.width + font.width(args?.first) + caretWidth
+        get() = super.width + font.width(compositionData?.first) + caretWidth
     override val height
         get() = super.height + font.lineHeight
     override val padding: Pair<Int, Int>
         get() = 1 to 1
-    
+
     @Suppress("NAME_SHADOWING")
     override fun draw(offsetX: Int, offsetY: Int, mouseX: Int, mouseY: Int, delta: Float) {
-        args?.let {
+        compositionData?.let {
             val text = it.first
             val caret = it.second
-            
+
             super.draw(offsetX, offsetY, mouseX, mouseY, delta)
-            
+
             val part1 = text.substring(0, caret)
             val part2 = text.substring(caret)
-            
+
             var offsetX = offsetX + padding.first
             val offsetY = offsetY + padding.second
             offsetX = font.draw(part1, offsetX.toFloat(), offsetY.toFloat(), textColor)
