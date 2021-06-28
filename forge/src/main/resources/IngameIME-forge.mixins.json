@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "MixinBookEditScreen",
+    "MixinChatScreen",
     "MixinEditBox",
     "MixinMinecraft",
     "MixinSignEditScreen",
