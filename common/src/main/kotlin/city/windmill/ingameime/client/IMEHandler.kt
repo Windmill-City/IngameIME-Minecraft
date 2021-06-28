@@ -84,7 +84,10 @@ object IMEHandler {
             override fun onMouseMove(): IMEState {
                 return if (!OverlayScreen.composing && hasCommit)
                     DISABLED
-                else this
+                else {
+                    hasCommit = false
+                    this
+                }
             }
 
             override fun onScreenState(state: ScreenHandler.ScreenState): IMEState {
