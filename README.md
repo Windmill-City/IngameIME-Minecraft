@@ -8,9 +8,9 @@ Window Mode
 ![icon](https://github.com/Windmill-City/IngameIME-Minecraft/raw/master/Docs/FullScreenInput.gif)
 FullScreen Mode
 # Toggle Key
-- Click Switch between **Temporary Input State** and **Close State**
-- Double Click Always-on Input State
-- **Temporary Input State** move to **Close State** when committed
+- Click to Switch between **Temporary Input State** and **Close State**
+- Double Click to Always-on Input State
+- **Temporary Input State** move to **Close State** when something has committed & mouse move
 
 ## Dependencies
 
