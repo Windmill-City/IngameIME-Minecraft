@@ -19,6 +19,9 @@ abstract class MixinEditBox extends AbstractWidget {
     @Shadow
     private boolean bordered;
 
+    @Shadow
+    private boolean isEditable;
+
     public MixinEditBox(int i, int j, String string) {
         super(i, j, string);
     }
@@ -27,10 +30,19 @@ abstract class MixinEditBox extends AbstractWidget {
     private void onSelected(boolean selected, CallbackInfo info) {
         int caretX = bordered ? x + 4 : x;
         int caretY = bordered ? y + (height - 8) / 2 : y;
-        if (selected)
+        if (selected && isEditable)
             ScreenEvents.INSTANCE.getEDIT_OPEN().invoker().onEditOpen(this, new Pair<>(caretX, caretY));
         else
             ScreenEvents.INSTANCE.getEDIT_CLOSE().invoker().onEditClose(this);
+    }
+
+    @Inject(method = "setEditable", at = @At("HEAD"))
+    private void onEditableChange(boolean bl, CallbackInfo ci) {
+        int caretX = bordered ? x + 4 : x;
+        int caretY = bordered ? y + (height - 8) / 2 : y;
+        if (!bl) ScreenEvents.INSTANCE.getEDIT_CLOSE().invoker().onEditClose(this);
+        else if (isFocused())
+            ScreenEvents.INSTANCE.getEDIT_OPEN().invoker().onEditOpen(this, new Pair<>(caretX, caretY));
     }
 
     @Inject(method = "mouseClicked", at = @At(value = "INVOKE",
@@ -40,7 +52,10 @@ abstract class MixinEditBox extends AbstractWidget {
     private void onFocused(double double_1, double double_2, int int_1, CallbackInfoReturnable<Boolean> cir) {
         int caretX = bordered ? x + 4 : x;
         int caretY = bordered ? y + (height - 8) / 2 : y;
-        ScreenEvents.INSTANCE.getEDIT_OPEN().invoker().onEditOpen(this, new Pair<>(caretX, caretY));
+        if (isFocused() && isEditable)
+            ScreenEvents.INSTANCE.getEDIT_OPEN().invoker().onEditOpen(this, new Pair<>(caretX, caretY));
+        else
+            ScreenEvents.INSTANCE.getEDIT_CLOSE().invoker().onEditClose(this);
     }
 
     @Inject(method = "renderButton",
