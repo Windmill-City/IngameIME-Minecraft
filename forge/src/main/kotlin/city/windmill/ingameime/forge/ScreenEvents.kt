@@ -10,10 +10,13 @@ import net.minecraftforge.fml.event.lifecycle.IModBusEvent
 class ScreenEvents {
     abstract class ModEvent : Event(), IModBusEvent
 
+    @Suppress("unused", "UNUSED_PARAMETER")
+    class MouseMove(val prevX: Int, val prevY: Int, val curX: Int, val curY: Int) : ModEvent()
+
     @Suppress("unused")
     class WindowSizeChanged(val width: Int, val height: Int) : ModEvent()
     class ScreenChanged(val oldScreen: Screen?, val newScreen: Screen?) : ModEvent()
-    
+
     class EditOpen(val edit: Any, val caretPos: Pair<Int, Int>) : ModEvent()
     class EditCaret(val edit: Any, val caretPos: Pair<Int, Int>) : ModEvent()
     class EditClose(val edit: Any) : ModEvent()
