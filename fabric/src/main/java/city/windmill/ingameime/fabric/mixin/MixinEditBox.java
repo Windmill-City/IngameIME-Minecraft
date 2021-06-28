@@ -54,7 +54,10 @@ abstract class MixinEditBox extends AbstractWidget {
     private void onFocused(double double_1, double double_2, int int_1, CallbackInfoReturnable<Boolean> cir) {
         int caretX = bordered ? x + 4 : x;
         int caretY = bordered ? y + (height - 8) / 2 : y;
-        ScreenEvents.INSTANCE.getEDIT_OPEN().invoker().onEditOpen(this, new Pair<>(caretX, caretY));
+        if (isFocused() && isEditable)
+            ScreenEvents.INSTANCE.getEDIT_OPEN().invoker().onEditOpen(this, new Pair<>(caretX, caretY));
+        else
+            ScreenEvents.INSTANCE.getEDIT_CLOSE().invoker().onEditClose(this);
     }
 
     @Inject(method = "renderButton",
