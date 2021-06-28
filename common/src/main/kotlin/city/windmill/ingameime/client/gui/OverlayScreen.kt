@@ -7,13 +7,15 @@ import city.windmill.ingameime.client.gui.widget.Widget
 import city.windmill.ingameime.client.jni.ExternalBaseIME
 import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.client.Minecraft
-import kotlin.ranges.*
 
 object OverlayScreen : net.minecraft.client.gui.components.Widget {
     private val alphaModeWidget = AlphaModeWidget(Minecraft.getInstance().font)
     private val compositionWidget = CompositionWidget(Minecraft.getInstance().font)
     private val candidateListWidget = CandidateListWidget(Minecraft.getInstance().font)
-    
+
+    /**
+     * The caret pos of the game window, for positioning the composition & candidate window
+     */
     var caretPos: Pair<Int, Int> = 0 to 0
         set(value) {
             if (field == value) return
@@ -21,29 +23,44 @@ object OverlayScreen : net.minecraft.client.gui.components.Widget {
             compositionWidget.adjustPos()
             alphaModeWidget.adjustPosByComposition()
         }
-    
+
+    /**
+     * Show the alpha mode/normal mode indicator
+     * will auto close after a few seconds
+     */
     var showAlphaMode
         get() = alphaModeWidget.active
         set(value) {
             alphaModeWidget.active = value
             alphaModeWidget.adjustPosByComposition()
         }
-    
+
+    /**
+     * Update candidates here, for fullscreen mode
+     */
     var candidates
         get() = candidateListWidget.candidates
         set(value) {
             candidateListWidget.candidates = value
             candidateListWidget.adjustPosByComposition()
         }
-    
+
+    /**
+     * Update composition data here
+     * the String is the composition text
+     * the caret is the position where the composition text is editing
+     */
     var composition
-        get() = compositionWidget.args
+        get() = compositionWidget.compositionData
         set(value) {
-            compositionWidget.args = value
+            compositionWidget.compositionData = value
             compositionWidget.adjustPos()
             candidateListWidget.adjustPosByComposition()
         }
-    
+
+    /**
+     * Get composition ext here, for positioning input method's candidate window
+     */
     val compositionExt
         get() = with(compositionWidget) {
             val scale = Minecraft.getInstance().window.guiScale
@@ -51,7 +68,16 @@ object OverlayScreen : net.minecraft.client.gui.components.Widget {
                 forEachIndexed { index, i -> this[index] = i.times(scale).toInt() }
             }
         }
-    
+
+    /**
+     * Check if we are composing
+     */
+    val composing
+        get() = composition != null
+
+    /**
+     * Render the widget when input method is active
+     */
     override fun render(mouseX: Int, mouseY: Int, delta: Float) {
         if (ExternalBaseIME.State) {
             val poseStack = PoseStack()
@@ -61,7 +87,10 @@ object OverlayScreen : net.minecraft.client.gui.components.Widget {
             candidateListWidget.render(poseStack, mouseX, mouseY, delta)
         }
     }
-    
+
+    /**
+     * Place the composition window beside the game window caret
+     */
     private fun CompositionWidget.adjustPos() {
         with(Minecraft.getInstance().window) {
             moveTo(
@@ -70,7 +99,10 @@ object OverlayScreen : net.minecraft.client.gui.components.Widget {
             )
         }
     }
-    
+
+    /**
+     * Place the widget beside the composition window
+     */
     private fun Widget.adjustPosByComposition() {
         if (!active) return
         with(Minecraft.getInstance().window) {
