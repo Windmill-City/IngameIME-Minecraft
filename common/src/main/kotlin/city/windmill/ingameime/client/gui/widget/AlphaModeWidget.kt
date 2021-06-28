@@ -19,6 +19,7 @@ class AlphaModeWidget(font: Font) : Widget(font) {
             hideDelay?.get()?.cancel()
             if (value) {
                 hideDelay = WeakReference(GlobalScope.launch {
+                    @Suppress("INTEGER_OPERATOR_RESOLVE_WILL_CHANGE")
                     delay(3 * 1000)
                     field = false
                 })
