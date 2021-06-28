@@ -48,7 +48,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-        if (mixinClassName.equals(MixinKeyboardHandler.class.getName())) {
+        if (mixinClassName.equals("city.windmill.ingameime.fabric.mixin.MixinKeyboardHandler")) {
             targetClass.methods.forEach((methodNode) -> {
                 if (methodNode.name.equals("charTyped") || methodNode.name.equals("method_1457")) {
                     methodNode.access &= ~Opcodes.ACC_PRIVATE;
