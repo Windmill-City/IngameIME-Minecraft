@@ -8,6 +8,7 @@
   ],
   "client": [
     "MixinBookEditScreen",
+    "MixinChatScreen",
     "MixinEditBox",
     "MixinEditScreen",
     "MixinFullScreen",
