@@ -18,6 +18,9 @@ abstract class MixinEditBox extends AbstractWidget {
     @Shadow
     private boolean bordered;
 
+    @Shadow
+    private boolean isEditable;
+
     public MixinEditBox(int xIn, int yIn, String msg) {
         super(xIn, yIn, msg);
     }
@@ -26,10 +29,19 @@ abstract class MixinEditBox extends AbstractWidget {
     private void onSelected(boolean selected, CallbackInfo info) {
         int caretX = bordered ? x + 4 : x;
         int caretY = bordered ? y + (height - 8) / 2 : y;
-        if (selected)
+        if (selected && isEditable)
             IngameIMEClient.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditOpen(this, new Pair<>(caretX, caretY)));
         else
             IngameIMEClient.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditClose(this));
+    }
+
+    @Inject(method = "setEditable", at = @At("HEAD"))
+    private void onEditableChange(boolean bl, CallbackInfo ci) {
+        int caretX = bordered ? x + 4 : x;
+        int caretY = bordered ? y + (height - 8) / 2 : y;
+        if (!bl) IngameIMEClient.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditClose(this));
+        else if (isFocused())
+            IngameIMEClient.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditOpen(this, new Pair<>(caretX, caretY)));
     }
 
     @Inject(method = "mouseClicked", at = @At(value = "INVOKE",
@@ -39,7 +51,10 @@ abstract class MixinEditBox extends AbstractWidget {
     private void onFocused(double double_1, double double_2, int int_1, CallbackInfoReturnable<Boolean> cir) {
         int caretX = bordered ? x + 4 : x;
         int caretY = bordered ? y + (height - 8) / 2 : y;
-        IngameIMEClient.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditOpen(this, new Pair<>(caretX, caretY)));
+        if (isFocused() && isEditable)
+            IngameIMEClient.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditOpen(this, new Pair<>(caretX, caretY)));
+        else
+            IngameIMEClient.INSTANCE.getINGAMEIME_BUS().post(new ScreenEvents.EditClose(this));
     }
 
     @Inject(method = "renderButton",
