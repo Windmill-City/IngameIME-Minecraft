@@ -1,5 +1,6 @@
 package city.windmill.ingameime.forge
 
+import city.windmill.ingameime.client.IMEHandler
 import city.windmill.ingameime.client.KeyHandler
 import city.windmill.ingameime.client.ScreenHandler
 import city.windmill.ingameime.client.gui.OverlayScreen
@@ -31,6 +32,12 @@ import java.util.function.Supplier
 object IngameIMEClient {
     private val LOGGER = LogManager.getLogger()
     val INGAMEIME_BUS = MOD_BUS
+
+    /**
+     * Track mouse move
+     */
+    private var prevX = 0
+    private var prevY = 0
 
     init {
         //Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible
@@ -71,6 +78,14 @@ object IngameIMEClient {
     private fun enqueueIMC(event: InterModEnqueueEvent) {
         with(FORGE_BUS) {
             addListener<GuiScreenEvent.DrawScreenEvent.Post> {
+                //Track mouse move here
+                if (prevX != it.mouseX || prevY != it.mouseY) {
+                    INGAMEIME_BUS.post(ScreenEvents.MouseMove(prevX, prevY, it.mouseX, it.mouseY))
+
+                    prevX = it.mouseX
+                    prevY = it.mouseY
+                }
+
                 OverlayScreen.render(it.mouseX, it.mouseY, it.renderPartialTicks)
             }
             addListener<GuiScreenEvent.KeyboardKeyPressedEvent.Pre> {
@@ -104,6 +119,9 @@ object IngameIMEClient {
             }
         }
         with(INGAMEIME_BUS) {
+            addListener<ScreenEvents.MouseMove> {
+                IMEHandler.IMEState.onMouseMove()
+            }
             addListener<ScreenEvents.WindowSizeChanged> {
                 ExternalBaseIME.FullScreen = Minecraft.getInstance().window.isFullscreen
             }
