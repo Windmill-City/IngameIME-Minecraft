@@ -12,7 +12,7 @@ plugins {
 
 //General
 val minecraft_version = "1.17-pre5"
-val mod_version = "1.6.2"
+val mod_version = "1.6.3"
 val maven_group = "city.windmill"
 val archives_base_name = "IngameIME"
 
@@ -117,7 +117,7 @@ subprojects {
             withType<com.matthewprenger.cursegradle.CurseUploadTask> {
                 onlyIf {
                     val curseforgeFile = file("../CurseForgeLatest.json")
-                    val versionInfo =
+                    @Suppress("UNCHECKED_CAST") val versionInfo =
                         (groovy.json.JsonSlurper().parse(curseforgeFile) as Map<String, String>).toMutableMap()
                     val uploadedVersion = Version(versionInfo[project.name]!!)
                     val currentVersion = Version(project.version.toString())
@@ -127,7 +127,7 @@ subprojects {
                 }
                 doLast {
                     val curseforgeFile = file("../CurseForgeLatest.json")
-                    val versionInfo =
+                    @Suppress("UNCHECKED_CAST") val versionInfo =
                         (groovy.json.JsonSlurper().parse(curseforgeFile) as Map<String, String>).toMutableMap()
                     //Uploaded, update json file
                     versionInfo[project.name] = project.version.toString()
