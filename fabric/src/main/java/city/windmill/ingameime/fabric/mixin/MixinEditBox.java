@@ -3,10 +3,10 @@ package city.windmill.ingameime.fabric.mixin;
 import city.windmill.ingameime.fabric.ScreenEvents;
 import kotlin.Pair;
 import me.shedaniel.math.api.Rectangle;
-import me.shedaniel.rei.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -51,7 +51,8 @@ abstract class MixinEditBox extends AbstractWidget {
     }
 }
 
-@Mixin(value = TextFieldWidget.class, remap = false)
+@Pseudo
+@Mixin(targets = "me.shedaniel.rei.gui.widget.TextFieldWidget", remap = false)
 abstract class MixinTextFieldWidget {
     @Shadow(remap = false)
     private boolean hasBorder;

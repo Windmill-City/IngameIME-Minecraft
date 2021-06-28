@@ -21,7 +21,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:0.11.3")
     modImplementation("net.fabricmc.fabric-api:fabric-api:0.28.5+1.14")
     //REI
-    modImplementation("me.shedaniel:RoughlyEnoughItems:3.3.0")
+    //modImplementation("me.shedaniel:RoughlyEnoughItems:3.3.0")
     //Cloth Api
     modImplementation("me.shedaniel.cloth:cloth-events:0.6.0")
     //Kotlin
