@@ -4,6 +4,7 @@ import city.windmill.ingameime.fabric.ScreenEvents;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 import kotlin.Pair;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.BookEditScreen;
 import net.minecraft.client.gui.screens.inventory.SignEditScreen;
@@ -35,6 +36,19 @@ abstract class MixinBookEditScreen {
             at = @At("TAIL"))
     private void onCaret_Book(BookEditScreen.Pos2i pos2i, CallbackInfo ci) {
         ScreenEvents.INSTANCE.getEDIT_CARET().invoker().onEditCaret(this, new Pair<>(pos2i.x, pos2i.y));
+    }
+
+    @Inject(method = "render",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/Font;draw(Ljava/lang/String;FFI)I",
+                    ordinal = 1),
+            locals = LocalCapture.CAPTURE_FAILSOFT)
+    private void onCaret_Book(int i, int j, float f, CallbackInfo ci, int k, int l, String string, String string2, int m, int n) {
+        ScreenEvents.INSTANCE.getEDIT_CARET().invoker().onEditCaret(this, new Pair<>(
+                k + 36 + (114 + n) / 2
+                        - Minecraft.getInstance().font.width("_"),
+                50
+        ));
     }
 }
 

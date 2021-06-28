@@ -6,6 +6,7 @@
   "plugin": "city.windmill.ingameime.fabric.mixin.MixinConfigPlugin",
   "client": [
     "MixinBookEditScreen",
+    "MixinChatScreen",
     "MixinEditBox",
     "MixinEditScreen",
     "MixinMinecraft",
