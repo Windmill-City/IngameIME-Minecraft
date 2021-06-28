@@ -9,6 +9,9 @@ import net.minecraftforge.eventbus.api.Event
 class ScreenEvents {
     abstract class ModEvent : Event()
 
+    @Suppress("unused", "UNUSED_PARAMETER")
+    class MouseMove(val prevX: Int, val prevY: Int, val curX: Int, val curY: Int) : ModEvent()
+
     @Suppress("unused")
     class WindowSizeChanged(val width: Int, val height: Int) : ModEvent()
     class ScreenChanged(val oldScreen: Screen?, val newScreen: Screen?) : ModEvent()
