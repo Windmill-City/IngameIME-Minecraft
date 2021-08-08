@@ -1,18 +1,28 @@
 # IngameIME-Minecraft
+
 ![Icon](https://github.com/Windmill-City/IngameIME-Minecraft/raw/master/IngameIME-Icon.png)
 
 Use input method in full screen Minecraft
+
+![CurseForge Bandage Downloads](https://cf.way2muchnoise.eu/full_440032_downloads.svg)
+![CurseForge Bandage Versions](https://cf.way2muchnoise.eu/versions/440032.svg)
+
 # Preview
+
 ### Window Mode
+
 ![Window Mode](https://github.com/Windmill-City/IngameIME-Minecraft/raw/master/Docs/WindowInput.gif)
 
 ### Full screen Mode
+
 ![Full screen Mode](https://github.com/Windmill-City/IngameIME-Minecraft/raw/master/Docs/FullScreenInput.gif)
+
 # Toggle Key
 
 - Click the hotkey to switch between **temporary input state** and **closed state**
 - Double-click the hot key to switch to **open mode**
 - **temporary input state** switch to **closed State** when mouse move and something was committed
+
 ## Dependencies
 
 ### Forge
