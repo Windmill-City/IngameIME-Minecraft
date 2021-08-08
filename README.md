@@ -3,11 +3,11 @@
 
 Use input method in full screen Minecraft
 # Preview
-
+### Window Mode
 ![Window Mode](https://github.com/Windmill-City/IngameIME-Minecraft/raw/master/Docs/WindowInput.gif)
-Window Mode
+
+### Full screen Mode
 ![Full screen Mode](https://github.com/Windmill-City/IngameIME-Minecraft/raw/master/Docs/FullScreenInput.gif)
-Full screen Mode
 # Toggle Key
 
 - Click the hotkey to switch between **temporary input state** and **closed state**
