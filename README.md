@@ -4,8 +4,8 @@
 
 Use input method in full screen Minecraft
 
-![CurseForge Bandage Downloads](https://cf.way2muchnoise.eu/full_440032_downloads.svg)
-![CurseForge Bandage Versions](https://cf.way2muchnoise.eu/versions/440032.svg)
+![CurseForge Bandage Downloads](http://cf.way2muchnoise.eu/full_440032_downloads.svg)
+![CurseForge Bandage Versions](http://cf.way2muchnoise.eu/versions/440032.svg)
 
 # Preview
 
