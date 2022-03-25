@@ -16,31 +16,28 @@ repositories {
 }
 
 loom {
-    accessWidener = file("src/main/resources/ingameime.accessWidener")
+    accessWidenerPath.set(layout.projectDirectory.file("../fabric/src/main/resources/ingameime.accessWidener"))
 }
 
-minecraft {
-    mixinConfig("IngameIME-fabric.mixins.json")
-}
 
 dependencies {
     //Fabric
-    modImplementation("net.fabricmc:fabric-loader:0.11.3")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.34.8+1.17")
+    modImplementation("net.fabricmc:fabric-loader:0.13.3")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.48.0+1.18.2")
     //REI
-    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:6.0.+")
+    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:7.3.+")
     //Cloth Api
     modImplementation("me.shedaniel.cloth.api:cloth-client-events-v0:2.0.+")
     //Stain
     modCompileOnly("io.github.ladysnake:satin:1.6.+")
     //Kotlin
-    modImplementation("net.fabricmc:fabric-language-kotlin:1.6.+")
+    modImplementation("net.fabricmc:fabric-language-kotlin:1.7.+")
     //Cloth Config
-    modImplementation("me.shedaniel.cloth:cloth-config-fabric:5.0.+") {
+    modImplementation("me.shedaniel.cloth:cloth-config-fabric:6.2.+") {
         exclude("net.fabricmc.fabric-api")
     }
     //ModMenu
-    modImplementation("com.terraformersmc:modmenu:2.0.+")
+    modImplementation("com.terraformersmc:modmenu:3.1.+")
 
     implementation(project(path = ":common")) { isTransitive = false }
     add("developmentFabric", project(path = ":common")) { isTransitive = false }

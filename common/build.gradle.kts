@@ -5,15 +5,15 @@ repositories {
 }
 
 loom {
-    accessWidener = file("../fabric/src/main/resources/ingameime.accessWidener")
+    accessWidenerPath.set(layout.projectDirectory.file("../fabric/src/main/resources/ingameime.accessWidener"))
 }
 
 dependencies {
-    modImplementation("net.fabricmc:fabric-loader:0.11.3")
+    modImplementation("net.fabricmc:fabric-loader:0.13.3")
     //Kotlin
-    modImplementation("net.fabricmc:fabric-language-kotlin:1.6.+")
+    modImplementation("net.fabricmc:fabric-language-kotlin:1.7.+")
     //Cloth Config
-    modImplementation("me.shedaniel.cloth:cloth-config-fabric:5.0.+") {
+    modImplementation("me.shedaniel.cloth:cloth-config-fabric:6.2.+") {
         exclude("net.fabricmc.fabric-api")
     }
 }

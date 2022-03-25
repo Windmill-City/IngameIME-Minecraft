@@ -44,6 +44,6 @@
     "satin": ">=1.6"
   },
   "breaks": {
-    "minecraft": ">=1.18"
+    "minecraft": ">=1.19"
   }
 }

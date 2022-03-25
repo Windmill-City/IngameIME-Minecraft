@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
 plugins {
-    kotlin("jvm") version "1.5.+"
+    kotlin("jvm") version "1.6.+"
     id("architectury-plugin") version "+"
     id("dev.architectury.loom") version "+" apply false
     id("com.github.johnrengelman.shadow") version "+" apply false
@@ -11,8 +11,8 @@ plugins {
 }
 
 //General
-val minecraft_version = "1.17-pre5"
-val mod_version = "1.6.4"
+val minecraft_version = "1.18.2"
+val mod_version = "1.6.5"
 val maven_group = "city.windmill"
 val archives_base_name = "IngameIME"
 
@@ -44,12 +44,12 @@ subprojects {
     tasks {
         withType(ShadowJar::class) { this.configurations = listOf(shadowC) }
         withType<KotlinCompile> {
-            kotlinOptions.jvmTarget = "15"
+            kotlinOptions.jvmTarget = "17"
         }
 
         withType<JavaCompile> {
-            sourceCompatibility = "16"
-            targetCompatibility = "16"
+            sourceCompatibility = "17"
+            targetCompatibility = "17"
         }
     }
 
