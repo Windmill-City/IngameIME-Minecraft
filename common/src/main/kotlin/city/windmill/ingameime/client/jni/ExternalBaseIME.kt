@@ -45,7 +45,7 @@ object ExternalBaseIME {
         try {
             val x86 = if (Minecraft.getInstance().is64Bit) "" else "-x86"
             val resourceNative = ResourceLocation("ingameime", "natives/jni$x86.dll")
-            NativeLoader.load(Minecraft.getInstance().resourceManager.getResource(resourceNative))
+            NativeLoader.load(Minecraft.getInstance().resourceManager.getResource(resourceNative).orElseThrow())
             LOGGER.debug("Initialing window")
             nInitialize(glfwGetWin32Window(Minecraft.getInstance().window.window))
             FullScreen = Minecraft.getInstance().window.isFullscreen

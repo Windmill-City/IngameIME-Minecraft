@@ -11,8 +11,8 @@ plugins {
 }
 
 //General
-val minecraft_version = "1.18.2"
-val mod_version = "1.6.5"
+val minecraft_version = "1.19.2"
+val mod_version = "1.6.6"
 val maven_group = "city.windmill"
 val archives_base_name = "IngameIME"
 
