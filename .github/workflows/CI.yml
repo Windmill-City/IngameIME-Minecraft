@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    paths-ignore:
+      - docs/**
+      - cmake/**
+      - .vscode/**
+      - README.md
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    env:
+      CURSE_API_KEY: ${{ secrets.CURSE_API_KEY }}
+    strategy:
+      matrix:
+        java: [17]
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+          # Fetch all to make git describe work correctly
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ${GITHUB_WORKSPACE}/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      - name: Build
+        run: gradle build
+
+      - name: Upload to CurseForge
+        if: startsWith(github.ref, 'refs/tags/')
+        run: gradle curseforge
+
+      - name: Commit 'CurseForgeLatest.json'
+        if: always()
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: "CurseForgeLatest.json"
+          message: " Updated CurseForge Version File"
