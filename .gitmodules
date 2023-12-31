@@ -1,3 +1,0 @@
-[submodule "IngameIME-JNI"]
-	path = common/src/main/cpp/IngameIME-JNI
-	url = https://github.com/Windmill-City/IngameIME-Minecraft-JNI.git
