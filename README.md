@@ -11,8 +11,8 @@ Use `InputMethod` in **Fullscreen** Minecraft!
 
 ### Window Mode
 
-![Window Mode](https://github.com/Windmill-City/IngameIME-Minecraft/raw/master/docs/WindowInput.gif)
+![Window Mode](docs/WindowInput.gif)
 
 ### Full screen Mode
 
-![Full screen Mode](https://github.com/Windmill-City/IngameIME-Minecraft/raw/master/docs/FullScreenInput.gif)
+![Full screen Mode](docs/FullScreenInput.gif)
