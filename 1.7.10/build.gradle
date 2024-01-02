@@ -76,7 +76,6 @@ checkPropertyExists("modId")
 checkPropertyExists("modGroup")
 checkPropertyExists("minecraftVersion")
 checkPropertyExists("forgeVersion")
-checkPropertyExists("replaceGradleTokenInFile")
 checkPropertyExists("gradleTokenVersion")
 checkPropertyExists("apiPackage")
 checkPropertyExists("accessTransformersFile")
@@ -103,6 +102,10 @@ propertyDefaultIfUnset("curseForgeProjectId", "")
 propertyDefaultIfUnset("curseForgeRelations", "")
 propertyDefaultIfUnset("minimizeShadowedDependencies", true)
 propertyDefaultIfUnset("relocateShadowedDependencies", true)
+// Deprecated properties (kept for backwards compat)
+propertyDefaultIfUnset("gradleTokenModId", "")
+propertyDefaultIfUnset("gradleTokenModName", "")
+propertyDefaultIfUnset("gradleTokenGroupName", "")
 
 propertyDefaultIfUnset("enableModernJavaSyntax", false) // On by default for new projects only
 propertyDefaultIfUnset("enableGenericInjection", false) // On by default for new projects only
@@ -161,18 +164,18 @@ pluginManager.withPlugin('org.jetbrains.kotlin.jvm') {
     }
     // Kotlin hacks our source sets, so we hack Kotlin's tasks
     def disabledKotlinTaskList = [
-        "kaptGenerateStubsMcLauncherKotlin",
-        "kaptGenerateStubsPatchedMcKotlin",
-        "kaptGenerateStubsInjectedTagsKotlin",
-        "compileMcLauncherKotlin",
-        "compilePatchedMcKotlin",
-        "compileInjectedTagsKotlin",
-        "kaptMcLauncherKotlin",
-        "kaptPatchedMcKotlin",
-        "kaptInjectedTagsKotlin",
-        "kspMcLauncherKotlin",
-        "kspPatchedMcKotlin",
-        "kspInjectedTagsKotlin",
+            "kaptGenerateStubsMcLauncherKotlin",
+            "kaptGenerateStubsPatchedMcKotlin",
+            "kaptGenerateStubsInjectedTagsKotlin",
+            "compileMcLauncherKotlin",
+            "compilePatchedMcKotlin",
+            "compileInjectedTagsKotlin",
+            "kaptMcLauncherKotlin",
+            "kaptPatchedMcKotlin",
+            "kaptInjectedTagsKotlin",
+            "kspMcLauncherKotlin",
+            "kspPatchedMcKotlin",
+            "kspInjectedTagsKotlin",
     ]
     tasks.configureEach { task ->
         if (task.name in disabledKotlinTaskList) {
@@ -316,14 +319,6 @@ if (coreModClass) {
     }
 }
 
-configurations.configureEach {
-    resolutionStrategy.cacheChangingModulesFor(0, TimeUnit.SECONDS)
-
-    // Make sure GregTech build won't time out
-    System.setProperty("org.gradle.internal.http.connectionTimeout", 120000 as String)
-    System.setProperty("org.gradle.internal.http.socketTimeout", 120000 as String)
-}
-
 // Fix Jenkins' Git: chmod a file should not be detected as a change and append a '.dirty' to the version
 try {
     'git config core.fileMode false'.execute()
@@ -360,9 +355,9 @@ try {
 }
 catch (Exception ignored) {
     out.style(Style.Failure).text(
-        'This mod must be version controlled by Git AND the repository must provide at least one tag,\n' +
-            'or the VERSION override must be set! ').style(Style.SuccessHeader).text('(Do NOT download from GitHub using the ZIP option, instead\n' +
-        'clone the repository, see ').style(Style.Info).text('https://gtnh.miraheze.org/wiki/Development').style(Style.SuccessHeader).println(' for details.)'
+            'This mod must be version controlled by Git AND the repository must provide at least one tag,\n' +
+                    'or the VERSION override must be set! ').style(Style.SuccessHeader).text('(Do NOT download from GitHub using the ZIP option, instead\n' +
+            'clone the repository, see ').style(Style.Info).text('https://gtnh.miraheze.org/wiki/Development').style(Style.SuccessHeader).println(' for details.)'
     )
     versionOverride = 'NO-GIT-TAG-SET'
     identifiedVersion = versionOverride
@@ -389,6 +384,18 @@ if (project.hasProperty("customArchiveBaseName") && customArchiveBaseName) {
 
 
 minecraft {
+    if (gradleTokenModId) {
+        injectedTags.put gradleTokenModId, modId
+    }
+    if (gradleTokenModName) {
+        injectedTags.put gradleTokenModName, modName
+    }
+    if (gradleTokenVersion) {
+        injectedTags.put gradleTokenVersion, modVersion
+    }
+    if (gradleTokenGroupName) {
+        injectedTags.put gradleTokenGroupName, modGroup
+    }
     if (enableGenericInjection.toBoolean()) {
         injectMissingGenerics.set(true)
     }
@@ -403,9 +410,9 @@ minecraft {
     if (usesMixins.toBoolean() || forceEnableMixins.toBoolean()) {
         if (usesMixinDebug.toBoolean()) {
             extraRunJvmArguments.addAll([
-                "-Dmixin.debug.countInjections=true",
-                "-Dmixin.debug.verbose=true",
-                "-Dmixin.debug.export=true"
+                    "-Dmixin.debug.countInjections=true",
+                    "-Dmixin.debug.verbose=true",
+                    "-Dmixin.debug.export=true"
             ])
         }
     }
@@ -674,9 +681,9 @@ if (usesMixins.toBoolean()) {
 
     tasks.named("compileJava", JavaCompile).configure {
         options.compilerArgs += [
-            // Elan: from what I understand they are just some linter configs so you get some warning on how to properly code
-            "-XDenableSunApiLintControl",
-            "-XDignore.symbol.file"
+                // Elan: from what I understand they are just some linter configs so you get some warning on how to properly code
+                "-XDenableSunApiLintControl",
+                "-XDignore.symbol.file"
         ]
     }
 }
@@ -688,11 +695,11 @@ tasks.named("processResources", ProcessResources).configure {
     exclude("spotless.gradle")
 
     // replace stuff in mcmod.info, nothing else. replaces ${key} with value in text
-    filesMatching("mcmod.info")  {
+    filesMatching("mcmod.info") {
         expand "minecraftVersion": project.minecraft.mcVersion,
-            "modVersion": modVersion,
-            "modId": modId,
-            "modName": modName
+                "modVersion": modVersion,
+                "modId": modId,
+                "modName": modName
     }
 
     if (usesMixins.toBoolean()) {
@@ -722,43 +729,43 @@ dependencies {
         java17Dependencies('com.github.GTNewHorizons:Hodgepodge:2.3.35')
     }
 
-    java17PatchDependencies("com.github.GTNewHorizons:lwjgl3ify:${lwjgl3ifyVersion}:forgePatches") {transitive = false}
+    java17PatchDependencies("com.github.GTNewHorizons:lwjgl3ify:${lwjgl3ifyVersion}:forgePatches") { transitive = false }
 }
 
 ext.java17JvmArgs = [
-    // Java 9+ support
-    "--illegal-access=warn",
-    "-Djava.security.manager=allow",
-    "-Dfile.encoding=UTF-8",
-    "--add-opens", "java.base/jdk.internal.loader=ALL-UNNAMED",
-    "--add-opens", "java.base/java.net=ALL-UNNAMED",
-    "--add-opens", "java.base/java.nio=ALL-UNNAMED",
-    "--add-opens", "java.base/java.io=ALL-UNNAMED",
-    "--add-opens", "java.base/java.lang=ALL-UNNAMED",
-    "--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED",
-    "--add-opens", "java.base/java.text=ALL-UNNAMED",
-    "--add-opens", "java.base/java.util=ALL-UNNAMED",
-    "--add-opens", "java.base/jdk.internal.reflect=ALL-UNNAMED",
-    "--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED",
-    "--add-opens", "jdk.naming.dns/com.sun.jndi.dns=ALL-UNNAMED,java.naming",
-    "--add-opens", "java.desktop/sun.awt.image=ALL-UNNAMED",
-    "--add-modules", "jdk.dynalink",
-    "--add-opens", "jdk.dynalink/jdk.dynalink.beans=ALL-UNNAMED",
-    "--add-modules", "java.sql.rowset",
-    "--add-opens", "java.sql.rowset/javax.sql.rowset.serial=ALL-UNNAMED"
+        // Java 9+ support
+        "--illegal-access=warn",
+        "-Djava.security.manager=allow",
+        "-Dfile.encoding=UTF-8",
+        "--add-opens", "java.base/jdk.internal.loader=ALL-UNNAMED",
+        "--add-opens", "java.base/java.net=ALL-UNNAMED",
+        "--add-opens", "java.base/java.nio=ALL-UNNAMED",
+        "--add-opens", "java.base/java.io=ALL-UNNAMED",
+        "--add-opens", "java.base/java.lang=ALL-UNNAMED",
+        "--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED",
+        "--add-opens", "java.base/java.text=ALL-UNNAMED",
+        "--add-opens", "java.base/java.util=ALL-UNNAMED",
+        "--add-opens", "java.base/jdk.internal.reflect=ALL-UNNAMED",
+        "--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED",
+        "--add-opens", "jdk.naming.dns/com.sun.jndi.dns=ALL-UNNAMED,java.naming",
+        "--add-opens", "java.desktop/sun.awt.image=ALL-UNNAMED",
+        "--add-modules", "jdk.dynalink",
+        "--add-opens", "jdk.dynalink/jdk.dynalink.beans=ALL-UNNAMED",
+        "--add-modules", "java.sql.rowset",
+        "--add-opens", "java.sql.rowset/javax.sql.rowset.serial=ALL-UNNAMED"
 ]
 
 ext.hotswapJvmArgs = [
-    // DCEVM advanced hot reload
-    "-XX:+AllowEnhancedClassRedefinition",
-    "-XX:HotswapAgent=fatjar"
+        // DCEVM advanced hot reload
+        "-XX:+AllowEnhancedClassRedefinition",
+        "-XX:HotswapAgent=fatjar"
 ]
 
 ext.setupHotswapAgentTask = tasks.register("setupHotswapAgent") {
     group = "GTNH Buildscript"
     description = "Installs a recent version of HotSwapAgent into the Java 17 JetBrains runtime directory"
     def hsaUrl = 'https://github.com/HotswapProjects/HotswapAgent/releases/download/1.4.2-SNAPSHOT/hotswap-agent-1.4.2-SNAPSHOT.jar'
-    def targetFolderProvider = javaToolchains.launcherFor(java17Toolchain).map {it.metadata.installationPath.dir("lib/hotswap")}
+    def targetFolderProvider = javaToolchains.launcherFor(java17Toolchain).map { it.metadata.installationPath.dir("lib/hotswap") }
     def targetFilename = "hotswap-agent.jar"
     onlyIf {
         !targetFolderProvider.get().file(targetFilename).asFile.exists()
@@ -781,6 +788,7 @@ public abstract class RunHotswappableMinecraftTask extends RunMinecraftTask {
 
     @Input
     public boolean getEnableHotswap() { return enableHotswap }
+
     @Option(option = "hotswap", description = "Enables HotSwapAgent for enhanced class reloading under a debugger")
     public boolean setEnableHotswap(boolean enable) { enableHotswap = enable }
 
@@ -855,9 +863,9 @@ def getManifestAttributes() {
 
     if (usesMixins.toBoolean()) {
         manifestAttributes += [
-            "TweakClass"    : "org.spongepowered.asm.launch.MixinTweaker",
-            "MixinConfigs"  : "mixins." + modId + ".json",
-            "ForceLoadAsMod": !containsMixinsAndOrCoreModOnly.toBoolean()
+                "TweakClass"    : "org.spongepowered.asm.launch.MixinTweaker",
+                "MixinConfigs"  : "mixins." + modId + ".json",
+                "ForceLoadAsMod": !containsMixinsAndOrCoreModOnly.toBoolean()
         ]
     }
     return manifestAttributes
@@ -879,9 +887,9 @@ if (usesShadowedDependencies.toBoolean()) {
             minimize()  // This will only allow shading for actually used classes
         }
         configurations = [
-            project.configurations.shadowImplementation,
-            project.configurations.shadowCompile,
-            project.configurations.shadeCompile
+                project.configurations.shadowImplementation,
+                project.configurations.shadowCompile,
+                project.configurations.shadeCompile
         ]
         archiveClassifier.set('dev')
         if (relocateShadowedDependencies.toBoolean()) {
@@ -898,7 +906,7 @@ if (usesShadowedDependencies.toBoolean()) {
         finalizedBy(tasks.shadowJar)
     }
     tasks.named("reobfJar", ReobfuscatedJar) {
-        inputJar.set(tasks.named("shadowJar", ShadowJar).flatMap({it.archiveFile}))
+        inputJar.set(tasks.named("shadowJar", ShadowJar).flatMap({ it.archiveFile }))
     }
     AdhocComponentWithVariants javaComponent = (AdhocComponentWithVariants) project.components.findByName("java")
     javaComponent.withVariantsFromConfiguration(configurations.shadowRuntimeElements) {
@@ -1254,18 +1262,4 @@ def pingURL(String url, int timeout) {
     } catch (IOException ignored) {
         return false
     }
-}
-
-// For easier scripting of things that require variables defined earlier in the buildscript
-if (file('addon.late.gradle.kts').exists()) {
-    apply from: 'addon.late.gradle.kts'
-} else if (file('addon.late.gradle').exists()) {
-    apply from: 'addon.late.gradle'
-}
-
-// File for local tweaks not commited to Git
-if (file('addon.late.local.gradle.kts').exists()) {
-    apply from: 'addon.late.local.gradle.kts'
-} else if (file('addon.late.local.gradle').exists()) {
-    apply from: 'addon.late.local.gradle'
 }

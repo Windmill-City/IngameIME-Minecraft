@@ -1,4 +1,4 @@
-package com.myname.mymodid;
+package city.windmill.ingameime;
 
 import java.io.File;
 

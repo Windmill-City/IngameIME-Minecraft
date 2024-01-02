@@ -1,4 +1,4 @@
-package com.myname.mymodid;
+package city.windmill.ingameime;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,7 +15,7 @@ public class MyMod {
 
     public static final Logger LOG = LogManager.getLogger(Tags.MODID);
 
-    @SidedProxy(clientSide = "com.myname.mymodid.ClientProxy", serverSide = "com.myname.mymodid.CommonProxy")
+    @SidedProxy(clientSide = "city.windmill.ingameime.ClientProxy", serverSide = "city.windmill.ingameime.CommonProxy")
     public static CommonProxy proxy;
 
     @Mod.EventHandler
