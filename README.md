@@ -1,8 +1,8 @@
 # IngameIME-Minecraft
 
-![Icon](https://github.com/Windmill-City/IngameIME-Minecraft/raw/master/IngameIME-Icon.png)
+![Icon](IngameIME-Icon.png)
 
-Use `InputMethod` in **Fullscreen** Minecraft!
+Use `InputMethod` in **Full screen** Minecraft!
 
 ![CurseForge Bandage Downloads](http://cf.way2muchnoise.eu/full_440032_downloads.svg)
 ![CurseForge Bandage Versions](http://cf.way2muchnoise.eu/versions/440032.svg)
