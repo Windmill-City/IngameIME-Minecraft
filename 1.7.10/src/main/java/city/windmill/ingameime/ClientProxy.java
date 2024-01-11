@@ -54,30 +54,11 @@ public class ClientProxy {
         }
     }
 
-    public void preInit(FMLPreInitializationEvent event) {
-        Config.synchronizeConfiguration(event.getSuggestedConfigurationFile());
-
-        boolean isWindows = LWJGLUtil.getPlatform() == LWJGLUtil.PLATFORM_WINDOWS;
-
-        if (!isWindows) {
-            IngameIME_Forge.LOG.info("Unsupported platform: {}", LWJGLUtil.getPlatformName());
-            return;
-        }
-
-        tryLoadLibrary("IngameIME_Java-arm64.dll");
-        tryLoadLibrary("IngameIME_Java-x64.dll");
-        tryLoadLibrary("IngameIME_Java-x86.dll");
-
-        if (!IngameIME_Forge.LIBRARY_LOADED) {
-            IngameIME_Forge.LOG.error("Unsupported arch: {}", System.getProperty("os.arch"));
-            return;
-        }
+    public static void createInputCtx() {
+        if (!IngameIME_Forge.LIBRARY_LOADED) return;
 
         IngameIME_Forge.LOG.info("Using IngameIME-Native: {}", InputContext.getVersion());
-        createInputCtx();
-    }
 
-    public static void createInputCtx() {
         long hWnd = getHwnd();
         if (hWnd != 0) {
             API api = Config.API_Windows.getString().equals("TextServiceFramework") ? API.TextServiceFramework : API.Imm32;
@@ -123,5 +104,27 @@ public class ClientProxy {
 
         IngameIME_Forge.InputCtx.setCallback(new PreEditCallback(preEditCallback));
         IngameIME_Forge.InputCtx.setCallback(new CommitCallback(commitCallback));
+    }
+
+    public void preInit(FMLPreInitializationEvent event) {
+        Config.synchronizeConfiguration(event.getSuggestedConfigurationFile());
+
+        boolean isWindows = LWJGLUtil.getPlatform() == LWJGLUtil.PLATFORM_WINDOWS;
+
+        if (!isWindows) {
+            IngameIME_Forge.LOG.info("Unsupported platform: {}", LWJGLUtil.getPlatformName());
+            return;
+        }
+
+        tryLoadLibrary("IngameIME_Java-arm64.dll");
+        tryLoadLibrary("IngameIME_Java-x64.dll");
+        tryLoadLibrary("IngameIME_Java-x86.dll");
+
+        if (!IngameIME_Forge.LIBRARY_LOADED) {
+            IngameIME_Forge.LOG.error("Unsupported arch: {}", System.getProperty("os.arch"));
+            return;
+        }
+
+        createInputCtx();
     }
 }
