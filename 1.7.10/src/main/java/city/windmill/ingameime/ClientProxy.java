@@ -61,8 +61,11 @@ public class ClientProxy {
 
         long hWnd = getHwnd();
         if (hWnd != 0) {
+            // Once switched to the full screen, we can't back to not UiLess mode, unless restart the game
+            if (Minecraft.getMinecraft().isFullScreen())
+                Config.UiLess_Windows.set(true);
             API api = Config.API_Windows.getString().equals("TextServiceFramework") ? API.TextServiceFramework : API.Imm32;
-            IngameIME_Forge.LOG.info("Using API: {}", api);
+            IngameIME_Forge.LOG.info("Using API: {}, UiLess: {}", api, Config.UiLess_Windows.getBoolean());
             IngameIME_Forge.InputCtx = IngameIME.CreateInputContextWin32(hWnd, api, Config.UiLess_Windows.getBoolean());
             IngameIME_Forge.LOG.info("InputContext has created!");
         } else {
@@ -77,9 +80,10 @@ public class ClientProxy {
             protected void call(CompositionState arg0, PreEditContext arg1) {
                 try {
                     IngameIME_Forge.LOG.info("PreEdit State: {}", arg0);
-                    if (arg0 == CompositionState.Begin || arg0 == CompositionState.End) {
-                    } else if (arg0 == CompositionState.Update) {
-                    }
+                    if (arg1 != null)
+                        IngameIME_Forge.Screen.PreEdit.setContent(arg1.getContent(), arg1.getSelStart());
+                    else
+                        IngameIME_Forge.Screen.PreEdit.setContent(null, -1);
                 } catch (Throwable e) {
                     IngameIME_Forge.LOG.error(e.getMessage());
                 }

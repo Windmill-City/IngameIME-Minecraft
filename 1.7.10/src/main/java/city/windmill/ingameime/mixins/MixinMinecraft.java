@@ -21,9 +21,6 @@ public class MixinMinecraft {
 
     @Inject(method = "toggleFullscreen", at = @At(value = "RETURN"))
     void postToggleFullscreen(CallbackInfo ci) {
-        if (Minecraft.getMinecraft().isFullScreen()) {
-            Config.UiLess_Windows.set(true);
-        }
         ClientProxy.createInputCtx();
     }
 }
