@@ -4,7 +4,6 @@ import net.minecraft.client.gui.Gui;
 
 public class Widget extends Gui {
     public int offsetX, offsetY;
-    public Widget Parent = null;
     public int TextColor = 0xFF_00_00_00;
     public int Background = 0xEB_EB_EB_EB;
     public int Padding = 1;
@@ -23,11 +22,7 @@ public class Widget extends Gui {
 
         X = offsetX;
         Y = offsetY;
-        if (Parent != null) {
-            Parent.layout();
-            X += Parent.X;
-            Y += Parent.Y;
-        }
+
         isDirty = false;
     }
 
