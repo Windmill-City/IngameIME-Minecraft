@@ -1,17 +1,33 @@
 package city.windmill.ingameime;
 
-import java.io.File;
-
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+
+import java.io.File;
+import java.util.Arrays;
 
 public class Config {
-
-    public static String greeting = "Hello World";
+    public static Property API_Windows = null;
+    public static Property UiLess_Windows = null;
 
     public static void synchronizeConfiguration(File configFile) {
         Configuration configuration = new Configuration(configFile);
 
-        greeting = configuration.getString("greeting", Configuration.CATEGORY_GENERAL, greeting, "How shall I greet?");
+        API_Windows = configuration.get("API",
+                "Windows",
+                "TextServiceFramework",
+                "Config the API to use in Windows platform (TextServiceFramework, Imm32)"
+        );
+        API_Windows.setValidValues(new String[]{"TextServiceFramework", "Imm32"});
+        if (Arrays.stream(API_Windows.getValidValues()).noneMatch(it -> it.equals(API_Windows.getString())))
+            API_Windows.set(API_Windows.getDefault());
+        API_Windows.setRequiresMcRestart(true);
+
+        UiLess_Windows = configuration.get("UiLess",
+                "Windows",
+                true,
+                "Config if render CandidateList in game");
+        UiLess_Windows.setRequiresMcRestart(true);
 
         if (configuration.hasChanged()) {
             configuration.save();

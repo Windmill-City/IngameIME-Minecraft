@@ -1,0 +1,15 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "city.windmill.ingameime.mixins",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "client": [
+    "MixinGuiScreen",
+    "MixinMinecraft"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}
