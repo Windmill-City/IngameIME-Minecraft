@@ -9,11 +9,6 @@ public class WidgetPreEdit extends Widget {
     private String Content = null;
     private int Cursor = -1;
 
-    public WidgetPreEdit(Widget parent) {
-        Parent = parent;
-        Padding = 1;
-    }
-
     public void setContent(String content, int cursor) {
         Cursor = cursor;
         Content = content;
@@ -32,6 +27,17 @@ public class WidgetPreEdit extends Widget {
         }
 
         super.layout();
+
+        WidgetCandidateList candidateList = IngameIME_Forge.Screen.CandidateList;
+        candidateList.setPos(X, Y + Height);
+        // Check if exceed screen
+        int displayWidth = Minecraft.getMinecraft().displayWidth;
+        if (candidateList.X + Width > displayWidth)
+            candidateList.setPos(displayWidth - candidateList.Width, Y + Height);
+        int displayHeight = Minecraft.getMinecraft().displayHeight;
+        if (candidateList.Y + Height > displayHeight)
+            candidateList.setPos(candidateList.X, Y - candidateList.Height);
+
 
         if (!IngameIME_Forge.LIBRARY_LOADED || IngameIME_Forge.InputCtx == null) return;
         PreEditRect rect = new PreEditRect();

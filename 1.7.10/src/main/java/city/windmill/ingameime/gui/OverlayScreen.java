@@ -4,7 +4,8 @@ import city.windmill.ingameime.IngameIME_Forge;
 import ingameime.InputContext;
 
 public class OverlayScreen extends Widget {
-    public WidgetPreEdit PreEdit = new WidgetPreEdit(this);
+    public WidgetPreEdit PreEdit = new WidgetPreEdit();
+    public WidgetCandidateList CandidateList = new WidgetCandidateList();
 
     @Override
     public boolean isActive() {
@@ -20,5 +21,6 @@ public class OverlayScreen extends Widget {
     public void draw() {
         if (!isActive()) return;
         PreEdit.draw();
+        CandidateList.draw();
     }
 }

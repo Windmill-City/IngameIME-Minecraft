@@ -14,10 +14,13 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 
 public class ClientProxy {
     static PreEditCallbackImpl preEditCallback = null;
     static CommitCallbackImpl commitCallback = null;
+    static CandidateListCallbackImpl candidateListCallback = null;
+    static InputModeCallbackImpl inputModeCallback = null;
 
     private static void tryLoadLibrary(String libName) {
         if (!IngameIME_Forge.LIBRARY_LOADED)
@@ -105,9 +108,34 @@ public class ClientProxy {
                 }
             }
         };
+        candidateListCallback = new CandidateListCallbackImpl() {
+            @Override
+            protected void call(CandidateListState arg0, CandidateListContext arg1) {
+                try {
+                    if (arg1 != null)
+                        IngameIME_Forge.Screen.CandidateList.setContent(new ArrayList<>(arg1.getCandidates()), arg1.getSelection());
+                    else
+                        IngameIME_Forge.Screen.CandidateList.setContent(null, -1);
+                } catch (Throwable e) {
+                    IngameIME_Forge.LOG.error(e.getMessage());
+                }
+            }
+        };
+        inputModeCallback = new InputModeCallbackImpl() {
+            @Override
+            protected void call(InputMode arg0) {
+                try {
+
+                } catch (Throwable e) {
+                    IngameIME_Forge.LOG.error(e.getMessage());
+                }
+            }
+        };
 
         IngameIME_Forge.InputCtx.setCallback(new PreEditCallback(preEditCallback));
         IngameIME_Forge.InputCtx.setCallback(new CommitCallback(commitCallback));
+        IngameIME_Forge.InputCtx.setCallback(new CandidateListCallback(candidateListCallback));
+        IngameIME_Forge.InputCtx.setCallback(new InputModeCallback(inputModeCallback));
     }
 
     public void preInit(FMLPreInitializationEvent event) {
