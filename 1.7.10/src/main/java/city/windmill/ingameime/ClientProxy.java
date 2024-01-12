@@ -1,6 +1,8 @@
 package city.windmill.ingameime;
 
 import city.windmill.ingameime.mixins.MixinGuiScreen;
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import ingameime.*;
 import net.minecraft.client.Minecraft;
@@ -165,9 +167,7 @@ public class ClientProxy {
         System.gc();
     }
 
-    public void preInit(FMLPreInitializationEvent event) {
-        Config.synchronizeConfiguration(event.getSuggestedConfigurationFile());
-
+    private static void loadLibrary() {
         boolean isWindows = LWJGLUtil.getPlatform() == LWJGLUtil.PLATFORM_WINDOWS;
 
         if (!isWindows) {
@@ -181,9 +181,16 @@ public class ClientProxy {
 
         if (!IngameIME_Forge.LIBRARY_LOADED) {
             IngameIME_Forge.LOG.error("Unsupported arch: {}", System.getProperty("os.arch"));
-            return;
         }
+    }
 
+    public void preInit(FMLPreInitializationEvent event) {
+        Config.synchronizeConfiguration(event.getSuggestedConfigurationFile());
+        loadLibrary();
         createInputCtx();
+    }
+
+    public void init(FMLInitializationEvent event) {
+        ClientRegistry.registerKeyBinding(IngameIME_Forge.KeyBind);
     }
 }
