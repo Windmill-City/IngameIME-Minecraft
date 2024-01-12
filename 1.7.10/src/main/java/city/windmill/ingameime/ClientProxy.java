@@ -96,6 +96,11 @@ public class ClientProxy {
             protected void call(CompositionState arg0, PreEditContext arg1) {
                 try {
                     IngameIME_Forge.LOG.info("PreEdit State: {}", arg0);
+
+                    //Hide Indicator when PreEdit start
+                    if (arg0 == CompositionState.Begin)
+                        IngameIME_Forge.Screen.WInputMode.setActive(false);
+
                     if (arg1 != null)
                         IngameIME_Forge.Screen.PreEdit.setContent(arg1.getContent(), arg1.getSelStart());
                     else
@@ -144,7 +149,7 @@ public class ClientProxy {
             @Override
             protected void call(InputMode arg0) {
                 try {
-
+                    IngameIME_Forge.Screen.WInputMode.setMode(arg0);
                 } catch (Throwable e) {
                     IngameIME_Forge.LOG.error(e.getMessage());
                 }

@@ -1,7 +1,6 @@
 package city.windmill.ingameime;
 
 import city.windmill.ingameime.gui.OverlayScreen;
-import city.windmill.ingameime.gui.Widget;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -33,7 +32,6 @@ public class IngameIME_Forge {
 
     @SubscribeEvent
     public void onRenderScreen(GuiScreenEvent.DrawScreenEvent.Post event) {
-        Screen.PreEdit.layout();
         Screen.draw();
     }
 }
