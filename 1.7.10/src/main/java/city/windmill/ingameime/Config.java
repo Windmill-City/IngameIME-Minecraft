@@ -7,9 +7,14 @@ import java.io.File;
 import java.util.Arrays;
 
 public class Config {
+    // API
     public static Property API_Windows = null;
     public static Property UiLess_Windows = null;
+    // General
     public static Property TurnOffOnMouseMove = null;
+    // Mode Text
+    public static Property AlphaModeText = null;
+    public static Property NativeModeText = null;
 
     public static void synchronizeConfiguration(File configFile) {
         Configuration configuration = new Configuration(configFile);
@@ -33,7 +38,17 @@ public class Config {
         TurnOffOnMouseMove = configuration.get("General",
                 "TurnOffOnMouseMove",
                 true,
-                "Turn off InputMethod when mouse move");
+                "Turn off InputMethod on mouse move");
+
+        AlphaModeText = configuration.get("ModeText",
+                "AlphaMode",
+                "Alpha",
+                "Text to display when in Alpha mode");
+
+        NativeModeText = configuration.get("ModeText",
+                "NativeMode",
+                "Native",
+                "Text to display when in Native mode");
 
         if (configuration.hasChanged()) {
             configuration.save();
