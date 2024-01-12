@@ -25,4 +25,15 @@ public class OverlayScreen extends Widget {
         CandidateList.draw();
         WInputMode.draw();
     }
+
+    public void setCaretPos(int x, int y) {
+        PreEdit.setPos(x, y);
+        WInputMode.setPos(x, y);
+    }
+
+    public void setActivated(boolean activated) {
+        if (IngameIME_Forge.InputCtx != null) {
+            IngameIME_Forge.InputCtx.setActivated(activated);
+        }
+    }
 }
