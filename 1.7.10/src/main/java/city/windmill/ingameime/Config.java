@@ -9,6 +9,7 @@ import java.util.Arrays;
 public class Config {
     public static Property API_Windows = null;
     public static Property UiLess_Windows = null;
+    public static Property TurnOffOnMouseMove = null;
 
     public static void synchronizeConfiguration(File configFile) {
         Configuration configuration = new Configuration(configFile);
@@ -28,6 +29,11 @@ public class Config {
                 true,
                 "Config if render CandidateList in game");
         UiLess_Windows.setRequiresMcRestart(true);
+
+        TurnOffOnMouseMove = configuration.get("General",
+                "TurnOffOnMouseMove",
+                true,
+                "Turn off InputMethod when mouse move");
 
         if (configuration.hasChanged()) {
             configuration.save();

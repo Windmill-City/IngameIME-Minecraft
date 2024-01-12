@@ -13,6 +13,7 @@ import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import static org.lwjgl.input.Keyboard.KEY_HOME;
 
@@ -25,6 +26,7 @@ public class IngameIME_Forge {
     public static KeyBinding KeyBind = new KeyBinding("Toggle Input Method", KEY_HOME, "IngameIME");
     @SidedProxy(clientSide = "city.windmill.ingameime.ClientProxy")
     public static ClientProxy proxy;
+    public static boolean IsToggledManually = false;
     private boolean IsKeyDown = false;
 
     public static boolean getActivated() {
@@ -37,8 +39,13 @@ public class IngameIME_Forge {
     public static void setActivated(boolean activated) {
         if (InputCtx != null) {
             InputCtx.setActivated(activated);
+            if (!activated) IsToggledManually = false;
             LOG.info("InputMethod activated: {}", activated);
         }
+    }
+
+    public static void toggleInputMethod() {
+        setActivated(!getActivated());
     }
 
     @SubscribeEvent
@@ -49,8 +56,16 @@ public class IngameIME_Forge {
             IsKeyDown = true;
         } else if (IsKeyDown) {
             IsKeyDown = false;
-            setActivated(!getActivated());
+            IsToggledManually = true;
+            toggleInputMethod();
+            LOG.info("Toggled by keybinding");
         }
+
+        if (Config.TurnOffOnMouseMove.getBoolean())
+            if (IsToggledManually && (Mouse.getDX() > 0 || Mouse.getDY() > 0)) {
+                setActivated(false);
+                LOG.info("Turned off by mouse move");
+            }
     }
 
     @Mod.EventHandler
