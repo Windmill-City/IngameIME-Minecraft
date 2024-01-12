@@ -88,8 +88,6 @@ public class ClientProxy {
             IngameIME_Forge.LOG.info("InputContext could not init as the hWnd is NULL!");
             return;
         }
-        IngameIME_Forge.InputCtx.setActivated(true);
-
 
         preEditCallbackProxy = new PreEditCallbackImpl() {
             @Override
