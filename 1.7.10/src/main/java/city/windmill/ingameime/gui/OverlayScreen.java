@@ -1,8 +1,7 @@
 package city.windmill.ingameime.gui;
 
-import city.windmill.ingameime.IngameIME_Forge;
+import city.windmill.ingameime.ClientProxy;
 import ingameime.InputContext;
-import net.minecraft.client.renderer.OpenGlHelper;
 import org.lwjgl.opengl.GL11;
 
 public class OverlayScreen extends Widget {
@@ -12,7 +11,7 @@ public class OverlayScreen extends Widget {
 
     @Override
     public boolean isActive() {
-        InputContext inputCtx = IngameIME_Forge.InputCtx;
+        InputContext inputCtx = ClientProxy.InputCtx;
         return inputCtx != null && inputCtx.getActivated();
     }
 

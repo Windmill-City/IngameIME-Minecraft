@@ -1,16 +1,21 @@
 package city.windmill.ingameime;
 
+import city.windmill.ingameime.gui.OverlayScreen;
 import city.windmill.ingameime.mixins.MixinGuiScreen;
 import codechicken.nei.guihook.GuiContainerManager;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import ingameime.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
 import java.io.InputStream;
@@ -20,7 +25,15 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
-public class ClientProxy {
+import static city.windmill.ingameime.IngameIME_Forge.LOG;
+import static org.lwjgl.input.Keyboard.KEY_HOME;
+
+public class ClientProxy extends CommonProxy {
+    public static boolean LIBRARY_LOADED = false;
+    public static InputContext InputCtx = null;
+    public static OverlayScreen Screen = new OverlayScreen();
+    public static KeyBinding KeyBind = new KeyBinding("ingameime.key.desc", KEY_HOME, "IngameIME");
+    public static boolean IsToggledManually = false;
     static PreEditCallbackImpl preEditCallbackProxy = null;
     static CommitCallbackImpl commitCallbackProxy = null;
     static CandidateListCallbackImpl candidateListCallbackProxy = null;
@@ -30,22 +43,23 @@ public class ClientProxy {
     static CommitCallback commitCallback = null;
     static CandidateListCallback candidateListCallback = null;
     static InputModeCallback inputModeCallback = null;
+    private boolean IsKeyDown = false;
 
     private static void tryLoadLibrary(String libName) {
-        if (!IngameIME_Forge.LIBRARY_LOADED)
+        if (!LIBRARY_LOADED)
             try {
                 InputStream lib = IngameIME.class.getClassLoader().getResourceAsStream(libName);
                 if (lib == null) throw new RuntimeException("Required library resource not exist!");
                 Path path = Files.createTempFile("IngameIME-Native", null);
                 Files.copy(lib, path, StandardCopyOption.REPLACE_EXISTING);
                 System.load(path.toString());
-                IngameIME_Forge.LIBRARY_LOADED = true;
-                IngameIME_Forge.LOG.info("Library [{}] has loaded!", libName);
+                LIBRARY_LOADED = true;
+                LOG.info("Library [{}] has loaded!", libName);
             } catch (Throwable e) {
-                IngameIME_Forge.LOG.warn("Try to load library [{}] but failed: {}", libName, e.getMessage());
+                LOG.warn("Try to load library [{}] but failed: {}", libName, e.getMessage());
             }
         else
-            IngameIME_Forge.LOG.info("Library has loaded, skip loading of [{}]", libName);
+            LOG.info("Library has loaded, skip loading of [{}]", libName);
     }
 
     private static long getHwnd() {
@@ -61,23 +75,23 @@ public class ClientProxy {
             methHwnd.setAccessible(true);
             return (Long) methHwnd.invoke(impl);
         } catch (Throwable e) {
-            IngameIME_Forge.LOG.error("Failed to get window handle: {}", e.getMessage());
+            LOG.error("Failed to get window handle: {}", e.getMessage());
             return 0;
         }
     }
 
     public static void destroyInputCtx() {
-        if (IngameIME_Forge.InputCtx != null) {
-            IngameIME_Forge.InputCtx.delete();
-            IngameIME_Forge.InputCtx = null;
-            IngameIME_Forge.LOG.info("InputContext has destroyed!");
+        if (InputCtx != null) {
+            InputCtx.delete();
+            InputCtx = null;
+            LOG.info("InputContext has destroyed!");
         }
     }
 
     public static void createInputCtx() {
-        if (!IngameIME_Forge.LIBRARY_LOADED) return;
+        if (!LIBRARY_LOADED) return;
 
-        IngameIME_Forge.LOG.info("Using IngameIME-Native: {}", InputContext.getVersion());
+        LOG.info("Using IngameIME-Native: {}", InputContext.getVersion());
 
         long hWnd = getHwnd();
         if (hWnd != 0) {
@@ -85,11 +99,11 @@ public class ClientProxy {
             if (Minecraft.getMinecraft().isFullScreen())
                 Config.UiLess_Windows.set(true);
             API api = Config.API_Windows.getString().equals("TextServiceFramework") ? API.TextServiceFramework : API.Imm32;
-            IngameIME_Forge.LOG.info("Using API: {}, UiLess: {}", api, Config.UiLess_Windows.getBoolean());
-            IngameIME_Forge.InputCtx = IngameIME.CreateInputContextWin32(hWnd, api, Config.UiLess_Windows.getBoolean());
-            IngameIME_Forge.LOG.info("InputContext has created!");
+            LOG.info("Using API: {}, UiLess: {}", api, Config.UiLess_Windows.getBoolean());
+            InputCtx = IngameIME.CreateInputContextWin32(hWnd, api, Config.UiLess_Windows.getBoolean());
+            LOG.info("InputContext has created!");
         } else {
-            IngameIME_Forge.LOG.info("InputContext could not init as the hWnd is NULL!");
+            LOG.info("InputContext could not init as the hWnd is NULL!");
             return;
         }
 
@@ -97,18 +111,18 @@ public class ClientProxy {
             @Override
             protected void call(CompositionState arg0, PreEditContext arg1) {
                 try {
-                    IngameIME_Forge.LOG.info("PreEdit State: {}", arg0);
+                    LOG.info("PreEdit State: {}", arg0);
 
                     //Hide Indicator when PreEdit start
                     if (arg0 == CompositionState.Begin)
-                        IngameIME_Forge.Screen.WInputMode.setActive(false);
+                        Screen.WInputMode.setActive(false);
 
                     if (arg1 != null)
-                        IngameIME_Forge.Screen.PreEdit.setContent(arg1.getContent(), arg1.getSelStart());
+                        Screen.PreEdit.setContent(arg1.getContent(), arg1.getSelStart());
                     else
-                        IngameIME_Forge.Screen.PreEdit.setContent(null, -1);
+                        Screen.PreEdit.setContent(null, -1);
                 } catch (Throwable e) {
-                    IngameIME_Forge.LOG.error(e.getMessage());
+                    LOG.error(e.getMessage());
                 }
             }
         };
@@ -118,7 +132,7 @@ public class ClientProxy {
             @Override
             protected void call(String arg0) {
                 try {
-                    IngameIME_Forge.LOG.info("Commit: {}", arg0);
+                    LOG.info("Commit: {}", arg0);
                     GuiScreen screen = Minecraft.getMinecraft().currentScreen;
                     if (screen != null) {
                         // NEI Integration
@@ -134,7 +148,7 @@ public class ClientProxy {
                         }
                     }
                 } catch (Throwable e) {
-                    IngameIME_Forge.LOG.error(e.getMessage());
+                    LOG.error(e.getMessage());
                 }
             }
         };
@@ -145,11 +159,11 @@ public class ClientProxy {
             protected void call(CandidateListState arg0, CandidateListContext arg1) {
                 try {
                     if (arg1 != null)
-                        IngameIME_Forge.Screen.CandidateList.setContent(new ArrayList<>(arg1.getCandidates()), arg1.getSelection());
+                        Screen.CandidateList.setContent(new ArrayList<>(arg1.getCandidates()), arg1.getSelection());
                     else
-                        IngameIME_Forge.Screen.CandidateList.setContent(null, -1);
+                        Screen.CandidateList.setContent(null, -1);
                 } catch (Throwable e) {
-                    IngameIME_Forge.LOG.error(e.getMessage());
+                    LOG.error(e.getMessage());
                 }
             }
         };
@@ -159,19 +173,19 @@ public class ClientProxy {
             @Override
             protected void call(InputMode arg0) {
                 try {
-                    IngameIME_Forge.Screen.WInputMode.setMode(arg0);
+                    Screen.WInputMode.setMode(arg0);
                 } catch (Throwable e) {
-                    IngameIME_Forge.LOG.error(e.getMessage());
+                    LOG.error(e.getMessage());
                 }
             }
         };
         inputModeCallbackProxy.swigReleaseOwnership();
         inputModeCallback = new InputModeCallback(inputModeCallbackProxy);
 
-        IngameIME_Forge.InputCtx.setCallback(preEditCallback);
-        IngameIME_Forge.InputCtx.setCallback(commitCallback);
-        IngameIME_Forge.InputCtx.setCallback(candidateListCallback);
-        IngameIME_Forge.InputCtx.setCallback(inputModeCallback);
+        InputCtx.setCallback(preEditCallback);
+        InputCtx.setCallback(commitCallback);
+        InputCtx.setCallback(candidateListCallback);
+        InputCtx.setCallback(inputModeCallback);
 
         // Free unused native object
         System.gc();
@@ -181,7 +195,7 @@ public class ClientProxy {
         boolean isWindows = LWJGLUtil.getPlatform() == LWJGLUtil.PLATFORM_WINDOWS;
 
         if (!isWindows) {
-            IngameIME_Forge.LOG.info("Unsupported platform: {}", LWJGLUtil.getPlatformName());
+            LOG.info("Unsupported platform: {}", LWJGLUtil.getPlatformName());
             return;
         }
 
@@ -189,18 +203,55 @@ public class ClientProxy {
         tryLoadLibrary("IngameIME_Java-x64.dll");
         tryLoadLibrary("IngameIME_Java-x86.dll");
 
-        if (!IngameIME_Forge.LIBRARY_LOADED) {
-            IngameIME_Forge.LOG.error("Unsupported arch: {}", System.getProperty("os.arch"));
+        if (!LIBRARY_LOADED) {
+            LOG.error("Unsupported arch: {}", System.getProperty("os.arch"));
         }
+    }
+
+    public static boolean getActivated() {
+        if (InputCtx != null) {
+            return InputCtx.getActivated();
+        }
+        return false;
+    }
+
+    public static void setActivated(boolean activated) {
+        if (InputCtx != null && getActivated() != activated) {
+            InputCtx.setActivated(activated);
+            if (!activated) IsToggledManually = false;
+            LOG.info("InputMethod activated: {}", activated);
+        }
+    }
+
+    public static void toggleInputMethod() {
+        setActivated(!getActivated());
+    }
+
+    @SubscribeEvent
+    public void onRenderScreen(GuiScreenEvent.DrawScreenEvent.Post event) {
+        ClientProxy.Screen.draw();
+
+        if (Keyboard.isKeyDown(ClientProxy.KeyBind.getKeyCode())) {
+            IsKeyDown = true;
+        } else if (IsKeyDown) {
+            IsKeyDown = false;
+            ClientProxy.IsToggledManually = true;
+            ClientProxy.toggleInputMethod();
+            LOG.info("Toggled by keybinding");
+        }
+
+        if (Config.TurnOffOnMouseMove.getBoolean())
+            if (ClientProxy.IsToggledManually && (Mouse.getDX() > 0 || Mouse.getDY() > 0)) {
+                ClientProxy.setActivated(false);
+                LOG.info("Turned off by mouse move");
+            }
     }
 
     public void preInit(FMLPreInitializationEvent event) {
         Config.synchronizeConfiguration(event.getSuggestedConfigurationFile());
+        ClientRegistry.registerKeyBinding(KeyBind);
         loadLibrary();
         createInputCtx();
-    }
-
-    public void init(FMLInitializationEvent event) {
-        ClientRegistry.registerKeyBinding(IngameIME_Forge.KeyBind);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 }

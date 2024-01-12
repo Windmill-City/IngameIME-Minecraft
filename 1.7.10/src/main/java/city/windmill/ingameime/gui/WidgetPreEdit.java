@@ -1,6 +1,6 @@
 package city.windmill.ingameime.gui;
 
-import city.windmill.ingameime.IngameIME_Forge;
+import city.windmill.ingameime.ClientProxy;
 import ingameime.PreEditRect;
 import net.minecraft.client.Minecraft;
 
@@ -27,7 +27,7 @@ public class WidgetPreEdit extends Widget {
         }
         super.layout();
 
-        WidgetCandidateList list = IngameIME_Forge.Screen.CandidateList;
+        WidgetCandidateList list = ClientProxy.Screen.CandidateList;
         list.setPos(X, Y + Height);
         // Check if overlap
         if (list.Y < Y + Height) {
@@ -35,13 +35,13 @@ public class WidgetPreEdit extends Widget {
         }
 
         // Update Rect
-        if (!IngameIME_Forge.LIBRARY_LOADED || IngameIME_Forge.InputCtx == null) return;
+        if (!ClientProxy.LIBRARY_LOADED || ClientProxy.InputCtx == null) return;
         PreEditRect rect = new PreEditRect();
         rect.setX(X);
         rect.setY(Y);
         rect.setHeight(Height);
         rect.setWidth(Width);
-        IngameIME_Forge.InputCtx.setPreEditRect(rect);
+        ClientProxy.InputCtx.setPreEditRect(rect);
     }
 
     @Override
