@@ -32,4 +32,10 @@ public class IngameIME_Forge {
     public void onRenderScreen(GuiScreenEvent.DrawScreenEvent.Post event) {
         Screen.draw();
     }
+
+    public void setActivated(boolean activated) {
+        if (InputCtx != null) {
+            InputCtx.setActivated(activated);
+        }
+    }
 }

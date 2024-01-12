@@ -30,10 +30,4 @@ public class OverlayScreen extends Widget {
         PreEdit.setPos(x, y);
         WInputMode.setPos(x, y);
     }
-
-    public void setActivated(boolean activated) {
-        if (IngameIME_Forge.InputCtx != null) {
-            IngameIME_Forge.InputCtx.setActivated(activated);
-        }
-    }
 }
