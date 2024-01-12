@@ -12,6 +12,7 @@ public class WidgetInputMode extends Widget {
 
     public WidgetInputMode() {
         Padding = 5;
+        DrawInline = false;
     }
 
     @Override

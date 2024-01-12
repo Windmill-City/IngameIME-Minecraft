@@ -2,6 +2,8 @@ package city.windmill.ingameime.gui;
 
 import city.windmill.ingameime.IngameIME_Forge;
 import ingameime.InputContext;
+import net.minecraft.client.renderer.OpenGlHelper;
+import org.lwjgl.opengl.GL11;
 
 public class OverlayScreen extends Widget {
     public WidgetPreEdit PreEdit = new WidgetPreEdit();
@@ -21,9 +23,11 @@ public class OverlayScreen extends Widget {
     @Override
     public void draw() {
         if (!isActive()) return;
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
         PreEdit.draw();
         CandidateList.draw();
         WInputMode.draw();
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
     }
 
     public void setCaretPos(int x, int y) {

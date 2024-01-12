@@ -11,9 +11,8 @@ import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = Tags.MODID, version = Tags.VERSION, name = Tags.MODNAME, acceptedMinecraftVersions = "[1.7.10]")
+@Mod(modid = Tags.MODID, version = Tags.VERSION, name = Tags.MODNAME, acceptedMinecraftVersions = "[1.7.10]", acceptableRemoteVersions = "*")
 public class IngameIME_Forge {
-
     public static final Logger LOG = LogManager.getLogger(Tags.MODNAME);
     public static boolean LIBRARY_LOADED = false;
     public static InputContext InputCtx = null;
@@ -21,6 +20,13 @@ public class IngameIME_Forge {
 
     @SidedProxy(clientSide = "city.windmill.ingameime.ClientProxy")
     public static ClientProxy proxy;
+
+    public static void setActivated(boolean activated) {
+        if (InputCtx != null) {
+            InputCtx.setActivated(activated);
+            LOG.info("InputMethod activated: {}", activated);
+        }
+    }
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -31,11 +37,5 @@ public class IngameIME_Forge {
     @SubscribeEvent
     public void onRenderScreen(GuiScreenEvent.DrawScreenEvent.Post event) {
         Screen.draw();
-    }
-
-    public void setActivated(boolean activated) {
-        if (InputCtx != null) {
-            InputCtx.setActivated(activated);
-        }
     }
 }

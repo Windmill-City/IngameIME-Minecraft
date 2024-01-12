@@ -25,20 +25,16 @@ public class WidgetPreEdit extends Widget {
         } else {
             Width = Height = 0;
         }
-
         super.layout();
 
-        WidgetCandidateList candidateList = IngameIME_Forge.Screen.CandidateList;
-        candidateList.setPos(X, Y + Height);
-        // Check if exceed screen
-        int displayWidth = Minecraft.getMinecraft().displayWidth;
-        if (candidateList.X + Width > displayWidth)
-            candidateList.setPos(displayWidth - candidateList.Width, Y + Height);
-        int displayHeight = Minecraft.getMinecraft().displayHeight;
-        if (candidateList.Y + Height > displayHeight)
-            candidateList.setPos(candidateList.X, Y - candidateList.Height);
+        WidgetCandidateList list = IngameIME_Forge.Screen.CandidateList;
+        list.setPos(X, Y + Height);
+        // Check if overlap
+        if (list.Y < Y + Height) {
+            list.setPos(X, Y - list.Height);
+        }
 
-
+        // Update Rect
         if (!IngameIME_Forge.LIBRARY_LOADED || IngameIME_Forge.InputCtx == null) return;
         PreEditRect rect = new PreEditRect();
         rect.setX(X);
@@ -59,9 +55,9 @@ public class WidgetPreEdit extends Widget {
         super.draw();
         String beforeCursor = Content.substring(0, Cursor);
         String afterCursor = Content.substring(Cursor);
-        int xLen = Minecraft.getMinecraft().fontRenderer.drawString(beforeCursor, X + Padding, Y + Padding, TextColor);
+        int x = Minecraft.getMinecraft().fontRenderer.drawString(beforeCursor, X + Padding, Y + Padding, TextColor);
         // Cursor
-        drawRect(X + Padding + xLen + 1, Y + Padding, X + Padding + xLen + 2, Y + Padding + Height, TextColor);
-        Minecraft.getMinecraft().fontRenderer.drawString(afterCursor, X + Padding + xLen + CursorWidth, Y + Padding, TextColor);
+        drawRect(x + 1, Y + Padding, x + 2, Y + Padding + Height, TextColor);
+        Minecraft.getMinecraft().fontRenderer.drawString(afterCursor, x + CursorWidth, Y + Padding, TextColor);
     }
 }

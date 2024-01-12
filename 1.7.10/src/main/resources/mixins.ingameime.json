@@ -7,6 +7,7 @@
   ],
   "client": [
     "MixinGuiScreen",
+    "MixinGuiTextField",
     "MixinMinecraft"
   ],
   "injectors": {
