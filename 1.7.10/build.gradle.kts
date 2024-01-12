@@ -74,6 +74,7 @@ dependencies {
             "mixins.ingameime.refmap.json"
         )
     )
+    implementation("com.github.GTNewHorizons:NotEnoughItems:2.5.3-GTNH:dev")
 }
 
 tasks {

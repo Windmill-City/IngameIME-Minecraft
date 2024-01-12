@@ -37,7 +37,7 @@ public class IngameIME_Forge {
     }
 
     public static void setActivated(boolean activated) {
-        if (InputCtx != null) {
+        if (InputCtx != null && getActivated() != activated) {
             InputCtx.setActivated(activated);
             if (!activated) IsToggledManually = false;
             LOG.info("InputMethod activated: {}", activated);

@@ -1,7 +1,9 @@
 package city.windmill.ingameime;
 
 import city.windmill.ingameime.mixins.MixinGuiScreen;
+import codechicken.nei.guihook.GuiContainerManager;
 import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import ingameime.*;
@@ -119,6 +121,14 @@ public class ClientProxy {
                     IngameIME_Forge.LOG.info("Commit: {}", arg0);
                     GuiScreen screen = Minecraft.getMinecraft().currentScreen;
                     if (screen != null) {
+                        // NEI Integration
+                        if (Loader.isModLoaded("NotEnoughItems") && GuiContainerManager.getManager() != null) {
+                            for (char c : arg0.toCharArray()) {
+                                GuiContainerManager.getManager().keyTyped(c, Keyboard.KEY_NONE);
+                            }
+                        }
+
+                        // Normal Minecraft Guis
                         for (char c : arg0.toCharArray()) {
                             ((MixinGuiScreen) screen).callKeyTyped(c, Keyboard.KEY_NONE);
                         }
