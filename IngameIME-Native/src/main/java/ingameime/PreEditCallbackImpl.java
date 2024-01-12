@@ -8,7 +8,7 @@
 
 package ingameime;
 
-public abstract class PreEditCallbackImpl {
+public class PreEditCallbackImpl {
   private transient long swigCPtr;
   protected transient boolean swigCMemOwn;
 
@@ -51,7 +51,9 @@ public abstract class PreEditCallbackImpl {
     IngameIMEJNI.PreEditCallbackImpl_change_ownership(this, swigCPtr, true);
   }
 
-  abstract protected void call(CompositionState arg0, PreEditContext arg1) ;
+  protected void call(CompositionState arg0, PreEditContext arg1) {
+    IngameIMEJNI.PreEditCallbackImpl_call(swigCPtr, this, arg0.swigValue(), PreEditContext.getCPtr(arg1), arg1);
+  }
 
   public PreEditCallbackImpl() {
     this(IngameIMEJNI.new_PreEditCallbackImpl(), true);

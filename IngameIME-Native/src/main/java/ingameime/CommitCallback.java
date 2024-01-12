@@ -36,34 +36,20 @@ public class CommitCallback {
     }
   }
 
-  protected CommitCallback() {
-    wrapper = new CommitCallbackImpl(){
-      public void call(/*@SWIG:E:\Codes\IngameIME_Win32\IngameIME-Common\src\std_function.i,25,FOR_EACH@*/ 
-  String arg0
-/*@SWIG@*/) {
-    CommitCallback.this.call(/*@SWIG:E:\Codes\IngameIME_Win32\IngameIME-Common\src\std_function.i,25,FOR_EACH@*/ 
-  arg0
-/*@SWIG@*/);
-      }
-    };
-    proxy = new CommitCallback(wrapper);
+  public CommitCallback(CommitCallback arg0) {
+    this(IngameIMEJNI.new_CommitCallback__SWIG_0(CommitCallback.getCPtr(arg0), arg0), true);
   }
-
-  static CommitCallback makeNative(CommitCallback in) {
-    if (null == in.wrapper) return in;
-    return in.proxy;
-  }
-
-  // Both of these are retained to prevent garbage collection from happening too early
-  private CommitCallbackImpl wrapper;
-  private CommitCallback proxy;
 
   public void call(String arg0) {
     IngameIMEJNI.CommitCallback_call(swigCPtr, this, arg0);
   }
 
+  public CommitCallback(SWIGTYPE_p_f_q_const__std__string__void arg0) {
+    this(IngameIMEJNI.new_CommitCallback__SWIG_1(SWIGTYPE_p_f_q_const__std__string__void.getCPtr(arg0)), true);
+  }
+
   public CommitCallback(CommitCallbackImpl in) {
-    this(IngameIMEJNI.new_CommitCallback(CommitCallbackImpl.getCPtr(in), in), true);
+    this(IngameIMEJNI.new_CommitCallback__SWIG_2(CommitCallbackImpl.getCPtr(in), in), true);
   }
 
 }

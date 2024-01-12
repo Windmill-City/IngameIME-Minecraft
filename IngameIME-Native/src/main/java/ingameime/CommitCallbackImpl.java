@@ -8,7 +8,7 @@
 
 package ingameime;
 
-public abstract class CommitCallbackImpl {
+public class CommitCallbackImpl {
   private transient long swigCPtr;
   protected transient boolean swigCMemOwn;
 
@@ -51,7 +51,9 @@ public abstract class CommitCallbackImpl {
     IngameIMEJNI.CommitCallbackImpl_change_ownership(this, swigCPtr, true);
   }
 
-  abstract protected void call(String arg0) ;
+  protected void call(String arg0) {
+    IngameIMEJNI.CommitCallbackImpl_call(swigCPtr, this, arg0);
+  }
 
   public CommitCallbackImpl() {
     this(IngameIMEJNI.new_CommitCallbackImpl(), true);

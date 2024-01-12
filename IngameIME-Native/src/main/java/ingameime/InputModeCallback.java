@@ -36,34 +36,20 @@ public class InputModeCallback {
     }
   }
 
-  protected InputModeCallback() {
-    wrapper = new InputModeCallbackImpl(){
-      public void call(/*@SWIG:E:\Codes\IngameIME_Win32\IngameIME-Common\src\std_function.i,25,FOR_EACH@*/ 
-  InputMode arg0
-/*@SWIG@*/) {
-    InputModeCallback.this.call(/*@SWIG:E:\Codes\IngameIME_Win32\IngameIME-Common\src\std_function.i,25,FOR_EACH@*/ 
-  arg0
-/*@SWIG@*/);
-      }
-    };
-    proxy = new InputModeCallback(wrapper);
+  public InputModeCallback(InputModeCallback arg0) {
+    this(IngameIMEJNI.new_InputModeCallback__SWIG_0(InputModeCallback.getCPtr(arg0), arg0), true);
   }
-
-  static InputModeCallback makeNative(InputModeCallback in) {
-    if (null == in.wrapper) return in;
-    return in.proxy;
-  }
-
-  // Both of these are retained to prevent garbage collection from happening too early
-  private InputModeCallbackImpl wrapper;
-  private InputModeCallback proxy;
 
   public void call(InputMode arg0) {
     IngameIMEJNI.InputModeCallback_call(swigCPtr, this, arg0.swigValue());
   }
 
+  public InputModeCallback(SWIGTYPE_p_f_q_const__enum_IngameIME__InputMode__void arg0) {
+    this(IngameIMEJNI.new_InputModeCallback__SWIG_1(SWIGTYPE_p_f_q_const__enum_IngameIME__InputMode__void.getCPtr(arg0)), true);
+  }
+
   public InputModeCallback(InputModeCallbackImpl in) {
-    this(IngameIMEJNI.new_InputModeCallback(InputModeCallbackImpl.getCPtr(in), in), true);
+    this(IngameIMEJNI.new_InputModeCallback__SWIG_2(InputModeCallbackImpl.getCPtr(in), in), true);
   }
 
 }

@@ -27,6 +27,8 @@ public class IngameIME_Forge {
     public void preInit(FMLPreInitializationEvent event) {
         proxy.preInit(event);
         MinecraftForge.EVENT_BUS.register(this);
+        ClientProxy.destroyInputCtx();
+        ClientProxy.createInputCtx();
     }
 
     @SubscribeEvent

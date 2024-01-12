@@ -36,34 +36,20 @@ public class CandidateListCallback {
     }
   }
 
-  protected CandidateListCallback() {
-    wrapper = new CandidateListCallbackImpl(){
-      public void call(/*@SWIG:E:\Codes\IngameIME_Win32\IngameIME-Common\src\std_function.i,25,FOR_EACH@*/ 
-  CandidateListState arg0, CandidateListContext arg1
-/*@SWIG@*/) {
-    CandidateListCallback.this.call(/*@SWIG:E:\Codes\IngameIME_Win32\IngameIME-Common\src\std_function.i,25,FOR_EACH@*/ 
-  arg0, arg1
-/*@SWIG@*/);
-      }
-    };
-    proxy = new CandidateListCallback(wrapper);
+  public CandidateListCallback(CandidateListCallback arg0) {
+    this(IngameIMEJNI.new_CandidateListCallback__SWIG_0(CandidateListCallback.getCPtr(arg0), arg0), true);
   }
-
-  static CandidateListCallback makeNative(CandidateListCallback in) {
-    if (null == in.wrapper) return in;
-    return in.proxy;
-  }
-
-  // Both of these are retained to prevent garbage collection from happening too early
-  private CandidateListCallbackImpl wrapper;
-  private CandidateListCallback proxy;
 
   public void call(CandidateListState arg0, CandidateListContext arg1) {
     IngameIMEJNI.CandidateListCallback_call(swigCPtr, this, arg0.swigValue(), CandidateListContext.getCPtr(arg1), arg1);
   }
 
+  public CandidateListCallback(SWIGTYPE_p_f_q_const__enum_IngameIME__CandidateListState_p_q_const__IngameIME__CandidateListContext__void arg0) {
+    this(IngameIMEJNI.new_CandidateListCallback__SWIG_1(SWIGTYPE_p_f_q_const__enum_IngameIME__CandidateListState_p_q_const__IngameIME__CandidateListContext__void.getCPtr(arg0)), true);
+  }
+
   public CandidateListCallback(CandidateListCallbackImpl in) {
-    this(IngameIMEJNI.new_CandidateListCallback(CandidateListCallbackImpl.getCPtr(in), in), true);
+    this(IngameIMEJNI.new_CandidateListCallback__SWIG_2(CandidateListCallbackImpl.getCPtr(in), in), true);
   }
 
 }

@@ -8,7 +8,7 @@
 
 package ingameime;
 
-public abstract class InputModeCallbackImpl {
+public class InputModeCallbackImpl {
   private transient long swigCPtr;
   protected transient boolean swigCMemOwn;
 
@@ -51,7 +51,9 @@ public abstract class InputModeCallbackImpl {
     IngameIMEJNI.InputModeCallbackImpl_change_ownership(this, swigCPtr, true);
   }
 
-  abstract protected void call(InputMode arg0) ;
+  protected void call(InputMode arg0) {
+    IngameIMEJNI.InputModeCallbackImpl_call(swigCPtr, this, arg0.swigValue());
+  }
 
   public InputModeCallbackImpl() {
     this(IngameIMEJNI.new_InputModeCallbackImpl(), true);

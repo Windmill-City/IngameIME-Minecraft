@@ -8,7 +8,7 @@
 
 package ingameime;
 
-public abstract class CandidateListCallbackImpl {
+public class CandidateListCallbackImpl {
   private transient long swigCPtr;
   protected transient boolean swigCMemOwn;
 
@@ -51,7 +51,9 @@ public abstract class CandidateListCallbackImpl {
     IngameIMEJNI.CandidateListCallbackImpl_change_ownership(this, swigCPtr, true);
   }
 
-  abstract protected void call(CandidateListState arg0, CandidateListContext arg1) ;
+  protected void call(CandidateListState arg0, CandidateListContext arg1) {
+    IngameIMEJNI.CandidateListCallbackImpl_call(swigCPtr, this, arg0.swigValue(), CandidateListContext.getCPtr(arg1), arg1);
+  }
 
   public CandidateListCallbackImpl() {
     this(IngameIMEJNI.new_CandidateListCallbackImpl(), true);

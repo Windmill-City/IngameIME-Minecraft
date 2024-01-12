@@ -36,34 +36,20 @@ public class PreEditCallback {
     }
   }
 
-  protected PreEditCallback() {
-    wrapper = new PreEditCallbackImpl(){
-      public void call(/*@SWIG:E:\Codes\IngameIME_Win32\IngameIME-Common\src\std_function.i,25,FOR_EACH@*/ 
-  CompositionState arg0, PreEditContext arg1
-/*@SWIG@*/) {
-    PreEditCallback.this.call(/*@SWIG:E:\Codes\IngameIME_Win32\IngameIME-Common\src\std_function.i,25,FOR_EACH@*/ 
-  arg0, arg1
-/*@SWIG@*/);
-      }
-    };
-    proxy = new PreEditCallback(wrapper);
+  public PreEditCallback(PreEditCallback arg0) {
+    this(IngameIMEJNI.new_PreEditCallback__SWIG_0(PreEditCallback.getCPtr(arg0), arg0), true);
   }
-
-  static PreEditCallback makeNative(PreEditCallback in) {
-    if (null == in.wrapper) return in;
-    return in.proxy;
-  }
-
-  // Both of these are retained to prevent garbage collection from happening too early
-  private PreEditCallbackImpl wrapper;
-  private PreEditCallback proxy;
 
   public void call(CompositionState arg0, PreEditContext arg1) {
     IngameIMEJNI.PreEditCallback_call(swigCPtr, this, arg0.swigValue(), PreEditContext.getCPtr(arg1), arg1);
   }
 
+  public PreEditCallback(SWIGTYPE_p_f_q_const__enum_IngameIME__CompositionState_p_q_const__IngameIME__PreEditContext__void arg0) {
+    this(IngameIMEJNI.new_PreEditCallback__SWIG_1(SWIGTYPE_p_f_q_const__enum_IngameIME__CompositionState_p_q_const__IngameIME__PreEditContext__void.getCPtr(arg0)), true);
+  }
+
   public PreEditCallback(PreEditCallbackImpl in) {
-    this(IngameIMEJNI.new_PreEditCallback(PreEditCallbackImpl.getCPtr(in), in), true);
+    this(IngameIMEJNI.new_PreEditCallback__SWIG_2(PreEditCallbackImpl.getCPtr(in), in), true);
   }
 
 }

@@ -17,10 +17,15 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
 public class ClientProxy {
-    static PreEditCallbackImpl preEditCallback = null;
-    static CommitCallbackImpl commitCallback = null;
-    static CandidateListCallbackImpl candidateListCallback = null;
-    static InputModeCallbackImpl inputModeCallback = null;
+    static PreEditCallbackImpl preEditCallbackProxy = null;
+    static CommitCallbackImpl commitCallbackProxy = null;
+    static CandidateListCallbackImpl candidateListCallbackProxy = null;
+    static InputModeCallbackImpl inputModeCallbackProxy = null;
+
+    static PreEditCallback preEditCallback = null;
+    static CommitCallback commitCallback = null;
+    static CandidateListCallback candidateListCallback = null;
+    static InputModeCallback inputModeCallback = null;
 
     private static void tryLoadLibrary(String libName) {
         if (!IngameIME_Forge.LIBRARY_LOADED)
@@ -57,6 +62,14 @@ public class ClientProxy {
         }
     }
 
+    public static void destroyInputCtx() {
+        if (IngameIME_Forge.InputCtx != null) {
+            IngameIME_Forge.InputCtx.delete();
+            IngameIME_Forge.InputCtx = null;
+            IngameIME_Forge.LOG.info("InputContext has destroyed!");
+        }
+    }
+
     public static void createInputCtx() {
         if (!IngameIME_Forge.LIBRARY_LOADED) return;
 
@@ -78,7 +91,7 @@ public class ClientProxy {
         IngameIME_Forge.InputCtx.setActivated(true);
 
 
-        preEditCallback = new PreEditCallbackImpl() {
+        preEditCallbackProxy = new PreEditCallbackImpl() {
             @Override
             protected void call(CompositionState arg0, PreEditContext arg1) {
                 try {
@@ -92,7 +105,9 @@ public class ClientProxy {
                 }
             }
         };
-        commitCallback = new CommitCallbackImpl() {
+        preEditCallbackProxy.swigReleaseOwnership();
+        preEditCallback = new PreEditCallback(preEditCallbackProxy);
+        commitCallbackProxy = new CommitCallbackImpl() {
             @Override
             protected void call(String arg0) {
                 try {
@@ -108,7 +123,9 @@ public class ClientProxy {
                 }
             }
         };
-        candidateListCallback = new CandidateListCallbackImpl() {
+        commitCallbackProxy.swigReleaseOwnership();
+        commitCallback = new CommitCallback(commitCallbackProxy);
+        candidateListCallbackProxy = new CandidateListCallbackImpl() {
             @Override
             protected void call(CandidateListState arg0, CandidateListContext arg1) {
                 try {
@@ -121,7 +138,9 @@ public class ClientProxy {
                 }
             }
         };
-        inputModeCallback = new InputModeCallbackImpl() {
+        candidateListCallbackProxy.swigReleaseOwnership();
+        candidateListCallback = new CandidateListCallback(candidateListCallbackProxy);
+        inputModeCallbackProxy = new InputModeCallbackImpl() {
             @Override
             protected void call(InputMode arg0) {
                 try {
@@ -131,11 +150,16 @@ public class ClientProxy {
                 }
             }
         };
+        inputModeCallbackProxy.swigReleaseOwnership();
+        inputModeCallback = new InputModeCallback(inputModeCallbackProxy);
 
-        IngameIME_Forge.InputCtx.setCallback(new PreEditCallback(preEditCallback));
-        IngameIME_Forge.InputCtx.setCallback(new CommitCallback(commitCallback));
-        IngameIME_Forge.InputCtx.setCallback(new CandidateListCallback(candidateListCallback));
-        IngameIME_Forge.InputCtx.setCallback(new InputModeCallback(inputModeCallback));
+        IngameIME_Forge.InputCtx.setCallback(preEditCallback);
+        IngameIME_Forge.InputCtx.setCallback(commitCallback);
+        IngameIME_Forge.InputCtx.setCallback(candidateListCallback);
+        IngameIME_Forge.InputCtx.setCallback(inputModeCallback);
+
+        // Free unused native object
+        System.gc();
     }
 
     public void preInit(FMLPreInitializationEvent event) {

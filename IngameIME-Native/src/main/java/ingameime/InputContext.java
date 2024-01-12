@@ -61,19 +61,19 @@ public class InputContext {
   }
 
   public PreEditCallback setCallback(PreEditCallback callback) {
-    return new PreEditCallback(IngameIMEJNI.InputContext_setCallback__SWIG_0(swigCPtr, this, PreEditCallback.getCPtr(PreEditCallback.makeNative(callback)), callback), true);
+    return new PreEditCallback(IngameIMEJNI.InputContext_setCallback__SWIG_0(swigCPtr, this, PreEditCallback.getCPtr(callback), callback), true);
   }
 
   public CommitCallback setCallback(CommitCallback callback) {
-    return new CommitCallback(IngameIMEJNI.InputContext_setCallback__SWIG_1(swigCPtr, this, CommitCallback.getCPtr(CommitCallback.makeNative(callback)), callback), true);
+    return new CommitCallback(IngameIMEJNI.InputContext_setCallback__SWIG_1(swigCPtr, this, CommitCallback.getCPtr(callback), callback), true);
   }
 
   public CandidateListCallback setCallback(CandidateListCallback callback) {
-    return new CandidateListCallback(IngameIMEJNI.InputContext_setCallback__SWIG_2(swigCPtr, this, CandidateListCallback.getCPtr(CandidateListCallback.makeNative(callback)), callback), true);
+    return new CandidateListCallback(IngameIMEJNI.InputContext_setCallback__SWIG_2(swigCPtr, this, CandidateListCallback.getCPtr(callback), callback), true);
   }
 
   public InputModeCallback setCallback(InputModeCallback callback) {
-    return new InputModeCallback(IngameIMEJNI.InputContext_setCallback__SWIG_3(swigCPtr, this, InputModeCallback.getCPtr(InputModeCallback.makeNative(callback)), callback), true);
+    return new InputModeCallback(IngameIMEJNI.InputContext_setCallback__SWIG_3(swigCPtr, this, InputModeCallback.getCPtr(callback), callback), true);
   }
 
 }
