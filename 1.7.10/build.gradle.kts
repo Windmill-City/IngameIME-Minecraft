@@ -113,6 +113,16 @@ minecraft {
 
     //LWJGL
     lwjgl3Version = "3.3.2"
+    // Enable assertions in the current mod
+    extraRunJvmArguments.add("-ea:${modGroup}")
+    // Debug Mixin
+    extraRunJvmArguments.addAll(
+        listOf(
+            "-Dmixin.debug.countInjections=true",
+            "-Dmixin.debug.verbose=true",
+            "-Dmixin.debug.export=true"
+        )
+    )
 }
 
 fun getManifestAttributes(): MutableMap<String, String> {
@@ -120,6 +130,7 @@ fun getManifestAttributes(): MutableMap<String, String> {
     manifestAttributes["TweakClass"] = "org.spongepowered.asm.launch.MixinTweaker"
     manifestAttributes["MixinConfigs"] = "mixins.ingameime.json"
     manifestAttributes["ForceLoadAsMod"] = "true"
+    manifestAttributes["FMLCorePluginContainsFMLMod"] = "true"
     return manifestAttributes
 }
 

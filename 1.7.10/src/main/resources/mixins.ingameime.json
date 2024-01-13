@@ -3,6 +3,7 @@
   "minVersion": "0.8",
   "package": "city.windmill.ingameime.mixins",
   "compatibilityLevel": "JAVA_8",
+  "refmap": "mixins.ingameime.refmap.json",
   "mixins": [
   ],
   "client": [

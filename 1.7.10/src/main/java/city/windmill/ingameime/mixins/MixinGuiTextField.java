@@ -3,6 +3,7 @@ package city.windmill.ingameime.mixins;
 import city.windmill.ingameime.ClientProxy;
 import net.minecraft.client.gui.GuiTextField;
 import org.spongepowered.asm.lib.Opcodes;
+import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,8 +18,8 @@ public class MixinGuiTextField {
             at = @At(value = "JUMP", opcode = Opcodes.IF_ICMPEQ, ordinal = 0),
             locals = LocalCapture.CAPTURE_FAILSOFT
     )
-    void onDrawCaret(CallbackInfo ci, int i, int j, int k, String s, boolean flag, boolean flag1, int l, int i1, int j1, boolean flag2, int k1) {
-        ClientProxy.Screen.setCaretPos(k1, i1);
+    void onDrawCaret(CallbackInfo ci, int var1, int var2, int var3, String var4, int var5, int var6, int var7, int var8, int var9, int var10, int var11) {
+        ClientProxy.Screen.setCaretPos(var11, var8);
     }
 
     @Inject(method = "setFocused", at = @At(value = "HEAD"))

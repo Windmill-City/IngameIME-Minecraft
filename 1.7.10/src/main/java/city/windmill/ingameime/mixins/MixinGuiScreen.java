@@ -6,6 +6,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(GuiScreen.class)
 public interface MixinGuiScreen {
-    @Invoker
+    @Invoker()
     void callKeyTyped(char typedChar, int keyCode);
 }
