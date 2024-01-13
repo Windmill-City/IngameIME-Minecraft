@@ -232,8 +232,8 @@ curseforge {
     project(closureOf<com.matthewprenger.cursegradle.CurseProject> {
         id = "440032"
         releaseType = "release"
-        addArtifact(tasks.reobfJar.flatMap { it.archiveFile }.get())
-        addArtifact(tasks.shadowJar.flatMap { it.archiveFile }.get())
+        mainArtifact(tasks["reobfJar"])
+        addArtifact(tasks["shadowJar"])
         addGameVersion("Forge")
         addGameVersion("Java 8")
         addGameVersion("1.7.10")
