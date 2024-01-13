@@ -126,7 +126,6 @@ public class ClientProxy extends CommonProxy {
                 }
             }
         };
-        preEditCallbackProxy.swigReleaseOwnership();
         preEditCallback = new PreEditCallback(preEditCallbackProxy);
         commitCallbackProxy = new CommitCallbackImpl() {
             @Override
@@ -152,7 +151,6 @@ public class ClientProxy extends CommonProxy {
                 }
             }
         };
-        commitCallbackProxy.swigReleaseOwnership();
         commitCallback = new CommitCallback(commitCallbackProxy);
         candidateListCallbackProxy = new CandidateListCallbackImpl() {
             @Override
@@ -167,7 +165,6 @@ public class ClientProxy extends CommonProxy {
                 }
             }
         };
-        candidateListCallbackProxy.swigReleaseOwnership();
         candidateListCallback = new CandidateListCallback(candidateListCallbackProxy);
         inputModeCallbackProxy = new InputModeCallbackImpl() {
             @Override
@@ -179,7 +176,6 @@ public class ClientProxy extends CommonProxy {
                 }
             }
         };
-        inputModeCallbackProxy.swigReleaseOwnership();
         inputModeCallback = new InputModeCallback(inputModeCallbackProxy);
 
         InputCtx.setCallback(preEditCallback);

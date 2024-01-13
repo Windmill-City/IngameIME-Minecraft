@@ -9,7 +9,7 @@ on:
       - README.md
 
 jobs:
-  upload:
+  CI:
     runs-on: ubuntu-latest
     env:
       CURSE_API_KEY: ${{ secrets.CURSE_API_KEY }}

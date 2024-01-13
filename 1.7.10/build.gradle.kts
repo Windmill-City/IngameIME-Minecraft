@@ -1,3 +1,7 @@
+import com.gtnewhorizons.retrofuturagradle.ObfuscationAttribute
+import com.gtnewhorizons.retrofuturagradle.modutils.ModUtils
+import java.util.*
+
 buildscript {
     repositories {
         gradlePluginPortal()
@@ -26,6 +30,7 @@ plugins {
 val modId = "ingameime"
 val modName = "IngameIME"
 val modGroup = "city.windmill.ingameime"
+val modType = "forge"
 
 val mcVersion = minecraft.mcVersion.get()
 val gitVersion: groovy.lang.Closure<String> by extra
@@ -61,8 +66,17 @@ repositories {
     }
 }
 
+val shadowImplementation: Configuration by configurations.creating {
+    configurations.implementation.get().extendsFrom(this)
+}
+
 dependencies {
-    implementation(project(":IngameIME-Native"))
+    shadowImplementation(project(":IngameIME-Native")) {
+        attributes {
+            attribute(ObfuscationAttribute.OBFUSCATION_ATTRIBUTE, ObfuscationAttribute.getNoMinecraft(project.objects))
+            attribute(ModUtils.DEOBFUSCATOR_TRANSFORMED, true)
+        }
+    }
 
     annotationProcessor("org.ow2.asm:asm-debug-all:5.0.3")
     annotationProcessor("com.google.guava:guava:24.1.1-jre")
@@ -116,6 +130,7 @@ tasks {
     }
     jar {
         archiveBaseName = "$modName-$mcVersion-$modVersion"
+        archiveClassifier = "dev-preshadow"
         manifest {
             attributes(getManifestAttributes())
         }
@@ -125,5 +140,125 @@ tasks {
             expand("modVersion" to modVersion)
         }
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    }
+    shadowJar {
+        archiveBaseName = "$modName-$mcVersion-$modVersion"
+        archiveClassifier = "dev-shadow"
+        manifest {
+            attributes(getManifestAttributes())
+        }
+        configurations = listOf(shadowImplementation)
+    }
+}
+
+class Version(version: String) : Comparable<Version> {
+    @Suppress("PropertyName")
+    val VERSION_REGEX: Regex = Regex("""(\d+)(?:.(\d+)(?:.(\d+))?)?""")
+    var major: Int = 0
+    var minor: Int = 0
+    var revision: Int = 0
+
+    init {
+        VERSION_REGEX.matchEntire(version)?.apply {
+            major = this.groupValues[1].toInt()
+            minor = this.groupValues[2].toIntOrNull() ?: 0
+            revision = this.groupValues[3].toIntOrNull() ?: 0
+        } ?: throw IllegalArgumentException("Invalid version string:$version")
+    }
+
+    override fun compareTo(other: Version): Int {
+        if (this == other) return 0
+        if (this.major > other.major) return 1
+        if (this.major == other.major) {
+            if (this.minor > other.minor) return 1
+            if (this.minor == other.minor && this.revision > other.revision) return 1
+        }
+        return -1
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Version
+
+        if (major != other.major) return false
+        if (minor != other.minor) return false
+        if (revision != other.revision) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = major
+        result = 31 * result + minor
+        result = 31 * result + revision
+        return result
+    }
+
+    override fun toString(): String {
+        return "$major.$minor.$revision"
+    }
+}
+
+val curseApiKey: String
+    get() {
+        with(file("../local.properties")) {
+            if (exists()) {
+                val props = Properties()
+                props.load(inputStream())
+                return (props["curse_api_key"] ?: "") as String
+            }
+        }
+        return System.getenv("CURSE_API_KEY") ?: ""
+    }
+
+curseforge {
+    apiKey = curseApiKey
+    project(closureOf<com.matthewprenger.cursegradle.CurseProject> {
+        id = "440032"
+        releaseType = "release"
+        addGameVersion("Forge")
+        addGameVersion("Java 8")
+        addGameVersion("1.7.10")
+        relations(closureOf<com.matthewprenger.cursegradle.CurseRelation> {
+            requiredDependency("unimixins")
+        })
+    })
+    options(closureOf<com.matthewprenger.cursegradle.Options> {
+        forgeGradleIntegration = false
+    })
+}
+
+afterEvaluate {
+    tasks {
+        withType<com.matthewprenger.cursegradle.CurseUploadTask> {
+            onlyIf {
+                val curseforgeFile = file("../CurseForgeLatest.json")
+                @Suppress("UNCHECKED_CAST") val versionInfo =
+                    (groovy.json.JsonSlurper().parse(curseforgeFile) as Map<String, String>).toMutableMap()
+                val uploadedVersion = Version(versionInfo["$modType-$mcVersion"] ?: "0.0.0")
+                val currentVersion = Version(modVersion)
+                println("Uploaded:$uploadedVersion")
+                println("Current:$currentVersion")
+                return@onlyIf uploadedVersion < currentVersion
+            }
+            doLast {
+                val curseforgeFile = file("../CurseForgeLatest.json")
+                @Suppress("UNCHECKED_CAST") val versionInfo =
+                    (groovy.json.JsonSlurper().parse(curseforgeFile) as Map<String, String>).toMutableMap()
+                //Uploaded, update json file
+                versionInfo["$modType-$mcVersion"] = modVersion
+                groovy.json.JsonOutput.toJson(versionInfo).let {
+                    curseforgeFile
+                        .outputStream()
+                        .bufferedWriter().apply {
+                            write(groovy.json.JsonOutput.prettyPrint(it))
+                            flush()
+                            close()
+                        }
+                }
+            }
+        }
     }
 }
