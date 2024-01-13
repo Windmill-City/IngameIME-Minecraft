@@ -48,7 +48,7 @@ public class Internal {
             LOG.info("Library has loaded, skip loading of [{}]", libName);
     }
 
-    private static long getHwnd() {
+    private static long getWindowHandle_LWJGL2() {
         //long org.lwjgl.opengl.WindowsDisplay.getHwnd()
         try {
             Method methImpl = Display.class.getDeclaredMethod("getImplementation");
@@ -61,7 +61,7 @@ public class Internal {
             methHwnd.setAccessible(true);
             return (Long) methHwnd.invoke(impl);
         } catch (Throwable e) {
-            LOG.error("Failed to get window handle: {}", e.getMessage());
+            LOG.error("Failed to get window handle: {}:{}", e.getClass().getSimpleName(), e.getMessage());
             return 0;
         }
     }
@@ -79,7 +79,7 @@ public class Internal {
 
         LOG.info("Using IngameIME-Native: {}", InputContext.getVersion());
 
-        long hWnd = getHwnd();
+        long hWnd = getWindowHandle_LWJGL2();
         if (hWnd != 0) {
             // Once switched to the full screen, we can't back to not UiLess mode, unless restart the game
             if (Minecraft.getMinecraft().isFullScreen())
@@ -108,7 +108,7 @@ public class Internal {
                     else
                         ClientProxy.Screen.PreEdit.setContent(null, -1);
                 } catch (Throwable e) {
-                    LOG.error(e.getMessage());
+                    LOG.error("Exception thrown during callback handling: {}:{}", e.getClass().getSimpleName(), e.getMessage());
                 }
             }
         };
@@ -133,7 +133,7 @@ public class Internal {
                         }
                     }
                 } catch (Throwable e) {
-                    LOG.error(e.getMessage());
+                    LOG.error("Exception thrown during callback handling: {}:{}", e.getClass().getSimpleName(), e.getMessage());
                 }
             }
         };
@@ -147,7 +147,7 @@ public class Internal {
                     else
                         ClientProxy.Screen.CandidateList.setContent(null, -1);
                 } catch (Throwable e) {
-                    LOG.error(e.getMessage());
+                    LOG.error("Exception thrown during callback handling: {}:{}", e.getClass().getSimpleName(), e.getMessage());
                 }
             }
         };
@@ -158,7 +158,7 @@ public class Internal {
                 try {
                     ClientProxy.Screen.WInputMode.setMode(arg0);
                 } catch (Throwable e) {
-                    LOG.error(e.getMessage());
+                    LOG.error("Exception thrown during callback handling: {}:{}", e.getClass().getSimpleName(), e.getMessage());
                 }
             }
         };
