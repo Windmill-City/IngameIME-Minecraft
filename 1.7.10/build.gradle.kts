@@ -1,4 +1,3 @@
-import com.gtnewhorizons.retrofuturagradle.ObfuscationAttribute
 import com.gtnewhorizons.retrofuturagradle.modutils.ModUtils
 import java.util.*
 
@@ -66,17 +65,20 @@ repositories {
     }
 }
 
-val shadowImplementation: Configuration by configurations.creating {
-    configurations.implementation.get().extendsFrom(this)
+val shadowCompileOnly: Configuration by configurations.creating {
+    configurations.compileOnly.get().extendsFrom(this)
 }
 
-dependencies {
-    shadowImplementation(project(":IngameIME-Native")) {
+configurations.all {
+    afterEvaluate {
         attributes {
-            attribute(ObfuscationAttribute.OBFUSCATION_ATTRIBUTE, ObfuscationAttribute.getNoMinecraft(project.objects))
             attribute(ModUtils.DEOBFUSCATOR_TRANSFORMED, true)
         }
     }
+}
+
+dependencies {
+    shadowCompileOnly(project(":IngameIME-Native"))
 
     annotationProcessor("org.ow2.asm:asm-debug-all:5.0.3")
     annotationProcessor("com.google.guava:guava:24.1.1-jre")
@@ -88,7 +90,7 @@ dependencies {
             "mixins.ingameime.refmap.json"
         )
     )
-    implementation("com.github.GTNewHorizons:NotEnoughItems:2.5.3-GTNH:dev")
+    compileOnly("com.github.GTNewHorizons:NotEnoughItems:2.5.3-GTNH:dev")
 }
 
 tasks {
@@ -130,10 +132,8 @@ tasks {
     }
     jar {
         archiveBaseName = "$modName-$mcVersion-$modVersion"
-        archiveClassifier = "dev-preshadow"
-        manifest {
-            attributes(getManifestAttributes())
-        }
+        // Replaced by shadowJar
+        enabled = false
     }
     processResources {
         filesMatching("mcmod.info") {
@@ -143,11 +143,14 @@ tasks {
     }
     shadowJar {
         archiveBaseName = "$modName-$mcVersion-$modVersion"
-        archiveClassifier = "dev-shadow"
+        archiveClassifier = "dev"
         manifest {
             attributes(getManifestAttributes())
         }
-        configurations = listOf(shadowImplementation)
+        configurations = listOf(shadowCompileOnly)
+    }
+    reobfJar {
+        inputJar.set(shadowJar.flatMap { it.archiveFile })
     }
 }
 
@@ -207,10 +210,10 @@ val curseApiKey: String
             if (exists()) {
                 val props = Properties()
                 props.load(inputStream())
-                return (props["curse_api_key"] ?: "") as String
+                return (props["curse_api_key"]!!) as String
             }
         }
-        return System.getenv("CURSE_API_KEY") ?: ""
+        return System.getenv("CURSE_API_KEY")
     }
 
 curseforge {
