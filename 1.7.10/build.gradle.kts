@@ -1,5 +1,7 @@
-import com.gtnewhorizons.retrofuturagradle.modutils.ModUtils
+import com.gtnewhorizons.retrofuturagradle.minecraft.RunMinecraftTask
+import com.gtnewhorizons.retrofuturagradle.shadow.de.undercouch.gradle.tasks.download.Download
 import java.util.*
+import com.gtnewhorizons.retrofuturagradle.util.Distribution as DistributionGTNH
 
 buildscript {
     repositories {
@@ -69,24 +71,17 @@ val shadowCompileOnly: Configuration by configurations.creating {
     configurations.compileOnly.get().extendsFrom(this)
 }
 
-configurations.all {
-    afterEvaluate {
-        attributes {
-            attribute(ModUtils.DEOBFUSCATOR_TRANSFORMED, true)
-        }
-    }
-}
-
+val mixinSpec by extra { "io.github.legacymoddingmc:unimixins:0.1.13:dev" }
 dependencies {
     shadowCompileOnly(project(":IngameIME-Native"))
 
     annotationProcessor("org.ow2.asm:asm-debug-all:5.0.3")
     annotationProcessor("com.google.guava:guava:24.1.1-jre")
     annotationProcessor("com.google.code.gson:gson:2.8.6")
-    annotationProcessor("io.github.legacymoddingmc:unimixins:0.1.13:dev")
+    annotationProcessor(mixinSpec)
     implementation(
         modUtils.enableMixins(
-            "io.github.legacymoddingmc:unimixins:0.1.13:dev",
+            mixinSpec,
             "mixins.ingameime.refmap.json"
         )
     )
@@ -165,6 +160,9 @@ tasks {
     }
 }
 
+/**
+ * Upload Tasks
+ */
 class Version(version: String) : Comparable<Version> {
     @Suppress("PropertyName")
     val VERSION_REGEX: Regex = Regex("""(\d+)(?:.(\d+)(?:.(\d+))?)?""")
@@ -227,25 +225,6 @@ val curseApiKey: String
         return System.getenv("CURSE_API_KEY")
     }
 
-curseforge {
-    apiKey = curseApiKey
-    project(closureOf<com.matthewprenger.cursegradle.CurseProject> {
-        id = "440032"
-        releaseType = "release"
-        mainArtifact(tasks["reobfJar"])
-        addArtifact(tasks["shadowJar"])
-        addGameVersion("Forge")
-        addGameVersion("Java 8")
-        addGameVersion("1.7.10")
-        relations(closureOf<com.matthewprenger.cursegradle.CurseRelation> {
-            requiredDependency("unimixins")
-        })
-    })
-    options(closureOf<com.matthewprenger.cursegradle.Options> {
-        forgeGradleIntegration = false
-    })
-}
-
 afterEvaluate {
     tasks {
         withType<com.matthewprenger.cursegradle.CurseUploadTask> {
@@ -277,4 +256,205 @@ afterEvaluate {
             }
         }
     }
+}
+
+curseforge {
+    apiKey = curseApiKey
+    project(closureOf<com.matthewprenger.cursegradle.CurseProject> {
+        id = "440032"
+        releaseType = "release"
+        mainArtifact(tasks["reobfJar"])
+        addArtifact(tasks["shadowJar"])
+        addGameVersion("Forge")
+        addGameVersion("Java 8")
+        addGameVersion("1.7.10")
+        relations(closureOf<com.matthewprenger.cursegradle.CurseRelation> {
+            requiredDependency("unimixins")
+        })
+    })
+    options(closureOf<com.matthewprenger.cursegradle.Options> {
+        forgeGradleIntegration = false
+    })
+}
+
+/**
+ * Java 17 Tasks
+ */
+val java17Dependencies by extra {
+    configurations.create("java17Dependencies") {
+        extendsFrom(configurations.getByName("runtimeClasspath")) // Ensure consistent transitive dependency resolution
+        isCanBeConsumed = false
+    }
+}
+val java17PatchDependencies by extra {
+    configurations.create("java17PatchDependencies") {
+        isCanBeConsumed = false
+    }
+}
+val java17Toolchain by extra {
+    Action<JavaToolchainSpec> { ->
+        this.languageVersion.set(JavaLanguageVersion.of(17))
+        this.vendor.set(JvmVendorSpec.matching("jetbrains"))
+    }
+}
+
+dependencies {
+    val lwjgl3ifyVersion = "1.5.7"
+    java17Dependencies("com.github.GTNewHorizons:lwjgl3ify:${lwjgl3ifyVersion}")
+    java17Dependencies("com.github.GTNewHorizons:Hodgepodge:2.3.35")
+    java17PatchDependencies("com.github.GTNewHorizons:lwjgl3ify:${lwjgl3ifyVersion}:forgePatches") {
+        isTransitive = false
+    }
+}
+
+val setupHotswapAgentTask = tasks.register("setupHotswapAgent") {
+    group = "GTNH Buildscript"
+    description = "Installs a recent version of HotSwapAgent into the Java 17 JetBrains runtime directory"
+    val hsaUrl =
+        "https://github.com/HotswapProjects/HotswapAgent/releases/download/1.4.2-SNAPSHOT/hotswap-agent-1.4.2-SNAPSHOT.jar"
+    val targetFolderProvider =
+        javaToolchains.launcherFor(java17Toolchain)
+            .map { it.metadata.installationPath.dir("lib/hotswap") }
+    val targetFilename = "hotswap-agent.jar"
+    onlyIf {
+        !targetFolderProvider.get().file(targetFilename).asFile.exists()
+    }
+    doLast {
+        val targetFolder = targetFolderProvider.get()
+        targetFolder.asFile.mkdirs()
+        task<Download>("download") {
+            src(hsaUrl)
+            dest(targetFolder.file(targetFilename).asFile)
+            overwrite(false)
+            tempAndMove(true)
+        }
+    }
+}
+
+abstract class RunHotSwappableMinecraftTask @Inject constructor(
+    side: DistributionGTNH,
+    superTask: String,
+    gradle: Gradle
+) : RunMinecraftTask(side, gradle) {
+    private val java17JvmArgs = listOf(
+        // Java 9+ support
+        "--illegal-access=warn",
+        "-Djava.security.manager=allow",
+        "-Dfile.encoding=UTF-8",
+        "--add-opens", "java.base/jdk.internal.loader=ALL-UNNAMED",
+        "--add-opens", "java.base/java.net=ALL-UNNAMED",
+        "--add-opens", "java.base/java.nio=ALL-UNNAMED",
+        "--add-opens", "java.base/java.io=ALL-UNNAMED",
+        "--add-opens", "java.base/java.lang=ALL-UNNAMED",
+        "--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED",
+        "--add-opens", "java.base/java.text=ALL-UNNAMED",
+        "--add-opens", "java.base/java.util=ALL-UNNAMED",
+        "--add-opens", "java.base/jdk.internal.reflect=ALL-UNNAMED",
+        "--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED",
+        "--add-opens", "jdk.naming.dns/com.sun.jndi.dns=ALL-UNNAMED,java.naming",
+        "--add-opens", "java.desktop/sun.awt.image=ALL-UNNAMED",
+        "--add-modules", "jdk.dynalink",
+        "--add-opens", "jdk.dynalink/jdk.dynalink.beans=ALL-UNNAMED",
+        "--add-modules", "java.sql.rowset",
+        "--add-opens", "java.sql.rowset/javax.sql.rowset.serial=ALL-UNNAMED"
+    )
+    private val hotswapJvmArgs = listOf(
+        // DCEVM advanced hot reload
+        "-XX:+AllowEnhancedClassRedefinition",
+        "-XX:HotswapAgent=fatjar"
+    )
+
+    // IntelliJ doesn't seem to allow commandline arguments, so we also support an env variable
+    private var enableHotswap = System.getenv("HOTSWAP").toBoolean()
+
+    private val java17Toolchain: Action<JavaToolchainSpec> by project.extra
+    private val java17Dependencies: Configuration by project.extra
+    private val java17PatchDependencies: Configuration by project.extra
+    private val mixinSpec: String by project.extra
+
+    @Input
+    fun getEnableHotswap(): Boolean {
+        return enableHotswap
+    }
+
+    @Option(option = "hotswap", description = "Enables HotSwapAgent for enhanced class reloading under a debugger")
+    fun setEnableHotswap(enable: Boolean) {
+        enableHotswap = enable
+    }
+
+    init {
+        lwjglVersion = 3
+        javaLauncher = project.javaToolchains.launcherFor(java17Toolchain)
+        // JVM Args
+        extraJvmArgs.addAll(java17JvmArgs)
+        if (enableHotswap)
+            extraJvmArgs.addAll(hotswapJvmArgs)
+
+        // ClassPaths
+        this.classpath(java17PatchDependencies)
+        if (side == DistributionGTNH.CLIENT)
+            this.classpath(project.minecraftTasks.lwjgl3Configuration)
+        this.classpath(project.provider {
+            project.tasks.named<RunMinecraftTask>(superTask).get().classpath
+        })
+        this.classpath.filter {
+            !it.path.contains("2.9.4-nightly-20150209")
+        }
+        this.classpath(java17Dependencies)
+    }
+
+    override fun setup(project: Project) {
+        super.setup(project)
+        if (enableHotswap) {
+            val mixinCfg = project.configurations.detachedConfiguration(project.dependencies.create(mixinSpec))
+            mixinCfg.isTransitive = false
+            mixinCfg.isCanBeConsumed = false
+            extraJvmArgs.addAll("-javaagent:${mixinCfg.singleFile.absolutePath}")
+        }
+    }
+}
+
+val runClient17 = tasks.register(
+    "runClient17",
+    RunHotSwappableMinecraftTask::class.java,
+    DistributionGTNH.CLIENT,
+    "runClient",
+    gradle
+)
+runClient17.configure {
+    setup(project)
+    group = "Modded Minecraft"
+    description = "Runs the modded client using Java 17, lwjgl3ify and Hodgepodge"
+    dependsOn(
+        setupHotswapAgentTask,
+        mcpTasks.launcherSources.classesTaskName,
+        minecraftTasks.taskDownloadVanillaAssets,
+        mcpTasks.taskPackagePatchedMc,
+        tasks.shadowJar
+    )
+    mainClass = "GradleStart"
+    username = minecraft.username
+    userUUID = minecraft.userUUID
+}
+
+val runServer17 = tasks.register(
+    "runServer17",
+    RunHotSwappableMinecraftTask::class.java,
+    DistributionGTNH.DEDICATED_SERVER,
+    "runServer",
+    gradle
+)
+runServer17.configure {
+    setup(project)
+    group = "Modded Minecraft"
+    description = "Runs the modded server using Java 17, lwjgl3ify and Hodgepodge"
+    dependsOn(
+        setupHotswapAgentTask,
+        mcpTasks.launcherSources.classesTaskName,
+        minecraftTasks.taskDownloadVanillaAssets,
+        mcpTasks.taskPackagePatchedMc,
+        tasks.shadowJar
+    )
+    mainClass = "GradleStartServer"
+    extraArgs.add("nogui")
 }
