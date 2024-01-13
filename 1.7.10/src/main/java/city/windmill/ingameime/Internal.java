@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 import static city.windmill.ingameime.IngameIME_Forge.LOG;
 
-public class IngameIMEContext {
+public class Internal {
     public static boolean LIBRARY_LOADED = false;
     public static InputContext InputCtx = null;
     static PreEditCallbackImpl preEditCallbackProxy = null;

@@ -1,6 +1,6 @@
 package city.windmill.ingameime.gui;
 
-import city.windmill.ingameime.IngameIMEContext;
+import city.windmill.ingameime.Internal;
 import ingameime.InputContext;
 import org.lwjgl.opengl.GL11;
 
@@ -11,7 +11,7 @@ public class OverlayScreen extends Widget {
 
     @Override
     public boolean isActive() {
-        InputContext inputCtx = IngameIMEContext.InputCtx;
+        InputContext inputCtx = Internal.InputCtx;
         return inputCtx != null && inputCtx.getActivated();
     }
 

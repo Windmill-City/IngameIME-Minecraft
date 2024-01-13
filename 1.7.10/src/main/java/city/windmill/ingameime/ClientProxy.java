@@ -28,13 +28,13 @@ public class ClientProxy extends CommonProxy {
         } else if (IsKeyDown) {
             IsKeyDown = false;
             ClientProxy.IsToggledManually = true;
-            IngameIMEContext.toggleInputMethod();
+            Internal.toggleInputMethod();
             LOG.info("Toggled by keybinding");
         }
 
         if (Config.TurnOffOnMouseMove.getBoolean())
             if (ClientProxy.IsToggledManually && (Mouse.getDX() > 0 || Mouse.getDY() > 0)) {
-                IngameIMEContext.setActivated(false);
+                Internal.setActivated(false);
                 LOG.info("Turned off by mouse move");
             }
     }
@@ -42,8 +42,8 @@ public class ClientProxy extends CommonProxy {
     public void preInit(FMLPreInitializationEvent event) {
         Config.synchronizeConfiguration(event.getSuggestedConfigurationFile());
         ClientRegistry.registerKeyBinding(KeyBind);
-        IngameIMEContext.loadLibrary();
-        IngameIMEContext.createInputCtx();
+        Internal.loadLibrary();
+        Internal.createInputCtx();
         MinecraftForge.EVENT_BUS.register(this);
     }
 }

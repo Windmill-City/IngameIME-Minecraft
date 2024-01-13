@@ -1,7 +1,7 @@
 package city.windmill.ingameime.gui;
 
 import city.windmill.ingameime.ClientProxy;
-import city.windmill.ingameime.IngameIMEContext;
+import city.windmill.ingameime.Internal;
 import ingameime.PreEditRect;
 import net.minecraft.client.Minecraft;
 
@@ -36,13 +36,13 @@ public class WidgetPreEdit extends Widget {
         }
 
         // Update Rect
-        if (!IngameIMEContext.LIBRARY_LOADED || IngameIMEContext.InputCtx == null) return;
+        if (!Internal.LIBRARY_LOADED || Internal.InputCtx == null) return;
         PreEditRect rect = new PreEditRect();
         rect.setX(X);
         rect.setY(Y);
         rect.setHeight(Height);
         rect.setWidth(Width);
-        IngameIMEContext.InputCtx.setPreEditRect(rect);
+        Internal.InputCtx.setPreEditRect(rect);
     }
 
     @Override

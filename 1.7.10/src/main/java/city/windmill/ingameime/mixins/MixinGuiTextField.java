@@ -1,7 +1,7 @@
 package city.windmill.ingameime.mixins;
 
 import city.windmill.ingameime.ClientProxy;
-import city.windmill.ingameime.IngameIMEContext;
+import city.windmill.ingameime.Internal;
 import net.minecraft.client.gui.GuiTextField;
 import org.spongepowered.asm.lib.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,6 +24,6 @@ public class MixinGuiTextField {
 
     @Inject(method = "setFocused", at = @At(value = "HEAD"))
     void onSetFocus(boolean focused, CallbackInfo ci) {
-        IngameIMEContext.setActivated(focused);
+        Internal.setActivated(focused);
     }
 }
