@@ -42,7 +42,7 @@ public class Internal {
                 LIBRARY_LOADED = true;
                 LOG.info("Library [{}] has loaded!", libName);
             } catch (Throwable e) {
-                LOG.warn("Try to load library [{}] but failed: {}", libName, e.getMessage());
+                LOG.warn("Try to load library [{}] but failed", libName, e);
             }
         else
             LOG.info("Library has loaded, skip loading of [{}]", libName);
@@ -61,7 +61,7 @@ public class Internal {
             methHwnd.setAccessible(true);
             return (Long) methHwnd.invoke(impl);
         } catch (Throwable e) {
-            LOG.error("Failed to get window handle: {}:{}", e.getClass().getSimpleName(), e.getMessage());
+            LOG.error("Failed to get window handle", e);
             return 0;
         }
     }
@@ -108,7 +108,7 @@ public class Internal {
                     else
                         ClientProxy.Screen.PreEdit.setContent(null, -1);
                 } catch (Throwable e) {
-                    LOG.error("Exception thrown during callback handling: {}:{}", e.getClass().getSimpleName(), e.getMessage());
+                    LOG.error("Exception thrown during callback handling", e);
                 }
             }
         };
@@ -133,7 +133,7 @@ public class Internal {
                         }
                     }
                 } catch (Throwable e) {
-                    LOG.error("Exception thrown during callback handling: {}:{}", e.getClass().getSimpleName(), e.getMessage());
+                    LOG.error("Exception thrown during callback handling", e);
                 }
             }
         };
@@ -147,7 +147,7 @@ public class Internal {
                     else
                         ClientProxy.Screen.CandidateList.setContent(null, -1);
                 } catch (Throwable e) {
-                    LOG.error("Exception thrown during callback handling: {}:{}", e.getClass().getSimpleName(), e.getMessage());
+                    LOG.error("Exception thrown during callback handling", e);
                 }
             }
         };
@@ -158,7 +158,7 @@ public class Internal {
                 try {
                     ClientProxy.Screen.WInputMode.setMode(arg0);
                 } catch (Throwable e) {
-                    LOG.error("Exception thrown during callback handling: {}:{}", e.getClass().getSimpleName(), e.getMessage());
+                    LOG.error("Exception thrown during callback handling", e);
                 }
             }
         };
