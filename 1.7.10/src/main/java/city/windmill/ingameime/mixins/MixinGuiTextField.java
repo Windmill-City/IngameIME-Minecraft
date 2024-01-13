@@ -3,7 +3,6 @@ package city.windmill.ingameime.mixins;
 import city.windmill.ingameime.ClientProxy;
 import net.minecraft.client.gui.GuiTextField;
 import org.spongepowered.asm.lib.Opcodes;
-import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
