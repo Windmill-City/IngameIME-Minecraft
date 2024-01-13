@@ -154,6 +154,7 @@ tasks {
             attributes(getManifestAttributes())
         }
         configurations = listOf(shadowCompileOnly)
+        minimize()
     }
     reobfJar {
         inputJar.set(shadowJar.flatMap { it.archiveFile })

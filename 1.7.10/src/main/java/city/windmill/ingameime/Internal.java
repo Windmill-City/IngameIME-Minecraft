@@ -42,10 +42,23 @@ public class Internal {
                 LIBRARY_LOADED = true;
                 LOG.info("Library [{}] has loaded!", libName);
             } catch (Throwable e) {
-                LOG.warn("Try to load library [{}] but failed", libName, e);
+                LOG.warn("Try to load library [{}] but failed: {}", libName, e.getClass().getSimpleName());
             }
         else
             LOG.info("Library has loaded, skip loading of [{}]", libName);
+    }
+
+    private static long getWindowHandle_LWJGL3() {
+        try {
+            Method getWindow = Display.class.getMethod("getWindow");
+            Class<?> NativeWin32 = Class.forName("org.lwjgl.glfw.GLFWNativeWin32");
+            long glfwWindow = (long) getWindow.invoke(null);
+            Method glfwGetWin32Window = NativeWin32.getMethod("glfwGetWin32Window", long.class);
+            return (long) glfwGetWin32Window.invoke(null, glfwWindow);
+        } catch (Throwable e) {
+            LOG.error("Failed to get window handle", e);
+            return 0;
+        }
     }
 
     private static long getWindowHandle_LWJGL2() {
@@ -80,6 +93,7 @@ public class Internal {
         LOG.info("Using IngameIME-Native: {}", InputContext.getVersion());
 
         long hWnd = getWindowHandle_LWJGL2();
+        if (hWnd == 0) hWnd = getWindowHandle_LWJGL3();
         if (hWnd != 0) {
             // Once switched to the full screen, we can't back to not UiLess mode, unless restart the game
             if (Minecraft.getMinecraft().isFullScreen())
