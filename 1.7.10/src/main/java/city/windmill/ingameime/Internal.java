@@ -62,17 +62,14 @@ public class Internal {
     }
 
     private static long getWindowHandle_LWJGL2() {
-        //long org.lwjgl.opengl.WindowsDisplay.getHwnd()
         try {
-            Method methImpl = Display.class.getDeclaredMethod("getImplementation");
-            methImpl.setAccessible(true); //Make it accessible, since it is private
-            Object impl = methImpl.invoke(null); //Static with no parameters, type not visible anyway so keep as object
-            Class<?> clsWinDisplay = Class.forName("org.lwjgl.opengl.WindowsDisplay"); //Not visible, so can't use constant WindowsDisplay.class
-            if (!clsWinDisplay.isInstance(impl))
-                throw new Exception("The current platform must be Windows!"); //Throw on non-windows host
-            Method methHwnd = clsWinDisplay.getDeclaredMethod("getHwnd");
-            methHwnd.setAccessible(true);
-            return (Long) methHwnd.invoke(impl);
+            Method getImplementation = Display.class.getDeclaredMethod("getImplementation");
+            getImplementation.setAccessible(true);
+            Object impl = getImplementation.invoke(null);
+            Class<?> clsWindowsDisplay = Class.forName("org.lwjgl.opengl.WindowsDisplay");
+            Method getHwnd = clsWindowsDisplay.getDeclaredMethod("getHwnd");
+            getHwnd.setAccessible(true);
+            return (Long) getHwnd.invoke(impl);
         } catch (Throwable e) {
             LOG.error("Failed to get window handle", e);
             return 0;
@@ -92,8 +89,9 @@ public class Internal {
 
         LOG.info("Using IngameIME-Native: {}", InputContext.getVersion());
 
-        long hWnd = getWindowHandle_LWJGL2();
-        if (hWnd == 0) hWnd = getWindowHandle_LWJGL3();
+        long hWnd = Loader.isModLoaded("lwjgl3ify") ?
+                getWindowHandle_LWJGL3() :
+                getWindowHandle_LWJGL2();
         if (hWnd != 0) {
             // Once switched to the full screen, we can't back to not UiLess mode, unless restart the game
             if (Minecraft.getMinecraft().isFullScreen())
