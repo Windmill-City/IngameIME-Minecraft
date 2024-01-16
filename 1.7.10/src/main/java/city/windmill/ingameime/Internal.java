@@ -129,6 +129,7 @@ public class Internal {
                             for (char c : arg0.toCharArray()) {
                                 GuiContainerManager.getManager().keyTyped(c, Keyboard.KEY_NONE);
                             }
+                            return;
                         }
 
                         // Normal Minecraft Guis
