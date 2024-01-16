@@ -223,7 +223,7 @@ val curseApiKey: String
                 return (props["curse_api_key"]!!) as String
             }
         }
-        return System.getenv("CURSE_API_KEY")
+        return System.getenv("CURSE_API_KEY") ?: ""
     }
 
 afterEvaluate {
