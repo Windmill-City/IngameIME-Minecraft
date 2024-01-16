@@ -21,11 +21,11 @@ public enum IMStates implements IMEventHandler {
         public IMStates onToggleKey() {
             IngameIME_Forge.LOG.info("Turned on by toggle key");
             Internal.setActivated(true);
+            ClientProxy.Screen.WInputMode.setActive(true);
             return OpenedManual;
         }
 
-    },
-    OpenedManual {
+    }, OpenedManual {
         @Override
         public IMStates onControlFocus(@Nonnull Object control, boolean focused) {
             // Ignore all focus event
@@ -39,8 +39,7 @@ public enum IMStates implements IMEventHandler {
             Internal.setActivated(false);
             return Disabled;
         }
-    },
-    OpenedAuto {
+    }, OpenedAuto {
         @Override
         public IMStates onControlFocus(@Nonnull Object control, boolean focused) {
             // Ignore not active focus one
