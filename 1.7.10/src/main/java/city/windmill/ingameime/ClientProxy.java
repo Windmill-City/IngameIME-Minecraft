@@ -10,13 +10,16 @@ import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
+import javax.annotation.Nonnull;
+
 import static city.windmill.ingameime.IngameIME_Forge.LOG;
 import static org.lwjgl.input.Keyboard.KEY_HOME;
 
-public class ClientProxy extends CommonProxy {
+public class ClientProxy extends CommonProxy implements IMEventHandler {
+    public static ClientProxy INSTANCE = null;
     public static OverlayScreen Screen = new OverlayScreen();
     public static KeyBinding KeyBind = new KeyBinding("ingameime.key.desc", KEY_HOME, "IngameIME");
-    public static boolean IsToggledManually = false;
+    public static city.windmill.ingameime.IMEventHandler IMEventHandler = IMStates.Disabled;
     private static boolean IsKeyDown = false;
 
     @SubscribeEvent
@@ -27,23 +30,51 @@ public class ClientProxy extends CommonProxy {
             IsKeyDown = true;
         } else if (IsKeyDown) {
             IsKeyDown = false;
-            ClientProxy.IsToggledManually = true;
-            Internal.toggleInputMethod();
-            LOG.info("Toggled by keybinding");
+            onToggleKey();
         }
 
         if (Config.TurnOffOnMouseMove.getBoolean())
-            if (ClientProxy.IsToggledManually && (Mouse.getDX() > 0 || Mouse.getDY() > 0)) {
-                Internal.setActivated(false);
-                LOG.info("Turned off by mouse move");
+            if (IMEventHandler == IMStates.OpenedManual && (Mouse.getDX() > 0 || Mouse.getDY() > 0)) {
+                onMouseMove();
             }
     }
 
     public void preInit(FMLPreInitializationEvent event) {
+        INSTANCE = this;
         Config.synchronizeConfiguration(event.getSuggestedConfigurationFile());
         ClientRegistry.registerKeyBinding(KeyBind);
         Internal.loadLibrary();
         Internal.createInputCtx();
         MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @Override
+    public IMStates onScreenClose() {
+        IMEventHandler = IMEventHandler.onScreenClose();
+        return null;
+    }
+
+    @Override
+    public IMStates onControlFocus(@Nonnull Object control, boolean focused) {
+        IMEventHandler = IMEventHandler.onControlFocus(control, focused);
+        return null;
+    }
+
+    @Override
+    public IMStates onScreenOpen(Object screen) {
+        IMEventHandler = IMEventHandler.onScreenOpen(screen);
+        return null;
+    }
+
+    @Override
+    public IMStates onToggleKey() {
+        IMEventHandler = IMEventHandler.onToggleKey();
+        return null;
+    }
+
+    @Override
+    public IMStates onMouseMove() {
+        IMEventHandler = IMEventHandler.onMouseMove();
+        return null;
     }
 }

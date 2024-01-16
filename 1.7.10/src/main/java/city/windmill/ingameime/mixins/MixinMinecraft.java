@@ -26,7 +26,10 @@ public class MixinMinecraft {
         // Reset pos when screen changes
         ClientProxy.Screen.setCaretPos(0, 0);
         // Disable input method when not screen
-        if (Minecraft.getMinecraft().currentScreen == null)
-            Internal.setActivated(false);
+        GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
+        if (currentScreen == null)
+            ClientProxy.INSTANCE.onScreenClose();
+        else
+            ClientProxy.INSTANCE.onScreenOpen(currentScreen);
     }
 }

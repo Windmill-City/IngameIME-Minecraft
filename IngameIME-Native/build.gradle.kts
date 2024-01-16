@@ -22,10 +22,12 @@ plugins {
 
 tasks.compileJava {
     options.encoding = "UTF-8"
+    sourceCompatibility = "1.8"
 }
 
 tasks.compileTestJava {
     options.encoding = "UTF-8"
+    sourceCompatibility = "1.8"
 }
 
 configurations.all {

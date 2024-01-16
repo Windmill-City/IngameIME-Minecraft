@@ -32,20 +32,18 @@ public class Internal {
     static InputModeCallback inputModeCallback = null;
 
     private static void tryLoadLibrary(String libName) {
-        if (!LIBRARY_LOADED)
-            try {
-                InputStream lib = IngameIME.class.getClassLoader().getResourceAsStream(libName);
-                if (lib == null) throw new RuntimeException("Required library resource not exist!");
-                Path path = Files.createTempFile("IngameIME-Native", null);
-                Files.copy(lib, path, StandardCopyOption.REPLACE_EXISTING);
-                System.load(path.toString());
-                LIBRARY_LOADED = true;
-                LOG.info("Library [{}] has loaded!", libName);
-            } catch (Throwable e) {
-                LOG.warn("Try to load library [{}] but failed: {}", libName, e.getClass().getSimpleName());
-            }
-        else
-            LOG.info("Library has loaded, skip loading of [{}]", libName);
+        if (!LIBRARY_LOADED) try {
+            InputStream lib = IngameIME.class.getClassLoader().getResourceAsStream(libName);
+            if (lib == null) throw new RuntimeException("Required library resource not exist!");
+            Path path = Files.createTempFile("IngameIME-Native", null);
+            Files.copy(lib, path, StandardCopyOption.REPLACE_EXISTING);
+            System.load(path.toString());
+            LIBRARY_LOADED = true;
+            LOG.info("Library [{}] has loaded!", libName);
+        } catch (Throwable e) {
+            LOG.warn("Try to load library [{}] but failed: {}", libName, e.getClass().getSimpleName());
+        }
+        else LOG.info("Library has loaded, skip loading of [{}]", libName);
     }
 
     private static long getWindowHandle_LWJGL3() {
@@ -89,13 +87,10 @@ public class Internal {
 
         LOG.info("Using IngameIME-Native: {}", InputContext.getVersion());
 
-        long hWnd = Loader.isModLoaded("lwjgl3ify") ?
-                getWindowHandle_LWJGL3() :
-                getWindowHandle_LWJGL2();
+        long hWnd = Loader.isModLoaded("lwjgl3ify") ? getWindowHandle_LWJGL3() : getWindowHandle_LWJGL2();
         if (hWnd != 0) {
             // Once switched to the full screen, we can't back to not UiLess mode, unless restart the game
-            if (Minecraft.getMinecraft().isFullScreen())
-                Config.UiLess_Windows.set(true);
+            if (Minecraft.getMinecraft().isFullScreen()) Config.UiLess_Windows.set(true);
             API api = Config.API_Windows.getString().equals("TextServiceFramework") ? API.TextServiceFramework : API.Imm32;
             LOG.info("Using API: {}, UiLess: {}", api, Config.UiLess_Windows.getBoolean());
             InputCtx = IngameIME.CreateInputContextWin32(hWnd, api, Config.UiLess_Windows.getBoolean());
@@ -112,13 +107,10 @@ public class Internal {
                     LOG.info("PreEdit State: {}", arg0);
 
                     //Hide Indicator when PreEdit start
-                    if (arg0 == CompositionState.Begin)
-                        ClientProxy.Screen.WInputMode.setActive(false);
+                    if (arg0 == CompositionState.Begin) ClientProxy.Screen.WInputMode.setActive(false);
 
-                    if (arg1 != null)
-                        ClientProxy.Screen.PreEdit.setContent(arg1.getContent(), arg1.getSelStart());
-                    else
-                        ClientProxy.Screen.PreEdit.setContent(null, -1);
+                    if (arg1 != null) ClientProxy.Screen.PreEdit.setContent(arg1.getContent(), arg1.getSelStart());
+                    else ClientProxy.Screen.PreEdit.setContent(null, -1);
                 } catch (Throwable e) {
                     LOG.error("Exception thrown during callback handling", e);
                 }
@@ -156,8 +148,7 @@ public class Internal {
                 try {
                     if (arg1 != null)
                         ClientProxy.Screen.CandidateList.setContent(new ArrayList<>(arg1.getCandidates()), arg1.getSelection());
-                    else
-                        ClientProxy.Screen.CandidateList.setContent(null, -1);
+                    else ClientProxy.Screen.CandidateList.setContent(null, -1);
                 } catch (Throwable e) {
                     LOG.error("Exception thrown during callback handling", e);
                 }
@@ -203,21 +194,14 @@ public class Internal {
     }
 
     public static boolean getActivated() {
-        if (InputCtx != null) {
-            return InputCtx.getActivated();
-        }
-        return false;
+        if (InputCtx != null) return InputCtx.getActivated();
+        else return false;
     }
 
     public static void setActivated(boolean activated) {
         if (InputCtx != null && getActivated() != activated) {
             InputCtx.setActivated(activated);
-            if (!activated) ClientProxy.IsToggledManually = false;
-            LOG.info("InputMethod activated: {}", activated);
+            LOG.info("IM active state: {}", activated);
         }
-    }
-
-    public static void toggleInputMethod() {
-        setActivated(!getActivated());
     }
 }

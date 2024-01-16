@@ -24,6 +24,6 @@ public class MixinGuiTextField {
 
     @Inject(method = "setFocused", at = @At(value = "HEAD"))
     void onSetFocus(boolean focused, CallbackInfo ci) {
-        Internal.setActivated(focused);
+        ClientProxy.INSTANCE.onControlFocus(this, focused);
     }
 }
