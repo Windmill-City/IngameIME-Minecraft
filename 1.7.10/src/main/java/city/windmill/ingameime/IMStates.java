@@ -21,7 +21,6 @@ public enum IMStates implements IMEventHandler {
         public IMStates onToggleKey() {
             IngameIME_Forge.LOG.info("Turned on by toggle key");
             Internal.setActivated(true);
-            ClientProxy.Screen.WInputMode.setActive(true);
             return OpenedManual;
         }
 

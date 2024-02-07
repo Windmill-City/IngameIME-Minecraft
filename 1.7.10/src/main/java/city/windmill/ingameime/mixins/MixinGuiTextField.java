@@ -1,7 +1,7 @@
 package city.windmill.ingameime.mixins;
 
 import city.windmill.ingameime.ClientProxy;
-import city.windmill.ingameime.Internal;
+import city.windmill.ingameime.IMStates;
 import net.minecraft.client.gui.GuiTextField;
 import org.spongepowered.asm.lib.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,7 +19,8 @@ public class MixinGuiTextField {
             locals = LocalCapture.CAPTURE_FAILSOFT
     )
     void onDrawCaret(CallbackInfo ci, int var1, int var2, int var3, String var4, int var5, int var6, int var7, int var8, int var9, int var10, int var11) {
-        ClientProxy.Screen.setCaretPos(var11, var8);
+        if (IMStates.ActiveControl == this)
+            ClientProxy.Screen.setCaretPos(var11, var8);
     }
 
     @Inject(method = "setFocused", at = @At(value = "HEAD"))
